@@ -1,0 +1,924 @@
+{
+ "all_personal": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill",
+   "db.get_pending(limit=6,since=2026-01-01 00:00:00)",
+   "db.save(n=2,ok=True,links=['L0', 'L1'])"
+  ],
+  "gen_batches": [],
+  "logs": [
+   [
+    "INFO",
+    "[GEMMA4] 제보 게시판 개인 신고 2건 — 요약 제외 (LLM 호출 0)"
+   ]
+  ],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": false,
+   "save_fail_cooldown_set": false,
+   "save_fail_logged": false
+  }
+ },
+ "batch_error_generic": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill",
+   "db.get_pending(limit=6,since=2026-01-01 00:00:00)",
+   "core.flush"
+  ],
+  "gen_batches": [
+   [
+    0,
+    1
+   ]
+  ],
+  "logs": [
+   [
+    "INFO",
+    "[GEMMA4] 요약 대기 2건 - 배치 시작 (since=2026-01-01 00:00:00)"
+   ],
+   [
+    "ERROR",
+    "[GEMMA4] 배치 실패: 500 INTERNAL"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] 사이클 완료 2건 / 배치 1개 / 병렬 1 / <t>s"
+   ]
+  ],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": true,
+   "save_fail_cooldown_set": false,
+   "save_fail_logged": false
+  }
+ },
+ "batch_error_quota": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill",
+   "db.get_pending(limit=6,since=2026-01-01 00:00:00)",
+   "core.flush"
+  ],
+  "gen_batches": [
+   [
+    0,
+    1
+   ]
+  ],
+  "logs": [
+   [
+    "INFO",
+    "[GEMMA4] 요약 대기 2건 - 배치 시작 (since=2026-01-01 00:00:00)"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] 사이클 완료 2건 / 배치 1개 / 병렬 1 / <t>s"
+   ]
+  ],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 1,
+   "last_progress_advanced": true,
+   "save_fail_cooldown_set": false,
+   "save_fail_logged": false
+  }
+ },
+ "cooldown_expired_then_save_ok": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill",
+   "db.get_pending(limit=6,since=2026-01-01 00:00:00)",
+   "core.flush",
+   "db.save(n=2,ok=True,links=['L0', 'L1'])",
+   "routes.refresh_ai_caches",
+   "socketio.emit(ai_analysis_update,{'new_count': 2})",
+   "notif.record(kind=ai,game=POE,link=L0)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)",
+   "notif.record(kind=ai,game=POE,link=L1)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)"
+  ],
+  "gen_batches": [
+   [
+    0,
+    1
+   ]
+  ],
+  "logs": [
+   [
+    "INFO",
+    "[GEMMA4] 요약 대기 2건 - 배치 시작 (since=2026-01-01 00:00:00)"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] 사이클 완료 2건 / 배치 1개 / 병렬 1 / <t>s"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] ai_analysis 저장 2건"
+   ]
+  ],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": true,
+   "save_fail_cooldown_set": false,
+   "save_fail_logged": false
+  }
+ },
+ "core_none": {
+  "events": [],
+  "gen_batches": [],
+  "logs": [],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": false,
+   "save_fail_cooldown_set": false,
+   "save_fail_logged": false
+  }
+ },
+ "deferred_exhausted": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill",
+   "db.get_pending(limit=6,since=2026-01-01 00:00:00)",
+   "core.flush",
+   "notif.record(kind=notice,game=None,link=None)"
+  ],
+  "gen_batches": [
+   [
+    0,
+    1
+   ]
+  ],
+  "logs": [
+   [
+    "INFO",
+    "[GEMMA4] 요약 대기 2건 - 배치 시작 (since=2026-01-01 00:00:00)"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] 사이클 완료 2건 / 배치 1개 / 병렬 1 / <t>s"
+   ],
+   [
+    "WARNING",
+    "[GEMMA4] 요약 대기 2건 (일일예산 소진 2건, 그 외 시간당 페이싱·429 쿨다운·1차 응답 누락·2차 미수신) - 저장 생략, 다음 사이클 재시도"
+   ],
+   [
+    "WARNING",
+    "[GEMMA4] 일일 Gemini 예산 소진 - 알림 적재 (대기 2건, 자정 리셋까지 요약 정지)"
+   ]
+  ],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": true,
+   "save_fail_cooldown_set": false,
+   "save_fail_logged": false
+  }
+ },
+ "deferred_placeholder": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill",
+   "db.get_pending(limit=6,since=2026-01-01 00:00:00)",
+   "core.flush"
+  ],
+  "gen_batches": [
+   [
+    0,
+    1
+   ]
+  ],
+  "logs": [
+   [
+    "INFO",
+    "[GEMMA4] 요약 대기 2건 - 배치 시작 (since=2026-01-01 00:00:00)"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] 사이클 완료 2건 / 배치 1개 / 병렬 1 / <t>s"
+   ],
+   [
+    "WARNING",
+    "[GEMMA4] 요약 대기 2건 (일일예산 소진 0건, 그 외 시간당 페이싱·429 쿨다운·1차 응답 누락·2차 미수신) - 저장 생략, 다음 사이클 재시도"
+   ]
+  ],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": true,
+   "save_fail_cooldown_set": false,
+   "save_fail_logged": false
+  }
+ },
+ "depth_exceeds_cap": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill",
+   "db.get_pending(limit=6,since=2026-01-01 00:00:00)",
+   "db.count_pending",
+   "core.flush",
+   "db.save(n=6,ok=True,links=['L0', 'L1', 'L2', 'L3', 'L4', 'L5'])",
+   "routes.refresh_ai_caches",
+   "socketio.emit(ai_analysis_update,{'new_count': 6})",
+   "notif.record(kind=ai,game=POE,link=L0)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)",
+   "notif.record(kind=ai,game=POE,link=L1)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)",
+   "notif.record(kind=ai,game=POE,link=L2)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)",
+   "notif.record(kind=ai,game=POE,link=L3)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)",
+   "notif.record(kind=ai,game=POE,link=L4)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)",
+   "notif.record(kind=ai,game=POE,link=L5)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)"
+  ],
+  "gen_batches": [
+   [
+    0,
+    1
+   ],
+   [
+    2,
+    3
+   ],
+   [
+    4,
+    5
+   ]
+  ],
+  "logs": [
+   [
+    "INFO",
+    "[GEMMA4] 요약 대기 6건 (조회 상한 6 - 실제 잔량 9건) - 배치 시작 (since=2026-01-01 00:00:00)"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] 사이클 완료 6건 / 배치 3개 / 병렬 3 / <t>s"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] ai_analysis 저장 6건"
+   ]
+  ],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": true,
+   "save_fail_cooldown_set": false,
+   "save_fail_logged": false
+  }
+ },
+ "emit_raises": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill",
+   "db.get_pending(limit=6,since=2026-01-01 00:00:00)",
+   "core.flush",
+   "db.save(n=2,ok=True,links=['L0', 'L1'])",
+   "routes.refresh_ai_caches",
+   "socketio.emit(ai_analysis_update,{'new_count': 2})",
+   "notif.record(kind=ai,game=POE,link=L0)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)",
+   "notif.record(kind=ai,game=POE,link=L1)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)"
+  ],
+  "gen_batches": [
+   [
+    0,
+    1
+   ]
+  ],
+  "logs": [
+   [
+    "INFO",
+    "[GEMMA4] 요약 대기 2건 - 배치 시작 (since=2026-01-01 00:00:00)"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] 사이클 완료 2건 / 배치 1개 / 병렬 1 / <t>s"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] ai_analysis 저장 2건"
+   ],
+   [
+    "WARNING",
+    "[GEMMA4] ai_analysis_update 푸시 실패 (무시): emit boom"
+   ]
+  ],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": true,
+   "save_fail_cooldown_set": false,
+   "save_fail_logged": false
+  }
+ },
+ "empty_pending": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill",
+   "db.get_pending(limit=6,since=2026-01-01 00:00:00)"
+  ],
+  "gen_batches": [],
+  "logs": [],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": false,
+   "save_fail_cooldown_set": false,
+   "save_fail_logged": false
+  }
+ },
+ "flush_finalizes_summary": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill",
+   "db.get_pending(limit=6,since=2026-01-01 00:00:00)",
+   "core.flush",
+   "db.save(n=2,ok=True,links=['L0', 'L1'])",
+   "routes.refresh_ai_caches",
+   "socketio.emit(ai_analysis_update,{'new_count': 2})",
+   "notif.record(kind=ai,game=POE,link=L0)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)",
+   "notif.record(kind=ai,game=POE,link=L1)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)"
+  ],
+  "gen_batches": [
+   [
+    0,
+    1
+   ]
+  ],
+  "logs": [
+   [
+    "INFO",
+    "[GEMMA4] 요약 대기 2건 - 배치 시작 (since=2026-01-01 00:00:00)"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] 2차 통합 2건 - 콜 1회 (종전 배치 1회)"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] 사이클 완료 2건 / 배치 1개 / 병렬 1 / <t>s"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] ai_analysis 저장 2건"
+   ]
+  ],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": true,
+   "save_fail_cooldown_set": false,
+   "save_fail_logged": false
+  }
+ },
+ "flush_raises": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill",
+   "db.get_pending(limit=6,since=2026-01-01 00:00:00)",
+   "core.flush",
+   "db.save(n=2,ok=True,links=['L0', 'L1'])",
+   "routes.refresh_ai_caches",
+   "socketio.emit(ai_analysis_update,{'new_count': 2})",
+   "notif.record(kind=ai,game=POE,link=L0)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)",
+   "notif.record(kind=ai,game=POE,link=L1)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)"
+  ],
+  "gen_batches": [
+   [
+    0,
+    1
+   ]
+  ],
+  "logs": [
+   [
+    "INFO",
+    "[GEMMA4] 요약 대기 2건 - 배치 시작 (since=2026-01-01 00:00:00)"
+   ],
+   [
+    "ERROR",
+    "[GEMMA4] 2차 통합 호출 실패: flush boom"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] 사이클 완료 2건 / 배치 1개 / 병렬 1 / <t>s"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] ai_analysis 저장 2건"
+   ]
+  ],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": true,
+   "save_fail_cooldown_set": false,
+   "save_fail_logged": false
+  }
+ },
+ "flush_returns_merged": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill",
+   "db.get_pending(limit=6,since=2026-01-01 00:00:00)",
+   "core.flush",
+   "db.save(n=2,ok=True,links=['L0', 'L1'])",
+   "routes.refresh_ai_caches",
+   "socketio.emit(ai_analysis_update,{'new_count': 2})",
+   "notif.record(kind=ai,game=POE,link=L0)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)",
+   "notif.record(kind=ai,game=POE,link=L1)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)"
+  ],
+  "gen_batches": [
+   [
+    0,
+    1
+   ]
+  ],
+  "logs": [
+   [
+    "INFO",
+    "[GEMMA4] 요약 대기 2건 - 배치 시작 (since=2026-01-01 00:00:00)"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] 2차 통합 2건 - 콜 1회 (종전 배치 1회)"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] 사이클 완료 2건 / 배치 1개 / 병렬 1 / <t>s"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] ai_analysis 저장 2건"
+   ]
+  ],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": true,
+   "save_fail_cooldown_set": false,
+   "save_fail_logged": false
+  }
+ },
+ "normal_parallel": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill",
+   "db.get_pending(limit=6,since=2026-01-01 00:00:00)",
+   "core.flush",
+   "db.save(n=5,ok=True,links=['L0', 'L1', 'L2', 'L3', 'L4'])",
+   "routes.refresh_ai_caches",
+   "socketio.emit(ai_analysis_update,{'new_count': 5})",
+   "notif.record(kind=ai,game=POE,link=L0)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)",
+   "notif.record(kind=ai,game=POE,link=L1)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)",
+   "notif.record(kind=ai,game=POE,link=L2)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)",
+   "notif.record(kind=ai,game=POE,link=L3)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)",
+   "notif.record(kind=ai,game=POE,link=L4)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)"
+  ],
+  "gen_batches": [
+   [
+    0,
+    1
+   ],
+   [
+    2,
+    3
+   ],
+   [
+    4
+   ]
+  ],
+  "logs": [
+   [
+    "INFO",
+    "[GEMMA4] 요약 대기 5건 - 배치 시작 (since=2026-01-01 00:00:00)"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] 사이클 완료 5건 / 배치 3개 / 병렬 3 / <t>s"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] ai_analysis 저장 5건"
+   ]
+  ],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": true,
+   "save_fail_cooldown_set": false,
+   "save_fail_logged": false
+  }
+ },
+ "normal_single_batch": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill",
+   "db.get_pending(limit=6,since=2026-01-01 00:00:00)",
+   "core.flush",
+   "db.save(n=2,ok=True,links=['L0', 'L1'])",
+   "routes.refresh_ai_caches",
+   "socketio.emit(ai_analysis_update,{'new_count': 2})",
+   "notif.record(kind=ai,game=POE,link=L0)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)",
+   "notif.record(kind=ai,game=POE,link=L1)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)"
+  ],
+  "gen_batches": [
+   [
+    0,
+    1
+   ]
+  ],
+  "logs": [
+   [
+    "INFO",
+    "[GEMMA4] 요약 대기 2건 - 배치 시작 (since=2026-01-01 00:00:00)"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] 사이클 완료 2건 / 배치 1개 / 병렬 1 / <t>s"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] ai_analysis 저장 2건"
+   ]
+  ],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": true,
+   "save_fail_cooldown_set": false,
+   "save_fail_logged": false
+  }
+ },
+ "personal_save_fail_then_continue": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill",
+   "db.get_pending(limit=6,since=2026-01-01 00:00:00)",
+   "db.save(n=2,ok=False,links=['L0', 'L1'])",
+   "core.flush",
+   "db.save(n=2,ok=True,links=['L2', 'L3'])",
+   "routes.refresh_ai_caches",
+   "socketio.emit(ai_analysis_update,{'new_count': 2})",
+   "notif.record(kind=ai,game=POE,link=L2)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)",
+   "notif.record(kind=ai,game=POE,link=L3)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)"
+  ],
+  "gen_batches": [
+   [
+    2,
+    3
+   ]
+  ],
+  "logs": [
+   [
+    "WARNING",
+    "[GEMMA4] 제보 제외 2건 저장 실패 — 다음 사이클 재시도"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] 요약 대기 2건 - 배치 시작 (since=2026-01-01 00:00:00)"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] 사이클 완료 2건 / 배치 1개 / 병렬 1 / <t>s"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] ai_analysis 저장 2건"
+   ]
+  ],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": true,
+   "save_fail_cooldown_set": false,
+   "save_fail_logged": false
+  }
+ },
+ "push_record_raises": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill",
+   "db.get_pending(limit=6,since=2026-01-01 00:00:00)",
+   "core.flush",
+   "db.save(n=2,ok=True,links=['L0', 'L1'])",
+   "routes.refresh_ai_caches",
+   "socketio.emit(ai_analysis_update,{'new_count': 2})",
+   "notif.record(kind=ai,game=POE,link=L0)"
+  ],
+  "gen_batches": [
+   [
+    0,
+    1
+   ]
+  ],
+  "logs": [
+   [
+    "INFO",
+    "[GEMMA4] 요약 대기 2건 - 배치 시작 (since=2026-01-01 00:00:00)"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] 사이클 완료 2건 / 배치 1개 / 병렬 1 / <t>s"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] ai_analysis 저장 2건"
+   ],
+   [
+    "WARNING",
+    "[GEMMA4] 웹푸시 발송 실패 (무시): record boom"
+   ]
+  ],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": true,
+   "save_fail_cooldown_set": false,
+   "save_fail_logged": false
+  }
+ },
+ "push_send_raises": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill",
+   "db.get_pending(limit=6,since=2026-01-01 00:00:00)",
+   "core.flush",
+   "db.save(n=2,ok=True,links=['L0', 'L1'])",
+   "routes.refresh_ai_caches",
+   "socketio.emit(ai_analysis_update,{'new_count': 2})",
+   "notif.record(kind=ai,game=POE,link=L0)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)"
+  ],
+  "gen_batches": [
+   [
+    0,
+    1
+   ]
+  ],
+  "logs": [
+   [
+    "INFO",
+    "[GEMMA4] 요약 대기 2건 - 배치 시작 (since=2026-01-01 00:00:00)"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] 사이클 완료 2건 / 배치 1개 / 병렬 1 / <t>s"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] ai_analysis 저장 2건"
+   ],
+   [
+    "WARNING",
+    "[GEMMA4] 웹푸시 발송 실패 (무시): push boom"
+   ]
+  ],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": true,
+   "save_fail_cooldown_set": false,
+   "save_fail_logged": false
+  }
+ },
+ "refresh_raises": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill",
+   "db.get_pending(limit=6,since=2026-01-01 00:00:00)",
+   "core.flush",
+   "db.save(n=2,ok=True,links=['L0', 'L1'])",
+   "routes.refresh_ai_caches",
+   "socketio.emit(ai_analysis_update,{'new_count': 2})",
+   "notif.record(kind=ai,game=POE,link=L0)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)",
+   "notif.record(kind=ai,game=POE,link=L1)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)"
+  ],
+  "gen_batches": [
+   [
+    0,
+    1
+   ]
+  ],
+  "logs": [
+   [
+    "INFO",
+    "[GEMMA4] 요약 대기 2건 - 배치 시작 (since=2026-01-01 00:00:00)"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] 사이클 완료 2건 / 배치 1개 / 병렬 1 / <t>s"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] ai_analysis 저장 2건"
+   ],
+   [
+    "WARNING",
+    "[GEMMA4] AI 응답 캐시 갱신 실패 (무시): refresh boom"
+   ]
+  ],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": true,
+   "save_fail_cooldown_set": false,
+   "save_fail_logged": false
+  }
+ },
+ "remote_kill": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill"
+  ],
+  "gen_batches": [],
+  "logs": [
+   [
+    "WARNING",
+    "[GEMMA4] REMOTE_KILL 감지 — 이번 사이클 스킵"
+   ]
+  ],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": false,
+   "save_fail_cooldown_set": false,
+   "save_fail_logged": false
+  }
+ },
+ "save_fail_cooldown_first": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill"
+  ],
+  "gen_batches": [],
+  "logs": [
+   [
+    "INFO",
+    "[GEMMA4] 직전 저장 실패로 120초 유예 — LLM 호출 스킵 (대상 글은 pending 유지, 유예 후 재시도)"
+   ]
+  ],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": false,
+   "save_fail_cooldown_set": true,
+   "save_fail_logged": true
+  }
+ },
+ "save_fail_cooldown_repeat": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill"
+  ],
+  "gen_batches": [],
+  "logs": [],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": false,
+   "save_fail_cooldown_set": true,
+   "save_fail_logged": true
+  }
+ },
+ "save_success_fail": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill",
+   "db.get_pending(limit=6,since=2026-01-01 00:00:00)",
+   "core.flush",
+   "db.save(n=2,ok=False,links=['L0', 'L1'])"
+  ],
+  "gen_batches": [
+   [
+    0,
+    1
+   ]
+  ],
+  "logs": [
+   [
+    "INFO",
+    "[GEMMA4] 요약 대기 2건 - 배치 시작 (since=2026-01-01 00:00:00)"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] 사이클 완료 2건 / 배치 1개 / 병렬 1 / <t>s"
+   ],
+   [
+    "ERROR",
+    "[GEMMA4] ai_analysis 저장 실패 2건 — 후속(캐시/소켓/웹푸시/상황판) 생략, 120초 뒤 재시도"
+   ]
+  ],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": true,
+   "save_fail_cooldown_set": true,
+   "save_fail_logged": false
+  }
+ },
+ "socketio_none": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill",
+   "db.get_pending(limit=6,since=2026-01-01 00:00:00)",
+   "core.flush",
+   "db.save(n=2,ok=True,links=['L0', 'L1'])",
+   "routes.refresh_ai_caches",
+   "notif.record(kind=ai,game=POE,link=L0)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)",
+   "notif.record(kind=ai,game=POE,link=L1)",
+   "push.send(title=[POE],game=POE,tag=imt-ai)"
+  ],
+  "gen_batches": [
+   [
+    0,
+    1
+   ]
+  ],
+  "logs": [
+   [
+    "INFO",
+    "[GEMMA4] 요약 대기 2건 - 배치 시작 (since=2026-01-01 00:00:00)"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] 사이클 완료 2건 / 배치 1개 / 병렬 1 / <t>s"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] ai_analysis 저장 2건"
+   ]
+  ],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": true,
+   "save_fail_cooldown_set": false,
+   "save_fail_logged": false
+  }
+ },
+ "success_not_notable": {
+  "events": [
+   "core.maybe_reload_config",
+   "core.should_kill",
+   "db.get_pending(limit=6,since=2026-01-01 00:00:00)",
+   "core.flush",
+   "db.save(n=2,ok=True,links=['L0', 'L1'])",
+   "routes.refresh_ai_caches"
+  ],
+  "gen_batches": [
+   [
+    0,
+    1
+   ]
+  ],
+  "logs": [
+   [
+    "INFO",
+    "[GEMMA4] 요약 대기 2건 - 배치 시작 (since=2026-01-01 00:00:00)"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] 사이클 완료 2건 / 배치 1개 / 병렬 1 / <t>s"
+   ],
+   [
+    "INFO",
+    "[GEMMA4] ai_analysis 저장 2건"
+   ]
+  ],
+  "return": "None",
+  "state": {
+   "consecutive_quota_failures": 0,
+   "last_progress_advanced": true,
+   "save_fail_cooldown_set": false,
+   "save_fail_logged": false
+  }
+ }
+}

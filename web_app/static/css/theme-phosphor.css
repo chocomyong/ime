@@ -1,0 +1,268 @@
+/* ==========================================================================
+   [Theme: Steel Monitor]
+   스틸 그레이 컨셉 — 보라/글래스모피즘 탈피, 단색 다크 + 그레이 포인트.
+   style.css 이후 로드되어 CSS 변수만 오버라이드함. 레이아웃 무변경.
+
+   [원복 방법] index.html 에서 아래 줄을 주석처리하면 즉시 원복됨:
+   <link rel="stylesheet" href=".../theme-phosphor.css">
+   ========================================================================== */
+
+/* ---- 폰트 ---- */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+/* [v6.6.254] 테마 토글은 이 CSS 파일 전체를 link.disabled 로 on/off 하는 방식으로 구현.
+   JS(main.js) 가 localStorage.imt_theme 값에 따라 `<link href="...theme-phosphor.css">` 를
+   disabled=true/false 로 토글. 아래 룰들은 파일이 활성화(기본) 되었을 때만 적용됨. */
+/* ---- CSS 변수 교체 ---- */
+:root {
+    --primary-color: #94A3B8;
+    --primary-rgb: 148, 163, 184;
+    --active-text-color: #09090B;
+
+    --secondary-color: #64748B;
+    --background-color: #09090B;
+    --surface-color: rgba(148, 163, 184, 0.04);
+    --glass-border: rgba(148, 163, 184, 0.12);
+    --text-color: #CBD5E1;
+    --accent-glow: rgba(148, 163, 184, 0.15);
+    --card-bg: rgba(148, 163, 184, 0.02);
+}
+
+/* ---- 바디 & 배경 ---- */
+body {
+    font-family: 'Noto Sans KR', 'IBM Plex Mono', monospace;
+    background: #09090B;
+    color: var(--text-color);
+}
+
+/* 미세한 스캔라인 텍스처 */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.06) 2px,
+        rgba(0, 0, 0, 0.06) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* ---- 메인 래퍼 배경 ---- */
+.main-wrapper {
+    background: #09090B;
+}
+
+/* ---- 사이드바 ---- */
+.sidebar {
+    background: #09090B;
+    border-right: 1px solid rgba(148, 163, 184, 0.08);
+}
+
+.sidebar-logo {
+    font-family: 'IBM Plex Mono', monospace;
+    color: #94A3B8;
+    letter-spacing: 0.1em;
+}
+
+.sidebar .nav-item {
+    color: rgba(148, 163, 184, 0.5);
+}
+
+.sidebar .nav-label {
+    font-family: 'Noto Sans KR', 'IBM Plex Mono', monospace;
+    font-size: 0.82rem;
+    font-weight: 500;
+}
+
+.sidebar .nav-item:hover {
+    background: rgba(148, 163, 184, 0.04);
+    color: #CBD5E1;
+}
+
+.sidebar .nav-item.active {
+    background: rgba(148, 163, 184, 0.06);
+    border-left-color: #94A3B8;
+    color: #E2E8F0;
+}
+
+/* ---- 헤더 ---- */
+header {
+    border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+    background: #09090B;
+}
+
+/* ---- 스크롤바 ---- */
+::-webkit-scrollbar-thumb {
+    background-color: rgba(148, 163, 184, 0.2);
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(148, 163, 184, 0.45);
+}
+
+/* ---- 카드 & 서피스 ---- */
+.card, .excel-table-wrapper, .ai-card, .game-section-header,
+.config-table-wrapper {
+    background: rgba(148, 163, 184, 0.02);
+    border: 1px solid rgba(148, 163, 184, 0.08);
+    border-radius: 2px;
+}
+
+/* ---- 버튼 ---- */
+button.primary, .btn-primary {
+    background: #475569;
+    color: #F1F5F9;
+    border: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 2px;
+}
+
+button.primary:hover, .btn-primary:hover {
+    background: #64748B;
+    box-shadow: 0 0 10px rgba(148, 163, 184, 0.25);
+}
+
+button.secondary {
+    background: transparent;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    color: #94A3B8;
+    font-family: 'IBM Plex Mono', monospace;
+    border-radius: 2px;
+}
+
+button.secondary:hover {
+    border-color: #94A3B8;
+    background: rgba(148, 163, 184, 0.06);
+}
+
+/* ---- 테이블 열 제목 — 전체/게임/커뮤니티/댓글/계정/시세 모두 통일 ---- */
+.excel-table th,
+.full-width-table th,
+#account-trade-tab .excel-table th,
+#account-trade-tab .summary-table th,
+#comments-tab .excel-table th,
+#diamond-trade-tab .excel-table th {
+    background: #111118 !important;
+    color: #94A3B8 !important;
+    font-family: 'IBM Plex Mono', monospace !important;
+    font-size: 0.75rem !important;   /* 전 탭 동일 크기 */
+    font-weight: 600 !important;
+    letter-spacing: 0.07em !important;
+    text-transform: uppercase !important;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.15) !important;
+}
+
+/* ---- 테이블 바디 ---- */
+.excel-table tbody tr:hover {
+    background: rgba(148, 163, 184, 0.04);
+}
+
+/* ---- 상태 배지 ---- */
+/* [Fix v6.6.277] 배지 내용이 한글("대기 중"/"실행 중"/"오류") 이라 letter-spacing 0.06em +
+   text-transform: uppercase 가 "대 기 중" 처럼 기이하게 렌더링. 두 규칙 모두 제거.
+   [Fix v6.6.278] font-family: IBM Plex Mono(모노스페이스) → 부모 상속(Inter sans-serif).
+   모노스페이스는 한글을 고정폭 cell 에 그려 시각적으로 "대 기 중" 처럼 벌어짐. */
+.status-badge {
+    font-family: inherit;
+    font-size: 0.78rem;
+    border-radius: 2px;
+}
+
+/* [Phase 4] 색상만으로 구분하던 상태를 아이콘+텍스트로 중복 표시 (색약/시각장애 대응).
+   ::before 유니코드 글리프로 시각 보조. aria-label 은 런타임 JS 에서 세팅.
+   [Fix v6.6.277] letter-spacing/text-transform 이 ::before 에도 상속되어 "대 기 중" 으로
+   분리 렌더링 되던 문제 수정 — pseudo 전용으로 letter-spacing/text-transform 리셋. */
+.status-badge::before {
+    display: inline-block;
+    margin-right: 4px;
+    font-weight: bold;
+    letter-spacing: normal;
+    text-transform: none;
+}
+
+.status-badge.running {
+    background: rgba(148, 163, 184, 0.1);
+    color: #CBD5E1;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+}
+.status-badge.running::before { content: "● "; }
+
+.status-badge.waiting {
+    background: rgba(148, 163, 184, 0.04);
+    color: rgba(148, 163, 184, 0.45);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+}
+.status-badge.waiting::before { content: "○ "; }
+
+.status-badge.error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #EF4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+.status-badge.error::before { content: "⚠ "; }
+
+/* ---- 탭 ---- */
+.tab-btn.active, .tab-button.active {
+    color: #CBD5E1;
+    border-bottom: 2px solid #94A3B8;
+}
+
+/* ---- 입력 ---- */
+input, select, textarea {
+    background: rgba(148, 163, 184, 0.03);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    color: var(--text-color);
+    font-family: 'IBM Plex Mono', monospace;
+    border-radius: 2px;
+}
+
+input:focus, select:focus {
+    border-color: #94A3B8;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.1);
+}
+
+/* ---- 모바일 카드 ---- */
+@media (max-width: 767px) {
+    .article-card {
+        background: rgba(148, 163, 184, 0.02);
+        border: 1px solid rgba(148, 163, 184, 0.08);
+        border-radius: 2px;
+    }
+    .article-card .card-source {
+        color: #94A3B8;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.65rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+}
+
+/* ---- 토스트 ---- */
+.toast {
+    background: #111118;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-left: 3px solid #94A3B8;
+    border-radius: 2px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+}
+
+/* ---- 로그 뷰어 ---- */
+#logOutput {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    background: #060608;
+    border: 1px solid rgba(148, 163, 184, 0.08);
+}
+
+.log-info  { color: #CBD5E1; }
+.log-warn  { color: #FBBF24; }
+.log-error { color: #EF4444; }
+.log-debug { color: rgba(148, 163, 184, 0.5); }

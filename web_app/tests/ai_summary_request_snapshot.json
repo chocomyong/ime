@@ -1,0 +1,583 @@
+{
+ "anon_forbidden": {
+  "calls": [],
+  "json": {
+   "error": "forbidden"
+  },
+  "status": 403
+ },
+ "blank_link": {
+  "calls": [],
+  "json": {
+   "error": "link 필수"
+  },
+  "status": 400
+ },
+ "budget_placeholder": {
+  "calls": [
+   [
+    "db.get_post_by_link",
+    "http://x/1"
+   ],
+   [
+    "db.get_ai_analysis_by_link",
+    "http://x/1"
+   ],
+   [
+    "worker._get_core",
+    "obj"
+   ],
+   [
+    "core._generate_gemini_summaries",
+    {
+     "arg3": "",
+     "articles_in": [
+      {
+       "board_name": "자유게시판",
+       "content": "본문 내용입니다.",
+       "game": "POE2",
+       "link": "http://x/1",
+       "title": "테스트 제목"
+      }
+     ],
+     "bypass_pace": true,
+     "force_summary": true,
+     "system_instruction": "sys-instr"
+    }
+   ],
+   [
+    "db.save_ai_feedback",
+    {
+     "admin_ip": "test-ip",
+     "gemma_verdict": "요약됨",
+     "kind": "summary_request",
+     "link": "http://x/1",
+     "original_sentiment": "positive",
+     "original_severity": "warning",
+     "original_summary": "기존 요약문",
+     "result": "budget"
+    }
+   ]
+  ],
+  "json": {
+   "error": "요약 결과 없음 (예산 대기) — 잠시 후 다시 시도하세요.",
+   "feedback_id": 777
+  },
+  "status": 503
+ },
+ "core_load_error": {
+  "calls": [
+   [
+    "db.get_post_by_link",
+    "http://x/1"
+   ],
+   [
+    "db.get_ai_analysis_by_link",
+    "http://x/1"
+   ],
+   [
+    "worker._get_core",
+    "raise"
+   ]
+  ],
+  "json": {
+   "error": "Gemma4SummaryCore 로드 실패: load boom"
+  },
+  "status": 500
+ },
+ "core_none": {
+  "calls": [
+   [
+    "db.get_post_by_link",
+    "http://x/1"
+   ],
+   [
+    "db.get_ai_analysis_by_link",
+    "http://x/1"
+   ],
+   [
+    "worker._get_core",
+    "None"
+   ]
+  ],
+  "json": {
+   "error": "Gemma4SummaryCore 미초기화"
+  },
+  "status": 500
+ },
+ "generate_raises": {
+  "calls": [
+   [
+    "db.get_post_by_link",
+    "http://x/1"
+   ],
+   [
+    "db.get_ai_analysis_by_link",
+    "http://x/1"
+   ],
+   [
+    "worker._get_core",
+    "obj"
+   ],
+   [
+    "core._generate_gemini_summaries",
+    {
+     "arg3": "",
+     "articles_in": [
+      {
+       "board_name": "자유게시판",
+       "content": "본문 내용입니다.",
+       "game": "POE2",
+       "link": "http://x/1",
+       "title": "테스트 제목"
+      }
+     ],
+     "bypass_pace": true,
+     "force_summary": true,
+     "system_instruction": "sys-instr"
+    }
+   ],
+   [
+    "db.save_ai_feedback",
+    {
+     "admin_ip": "test-ip",
+     "gemma_verdict": "요약됨",
+     "kind": "summary_request",
+     "link": "http://x/1",
+     "original_sentiment": "positive",
+     "original_severity": "warning",
+     "original_summary": "기존 요약문",
+     "result": "fail"
+    }
+   ]
+  ],
+  "json": {
+   "error": "요약 호출 실패: gen boom"
+  },
+  "status": 500
+ },
+ "manager_forbidden": {
+  "calls": [],
+  "json": {
+   "admin_required": true,
+   "error": "Unauthorized"
+  },
+  "status": 403
+ },
+ "missing_link": {
+  "calls": [],
+  "json": {
+   "error": "link 필수"
+  },
+  "status": 400
+ },
+ "no_content_bracket": {
+  "calls": [
+   [
+    "db.get_post_by_link",
+    "http://x/1"
+   ],
+   [
+    "db.get_ai_analysis_by_link",
+    "http://x/1"
+   ]
+  ],
+  "json": {
+   "error": "본문 미수집 — 요약 불가",
+   "state": "no_content"
+  },
+  "status": 422
+ },
+ "no_content_empty": {
+  "calls": [
+   [
+    "db.get_post_by_link",
+    "http://x/1"
+   ],
+   [
+    "db.get_ai_analysis_by_link",
+    "http://x/1"
+   ]
+  ],
+  "json": {
+   "error": "본문 미수집 — 요약 불가",
+   "state": "no_content"
+  },
+  "status": 422
+ },
+ "post_not_found": {
+  "calls": [
+   [
+    "db.get_post_by_link",
+    "http://x/1"
+   ]
+  ],
+  "json": {
+   "error": "해당 link 의 글 없음 — 요약 대상 아님"
+  },
+  "status": 404
+ },
+ "quota_exhausted": {
+  "calls": [
+   [
+    "db.get_post_by_link",
+    "http://x/1"
+   ],
+   [
+    "db.get_ai_analysis_by_link",
+    "http://x/1"
+   ]
+  ],
+  "json": {
+   "error": "오늘 수동 요약 한도 소진 (40건) — 자정(KST) 이후 재개됩니다."
+  },
+  "status": 429
+ },
+ "save_fail_insert": {
+  "calls": [
+   [
+    "db.get_post_by_link",
+    "http://x/1"
+   ],
+   [
+    "db.get_ai_analysis_by_link",
+    "http://x/1"
+   ],
+   [
+    "worker._get_core",
+    "obj"
+   ],
+   [
+    "core._generate_gemini_summaries",
+    {
+     "arg3": "",
+     "articles_in": [
+      {
+       "board_name": "자유게시판",
+       "content": "본문 내용입니다.",
+       "game": "POE2",
+       "link": "http://x/1",
+       "title": "테스트 제목"
+      }
+     ],
+     "bypass_pace": true,
+     "force_summary": true,
+     "system_instruction": "sys-instr"
+    }
+   ],
+   [
+    "db.save_ai_analysis",
+    [
+     {
+      "AI_Score": "0.00",
+      "board_name": "자유게시판",
+      "content": "본문 내용입니다.",
+      "date": "2026-09-30",
+      "detected_keywords": "kw1,kw2",
+      "game": "POE2",
+      "is_super_keyword": 0,
+      "link": "http://x/1",
+      "sentiment": "neutral",
+      "severity": "info",
+      "source": "DC",
+      "summary": "신규 요약문",
+      "timestamp": "2026-09-30 12:00:00",
+      "title": "테스트 제목"
+     }
+    ]
+   ],
+   [
+    "db.get_ai_analysis_by_link",
+    "http://x/1"
+   ],
+   [
+    "db.save_ai_feedback",
+    {
+     "admin_ip": "test-ip",
+     "gemma_verdict": "미분석",
+     "kind": "summary_request",
+     "link": "http://x/1",
+     "original_sentiment": null,
+     "original_severity": null,
+     "original_summary": null,
+     "result": "fail"
+    }
+   ]
+  ],
+  "json": {
+   "error": "ai_analysis 저장 실패"
+  },
+  "status": 500
+ },
+ "save_fail_update": {
+  "calls": [
+   [
+    "db.get_post_by_link",
+    "http://x/1"
+   ],
+   [
+    "db.get_ai_analysis_by_link",
+    "http://x/1"
+   ],
+   [
+    "worker._get_core",
+    "obj"
+   ],
+   [
+    "core._generate_gemini_summaries",
+    {
+     "arg3": "",
+     "articles_in": [
+      {
+       "board_name": "자유게시판",
+       "content": "본문 내용입니다.",
+       "game": "POE2",
+       "link": "http://x/1",
+       "title": "테스트 제목"
+      }
+     ],
+     "bypass_pace": true,
+     "force_summary": true,
+     "system_instruction": "sys-instr"
+    }
+   ],
+   [
+    "db.update_ai_analysis_for_link",
+    "http://x/1",
+    "새 요약문",
+    "positive",
+    "warning"
+   ],
+   [
+    "db.save_ai_feedback",
+    {
+     "admin_ip": "test-ip",
+     "gemma_verdict": "요약됨",
+     "kind": "summary_request",
+     "link": "http://x/1",
+     "original_sentiment": "positive",
+     "original_severity": "warning",
+     "original_summary": "기존 요약문",
+     "result": "fail"
+    }
+   ]
+  ],
+  "json": {
+   "error": "ai_analysis 저장 실패"
+  },
+  "status": 500
+ },
+ "success_insert": {
+  "calls": [
+   [
+    "db.get_post_by_link",
+    "http://x/1"
+   ],
+   [
+    "db.get_ai_analysis_by_link",
+    "http://x/1"
+   ],
+   [
+    "worker._get_core",
+    "obj"
+   ],
+   [
+    "core._generate_gemini_summaries",
+    {
+     "arg3": "",
+     "articles_in": [
+      {
+       "board_name": "자유게시판",
+       "content": "본문 내용입니다.",
+       "game": "POE2",
+       "link": "http://x/1",
+       "title": "테스트 제목"
+      }
+     ],
+     "bypass_pace": true,
+     "force_summary": true,
+     "system_instruction": "sys-instr"
+    }
+   ],
+   [
+    "db.save_ai_analysis",
+    [
+     {
+      "AI_Score": "0.00",
+      "board_name": "자유게시판",
+      "content": "본문 내용입니다.",
+      "date": "2026-09-30",
+      "detected_keywords": "kw1,kw2",
+      "game": "POE2",
+      "is_super_keyword": 0,
+      "link": "http://x/1",
+      "sentiment": "neutral",
+      "severity": "info",
+      "source": "DC",
+      "summary": "신규 요약문",
+      "timestamp": "2026-09-30 12:00:00",
+      "title": "테스트 제목"
+     }
+    ]
+   ],
+   [
+    "db.get_ai_analysis_by_link",
+    "http://x/1"
+   ],
+   [
+    "db.save_ai_feedback",
+    {
+     "admin_ip": "test-ip",
+     "gemma_verdict": "미분석",
+     "kind": "summary_request",
+     "link": "http://x/1",
+     "original_sentiment": null,
+     "original_severity": null,
+     "original_summary": null,
+     "result": "ok"
+    }
+   ]
+  ],
+  "json": {
+   "feedback_id": 777,
+   "gemma_verdict": "미분석",
+   "link": "http://x/1",
+   "sentiment": "neutral",
+   "severity": "info",
+   "state": "summarized",
+   "success": true,
+   "summary": "신규 요약문"
+  },
+  "status": 200
+ },
+ "success_still_excluded": {
+  "calls": [
+   [
+    "db.get_post_by_link",
+    "http://x/1"
+   ],
+   [
+    "db.get_ai_analysis_by_link",
+    "http://x/1"
+   ],
+   [
+    "worker._get_core",
+    "obj"
+   ],
+   [
+    "core._generate_gemini_summaries",
+    {
+     "arg3": "",
+     "articles_in": [
+      {
+       "board_name": "자유게시판",
+       "content": "본문 내용입니다.",
+       "game": "POE2",
+       "link": "http://x/1",
+       "title": "테스트 제목"
+      }
+     ],
+     "bypass_pace": true,
+     "force_summary": true,
+     "system_instruction": "sys-instr"
+    }
+   ],
+   [
+    "db.update_ai_analysis_for_link",
+    "http://x/1",
+    "분석 제외 (사유: 반복 문의)",
+    "neutral",
+    "info"
+   ],
+   [
+    "db.save_ai_feedback",
+    {
+     "admin_ip": "test-ip",
+     "gemma_verdict": "분석 제외",
+     "kind": "summary_request",
+     "link": "http://x/1",
+     "original_sentiment": "neutral",
+     "original_severity": "info",
+     "original_summary": "분석 제외",
+     "result": "excluded"
+    }
+   ]
+  ],
+  "json": {
+   "feedback_id": 777,
+   "gemma_verdict": "분석 제외",
+   "link": "http://x/1",
+   "sentiment": "neutral",
+   "severity": "info",
+   "state": "excluded",
+   "success": true,
+   "summary": "분석 제외 (사유: 반복 문의)"
+  },
+  "status": 200
+ },
+ "success_update": {
+  "calls": [
+   [
+    "db.get_post_by_link",
+    "http://x/1"
+   ],
+   [
+    "db.get_ai_analysis_by_link",
+    "http://x/1"
+   ],
+   [
+    "worker._get_core",
+    "obj"
+   ],
+   [
+    "core._generate_gemini_summaries",
+    {
+     "arg3": "",
+     "articles_in": [
+      {
+       "board_name": "자유게시판",
+       "content": "본문 내용입니다.",
+       "game": "POE2",
+       "link": "http://x/1",
+       "title": "테스트 제목"
+      }
+     ],
+     "bypass_pace": true,
+     "force_summary": true,
+     "system_instruction": "sys-instr"
+    }
+   ],
+   [
+    "db.update_ai_analysis_for_link",
+    "http://x/1",
+    "새 요약문",
+    "negative",
+    "critical"
+   ],
+   [
+    "db.save_ai_feedback",
+    {
+     "admin_ip": "test-ip",
+     "gemma_verdict": "요약됨",
+     "kind": "summary_request",
+     "link": "http://x/1",
+     "original_sentiment": "positive",
+     "original_severity": "warning",
+     "original_summary": "기존 요약문",
+     "result": "ok"
+    }
+   ]
+  ],
+  "json": {
+   "feedback_id": 777,
+   "gemma_verdict": "요약됨",
+   "link": "http://x/1",
+   "sentiment": "negative",
+   "severity": "critical",
+   "state": "summarized",
+   "success": true,
+   "summary": "새 요약문"
+  },
+  "status": 200
+ }
+}

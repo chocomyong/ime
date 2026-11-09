@@ -1,0 +1,164 @@
+/* Solare의 표면·본문·포인트 구분을 IME에 적용한다. 기존 배치·권한은 각 모듈이 소유한다. */
+body {
+    --ime-surface: #171b20;
+    --ime-row: #14171c;
+    --ime-hover: #20262d;
+    --ime-line: #30363d;
+    --ime-brand: #c6a66b;
+    --ime-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+    --radius-lg: 14px;
+    --radius-md: 9px;
+    font-family: var(--ime-font);
+}
+body[data-theme="dark"], body:not([data-theme]) {
+    --background-color: #111418;
+    --surface-color: #171b20;
+    --card-bg: #14171c;
+    --primary-color: #83add3;
+    --primary-rgb: 131, 173, 211;
+    --text-color: #f1eee8;
+    --text-muted: #aeaca9;
+    --glass-border: #30363d;
+    --active-text-color: #111418;
+    background: var(--background-color);
+    color: var(--text-color);
+}
+body[data-theme="light"] {
+    --background-color: #f4f1ea;
+    --surface-color: #fffdf8;
+    --card-bg: #fffefb;
+    --primary-color: #2f5f8c;
+    --primary-rgb: 47, 95, 140;
+    --text-color: #20252b;
+    --text-muted: #66696a;
+    --glass-border: #cccac6;
+    --ime-surface: #fffdf8;
+    --ime-row: #fffefb;
+    --ime-hover: #efece6;
+    --ime-line: #cccac6;
+    --ime-brand: #795a27;
+    /* 기존 밝은 테마의 강제 배경 선언보다 뒤에서 같은 우선순위로 적용한다. */
+    background: var(--background-color) !important;
+    color: var(--text-color);
+}
+body[data-theme="light"] .sidebar { background: var(--background-color) !important; }
+body[data-theme] :is(.main-wrapper, .sidebar, header, .app-topbar),
+body:not([data-theme]) :is(.main-wrapper, .sidebar, header, .app-topbar) {
+    background: var(--background-color);
+    border-color: var(--ime-line);
+}
+body .sidebar-logo { color: var(--ime-brand); letter-spacing: .12em; }
+body .sidebar .nav-label, body .pane-header h3, body .app-topbar {
+    font-family: var(--ime-font);
+}
+body[data-theme] .sidebar .nav-item, body:not([data-theme]) .sidebar .nav-item { border-radius: 9px; color: var(--text-muted); }
+body[data-theme] .sidebar .nav-item:hover, body:not([data-theme]) .sidebar .nav-item:hover { background: var(--ime-hover); color: var(--text-color); }
+body[data-theme] .sidebar .nav-item.active, body:not([data-theme]) .sidebar .nav-item.active {
+    background: rgba(var(--primary-rgb), .12);
+    color: var(--primary-color);
+    box-shadow: inset 3px 0 var(--primary-color);
+    text-shadow: none;
+}
+body .sidebar .nav-item.u-admin-card .nav-label { color: var(--text-muted); }
+body .sidebar .nav-item.u-admin-card.active .nav-label { color: var(--primary-color); }
+body[data-theme] .pane-window, body:not([data-theme]) .pane-window {
+    background: var(--ime-surface);
+    border: 1px solid var(--ime-line);
+    border-radius: var(--radius-lg);
+    backdrop-filter: none;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, .12);
+}
+body .pane-window:hover { border-color: var(--glass-border); box-shadow: 0 4px 18px rgba(0, 0, 0, .12); }
+body[data-theme] .pane-header, body:not([data-theme]) .pane-header { background: var(--ime-surface); border-color: var(--ime-line); padding: 10px 14px; }
+body .pane-header h3 { color: var(--text-color); font-weight: 650; letter-spacing: -.02em; }
+body .header-badge { font-weight: 600; font-size: 11px; border-color: var(--ime-line); }
+body .pane-header-search input { background: var(--ime-row); border-color: var(--ime-line); color: var(--text-color); border-radius: 9px; }
+body .app-topbar__btn { border-radius: 9px; color: var(--text-muted); }
+body .app-topbar__btn:hover { background: var(--ime-hover); color: var(--text-color); }
+
+/* 매니저 열람 화면과 판정 탭의 카드·필터를 같은 밀도로 맞춘다.
+   [v6.7.741] 알림(워처) · 디스코드 탭 선택자(#…-tab, .ncw-*, .dc-*) 삭제 - 탭째 지웠다. :is() 특이성은 남은 인자가
+   같은 종류(ID / 클래스)라 그대로다. */
+body :is(#feed-tab, #ai-summary-tab, #ccu-grafana-tab, #situation-tab, #verdict-tab) {
+    font-family: var(--ime-font);
+    color: var(--text-color);
+}
+body :is(.feed-src-bar, .vd-toolbar) {
+    background: var(--ime-surface);
+    border-color: var(--ime-line);
+    padding: 10px 12px;
+    gap: 8px;
+}
+body :is(.feed-srcpill, .feed-flagpill) {
+    border-radius: 9px;
+    border: 1px solid var(--ime-line);
+    background: var(--ime-row);
+    color: var(--text-muted);
+    min-height: 30px;
+    font-family: var(--ime-font);
+    font-size: 12px;
+    font-weight: 500;
+}
+body :is(.feed-srcpill, .feed-flagpill).active {
+    background: rgba(var(--primary-rgb), .12);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    box-shadow: none;
+}
+body :is(.feed-card, .ccu-card:not(:where(.ccu-card--alert)), .sit-graph-section) {
+    background: var(--ime-row);
+    border: 1px solid var(--ime-line);
+    border-radius: 12px;
+    box-shadow: none;
+}
+body[data-theme="light"] :is(.feed-card, .ccu-card:not(:where(.ccu-card--alert)), .sit-graph-section) {
+    background: var(--ime-row);
+}
+body .sit-graph-controls button { color: var(--text-muted); border-color: var(--ime-line); }
+body .tab-content :is(button, a, input, select):focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 3px;
+}
+
+/* 첫 조회는 상태+자리 표시, 갱신은 기존 결과 보존, 실패는 별도 안내. */
+.ime-data-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 112px;
+    padding: 24px 16px;
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+.ime-data-state strong { display: block; color: var(--text-color); font-size: 13px; font-weight: 600; }
+.ime-data-state small { display: block; font-size: 12px; }
+.ime-data-state__spinner, body .sit-spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+    border: 2px solid var(--ime-line);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: ime-loading-spin .8s linear infinite;
+}
+@keyframes ime-loading-spin { to { transform: rotate(360deg); } }
+body :is(.skeleton-bar, .ai-sum-skel-bar, .ai-sum-skel-row) { background-color: var(--ime-hover); border-radius: 6px; }
+body :is(.sit-graph-loading, .sit-graph-error) { background: var(--ime-surface); color: var(--text-muted); font-family: var(--ime-font); }
+body :is(.feed-body--swapping, .vd-body--swapping) { opacity: .7; }
+.ime-feedback { padding: 8px 14px; font-size: 12px; line-height: 1.5; color: var(--text-muted); border-bottom: 1px solid var(--ime-line); }
+.ime-feedback[hidden] { display: none; }
+.ime-feedback--error { color: var(--color-error); }
+@media (prefers-reduced-motion: reduce) {
+    .ime-data-state__spinner, body .sit-spinner { animation: none; border-top-color: var(--primary-color); }
+    body :is(.skeleton-bar, .skeleton-row, .ai-sum-skel-bar, .ai-sum-skel-row, .feed-src-bar.is-busy::after) { animation: none; }
+    body :is(.feed-body--swapping, .vd-body--swapping) { transition: none; }
+}
+@media (max-width: 600px) {
+    body[data-theme] .pane-header, body:not([data-theme]) .pane-header { padding: 8px 10px; }
+    body :is(.feed-src-bar, .vd-toolbar) { padding: 8px; }
+    body :is(.feed-srcpill, .feed-flagpill) { min-height: 34px; }
+    .ime-data-state { min-height: 96px; padding: 20px 12px; }
+}

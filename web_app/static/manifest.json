@@ -1,0 +1,61 @@
+{
+  "name": "IME - 통합 모니터링 환경",
+  "short_name": "IME",
+  "description": "게임 커뮤니티 통합 모니터링 환경",
+  "id": "/",
+  "scope": "/",
+  "start_url": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "categories": ["productivity", "utilities"],
+  "shortcuts": [
+    {
+      "name": "피드",
+      "short_name": "피드",
+      "url": "/?tab=feed",
+      "icons": [{ "src": "/static/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "댓글",
+      "short_name": "댓글",
+      "url": "/?tab=comments",
+      "icons": [{ "src": "/static/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "대시보드",
+      "short_name": "대시보드",
+      "url": "/?tab=situation",
+      "icons": [{ "src": "/static/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ],
+  "background_color": "#1a1b1e",
+  "theme_color": "#44464e",
+  "orientation": "portrait-primary",
+  "lang": "ko",
+  "icons": [
+    {
+      "src": "/static/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/static/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

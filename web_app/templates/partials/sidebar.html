@@ -1,0 +1,167 @@
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <span class="sidebar-logo" role="button" tabindex="0" onclick="openLandingOverlay()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLandingOverlay();}" title="랜딩 페이지 다시 열기">IME</span>
+                <button id="sidebarToggleBtn" onclick="document.body.classList.toggle('sidebar-collapsed')" title="메뉴 축소/확장">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <div class="sidebar-menu">
+                <!-- [v6.6.250] 섹션 그룹핑 — Phase 1-5 -->
+                <!-- [v6.6.422] 통합 모니터링 — 피드(전체/게임/커뮤니티 세그먼트) + 대시보드(상황판+그래프) -->
+                <!-- [v6.6.444] 댓글을 모니터링 카테고리로 이동, AI 분석은 관리자 카테고리로 이동.
+                                "커뮤니티" 섹션 자체 폐지 (모든 항목 이전). -->
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">모니터링</div>
+                    <div class="nav-item" id="app-box-feed" onclick="toggleAppPane('feed')">
+                        <span class="nav-icon"><i class="fas fa-stream"></i></span>
+                        <span class="nav-label">피드</span>
+                    </div>
+                    {# [v6.7.638] 은닉 스위치는 app.py HIDDEN_APP_IDS 하나다 - 여기서 판정하지 않는다 #}
+                    {% if 'comments' not in hidden_apps %}
+                    <div class="nav-item" id="app-box-comments" onclick="toggleAppPane('comments')">
+                        <span class="nav-icon"><i class="fas fa-comments"></i></span>
+                        <span class="nav-label">댓글</span>
+                    </div>
+                    {% endif %}
+                    {# [v6.7.308] 대시보드(situation) admin 전용 전환 — 사용자 결정 2026-07-09. [v6.7.711] manager 개방 — 사용자 결정 2026-10-01. #}
+                    {% if is_admin or is_manager %}
+                    <!-- [v6.6.466] '대시보드' 메뉴 → 단독 상황판 풀뷰(`#situation-tab`) 활성화로 통합. dashboard pane 폐기.
+                         [v6.6.466 fix] id 도 'app-box-situation' 으로 통일 — render.js 가 active class 토글 시 동일 id 매칭. -->
+                    <div class="nav-item" id="app-box-situation" onclick="toggleAppPane('situation')">
+                        <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
+                        <span class="nav-label">대시보드</span>
+                    </div>
+                    {% endif %}
+                    {% if (is_admin or is_manager) and 'ccu-grafana' not in hidden_apps %}{# [v6.7.725] 은닉 = app.py HIDDEN_APP_IDS #}
+                    <!-- [v6.7.250/254] 그라파나 CCU 미러 — 모니터링 섹션. 비관리자 소스 은닉(admin/manager 만 서버 렌더). JS = static/js/tabs/ccu-grafana-tab.js. -->
+                    <div class="nav-item u-admin-card u-admin-card--cyan" id="app-box-ccu-grafana" onclick="toggleAppPane('ccu-grafana')" style="display:none;">
+                        <span class="nav-icon"><i class="fas fa-chart-area"></i></span>
+                        <span class="nav-label">그라파나</span>
+                    </div>
+                    {% endif %}
+                    {# [v6.7.741] "알림"(워처) · "디스코드" 진입점 삭제 - 워처 종료(사용자 2026-10-24). #}
+                    {% if is_admin %}
+                    <!-- [v6.7.439] 이상감지 - 평시 대비 급증 관제. admin 전용. JS = static/js/tabs/anomaly-tab.js. -->
+                    <div class="nav-item u-admin-card u-admin-card--purple" id="app-box-anomaly" onclick="toggleAppPane('anomaly')" style="display:none;">
+                        <span class="nav-icon"><i class="fas fa-wave-square"></i></span>
+                        <span class="nav-label">이상감지</span>
+                    </div>
+                    {% endif %}
+                    {% if is_admin or is_manager %}{# [v6.7.725] 판정 manager 개방 #}
+                    <!-- [v6.7.700] 판정 - 1차 분류기 그림자 운영(모델 점수 vs gemma 판정). JS = static/js/tabs/verdict-tab.js. -->
+                    <div class="nav-item u-admin-card u-admin-card--purple" id="app-box-verdict" onclick="toggleAppPane('verdict')" style="display:none;">
+                        <span class="nav-icon"><i class="fas fa-scale-balanced"></i></span>
+                        <span class="nav-label">Verdict</span>
+                    </div>
+                    {% endif %}
+                    {% if is_admin or is_manager %}{# [v6.7.500] AI 요약 manager 개방 #}
+                    <!-- [AI 요약] 코어 멀티액티브 페인 — admin + manager ([v6.7.500] manager 재개방). JS = static/js/tabs/ai-summary-tab.js.
+                         모니터링 섹션 소속이라 `.sidebar-section--admin` blanket 숨김(style-core.css)에 안 걸린다 — ccu-grafana 와 동일 자리. -->
+                    <div class="nav-item u-admin-card u-admin-card--purple" id="app-box-ai-summary" onclick="toggleAppPane('ai-summary')" style="display:none;">
+                        <span class="nav-icon nav-icon-text">AI</span>
+                        <span class="nav-label">요약</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- [v6.6.451] 도구 섹션 — 헤더에서 이전한 일반 사용자 도구 4종(필터링/새로고침/테마/앱 설치). admin gate 없음. -->
+                <!-- [v6.6.503] Phase 2 — "도구" 섹션 (필터링/새로고침/테마/앱설치) 4개 모두 상단 바(#appTopbar) 로 이전 완료. 섹션 통째 제거. -->
+
+
+                <!-- [v6.7.79] "고급" 섹션 (전체/게임/커뮤니티 탭) 제거 — 피드 탭이 모든 데이터 + visibility/limits 필터로 동일 기능 제공.
+                     dead UI 정리. tab 본체(`#total-tab` `#games-tab` `#community-tab`) 와 JS 파일은 보존 — 기존 사용자 state 안전.
+                     이전 마크업은 git history (v6.7.78 이전) 참조. -->
+
+                {# [v6.7.254] 비관리자 소스 은닉 — admin 사이드바 섹션 3종(시세/관리자/운영도구)을 서버 조건부 렌더(View Source 노출 차단). #}
+                {% if is_admin %}
+                <!-- [v6.6.515] 시세 섹션 관리자 전용 복구 — 야간동향도 시세 섹션으로 복귀. -->
+                {# [v6.7.725] 시세 3종 은닉(app.py HIDDEN_APP_IDS) - 셋 다 숨으면 섹션 제목도 안 그린다 #}
+                {% if 'account-trade' not in hidden_apps or 'diamond-trade' not in hidden_apps or 'trends' not in hidden_apps %}
+                <div class="sidebar-section sidebar-section--admin">
+                    <div class="sidebar-section-title">시세</div>
+                    {% if 'account-trade' not in hidden_apps %}
+                    <div class="nav-item" id="app-box-account-trade" onclick="toggleAppPane('account-trade')">
+                        <span class="nav-icon"><i class="fas fa-user-tag"></i></span>
+                        <span class="nav-label">계정 거래</span>
+                    </div>
+                    {% endif %}
+                    {% if 'diamond-trade' not in hidden_apps %}
+                    <div class="nav-item" id="app-box-diamond-trade" onclick="toggleAppPane('diamond-trade')">
+                        <span class="nav-icon"><i class="fas fa-gem"></i></span>
+                        <span class="nav-label">다이아 시세</span>
+                    </div>
+                    {% endif %}
+                    {% if 'trends' not in hidden_apps %}
+                    <div class="nav-item" id="app-box-trends" onclick="toggleAppPane('trends')">
+                        <span class="nav-icon"><i class="fas fa-moon"></i></span>
+                        <span class="nav-label">야간동향</span>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+                <!-- [v6.6.503] Phase 2 — "시스템" 섹션 (로그/업데이트) 2개 모두 상단 바(#appTopbar) 로 이전 완료. 섹션 통째 제거. -->
+
+                <!-- [추가] 관리자 섹션 (기본 숨김, IP 확인 후 노출) -->
+                <div class="sidebar-section sidebar-section--admin">
+                    <div class="sidebar-section-title">관리자</div>
+                    <!-- [v6.6.466] '상황판' 메뉴 폐기 — '대시보드' 메뉴(모니터링 섹션 #app-box-situation) 가 동일 활성화. id 중복 회피 위해 placeholder 도 제거. -->
+                    <!--
+                    <div class="nav-item u-admin-card u-admin-card--red" id="app-box-situation" onclick="toggleAppPane('situation')">
+                        <span class="nav-icon"><i class="fas fa-signal"></i></span>
+                        <span class="nav-label">상황판</span>
+                        <span class="nav-badge beta-badge">BETA</span>
+                    </div>
+                    -->
+                    <div class="nav-item u-admin-card u-admin-card--info u-hidden" id="app-box-ops" onclick="toggleAppPane('ops')">
+                        <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>
+                        <span class="nav-label">운영</span>
+                    </div>
+                    <div class="nav-item u-admin-card u-admin-card--cyan u-hidden" id="app-box-sql-console" onclick="toggleAppPane('sql-console')">
+                        <span class="nav-icon"><i class="fas fa-database"></i></span>
+                        <span class="nav-label">SQL</span>
+                    </div>
+                    <div class="nav-item u-admin-card u-admin-card--purple u-hidden" id="app-box-admin" onclick="toggleAppPane('admin')">
+                        <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
+                        <span class="nav-label">관리자</span>
+                    </div>
+                    <!-- [v6.6.444] AI 분석 — 디버깅용 관리자 카테고리로 이동 (기존 "커뮤니티" 섹션에서). _grantAdminUI 가 display:flex 토글. -->
+                    <div class="nav-item u-admin-card u-admin-card--purple" id="app-box-ai-analysis" onclick="toggleAppPane('ai-analysis')" style="display:none;">
+                        <span class="nav-icon nav-icon-text">AI</span>
+                        <span class="nav-label">AI 분석</span>
+                    </div>
+                    <!-- [v6.7.69] F-4 통합 검색/필터 — 관리자 전용. 사용자 명시: "관리자만 접근 (테스트)". -->
+                    <div class="nav-item u-admin-card u-admin-card--cyan" id="app-box-search" onclick="toggleAppPane('search')" style="display:none;">
+                        <span class="nav-icon"><i class="fas fa-search"></i></span>
+                        <span class="nav-label">검색</span>
+                    </div>
+                    <!-- [v6.7.311] 로그 뷰어 사이드바 진입점 — 탑바(#app-box-log-viewer) 전용이던 로그 탭을 좌측 nav 에도 노출 (admin 전용, 사용자 요청 2026-07-10).
+                         탑바 버튼과 id 중복 회피 위해 side-log-viewer + data-appbox 로 render.js active 동기화. -->
+                    <div class="nav-item u-admin-card u-admin-card--info" id="side-log-viewer" data-appbox="log-viewer" onclick="toggleAppPane('log-viewer')" style="display:none;">
+                        <span class="nav-icon"><i class="fas fa-terminal"></i></span>
+                        <span class="nav-label">로그</span>
+                    </div>
+                </div>
+
+                <!-- [v6.6.444] 운영 도구 섹션 — 헤더 admin-controls 6개 버튼을 사이드바로 이전.
+                                상단 자리 절약 + 액션 그룹화. body.is-admin 일 때만 노출. -->
+                <div class="sidebar-section sidebar-section--admin">
+                    <div class="sidebar-section-title">운영 도구</div>
+                    {# [v6.7.741] "상태 대시보드" 토글 삭제(사용자 2026-10-24) - 헤더 크롤러 상태 박스와 함께 지웠다. #}
+                    <div class="nav-item" id="nav-start-crawler" onclick="startCrawler()" title="카페/DC 실시간 모니터링 시작">
+                        <span class="nav-icon"><i class="fas fa-play" style="color:var(--color-success, #66bb6a);"></i></span>
+                        <span class="nav-label">크롤러 시작</span>
+                    </div>
+                    <div class="nav-item" id="nav-stop-crawler" onclick="stopCrawler()" title="카페/DC 실시간 모니터링 중지">
+                        <span class="nav-icon"><i class="fas fa-stop" style="color:var(--color-error, #cf6679);"></i></span>
+                        <span class="nav-label">크롤러 중지</span>
+                    </div>
+                    {# [v6.7.726] 일괄 추출 / 일괄 적용 삭제(사용자 지시 2026-10-11) - 시세 서브 크롤러 4종 실행 + 시트 덮어쓰기 버튼.
+                       다이아 시세 은닉(v6.7.725)으로 핸들러(diamond-tab.js)가 안 실려 눌러도 오류였다. 서버 라우트는 남아 있다. #}
+                    <div class="nav-item" id="nav-settings" onclick="openSettingsModal()">
+                        <span class="nav-icon"><i class="fas fa-cog"></i></span>
+                        <span class="nav-label">설정</span>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </nav>

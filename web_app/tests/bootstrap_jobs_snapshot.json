@@ -1,0 +1,173 @@
+{
+ "bootstrap_log": [
+  "[BOOTSTRAP] 저장된 알림 토글 없음 — 전체 ON(기본값) 유지",
+  "[BOOTSTRAP] keyword_alert 미저장 — 웹앱 기본 OFF 시드 완료",
+  "[BOOTSTRAP] 파이프라인 이론 상한(주기 기준, 콜이 주기 초과 시 실효는 더 낮음) - ai_summary 120건/분(배치40/20s) · post_judge 5건/분(배치10/120s) · content 240건/분(배치20/5s)",
+  "[BOOTSTRAP] 크롤러 스레드 + 16개 스케줄러 잡 등록, 스케줄러 시작 완료 (ids: anomaly_bootstrap_run, anomaly_watch, client_status_update, content_extractor_healthcheck, gemma4_summary_worker, health_sampler, main_crawler_healthcheck, post_judge, remote_kill_web_check, retention_bootstrap_run, retention_purge, status_update_emit, visitor_log_flush, visitor_status_cleanup, volume_backup_weekly, web_push_watch)"
+ ],
+ "jobs": [
+  {
+   "func": "web_lib.bg.broadcast.update_client_status",
+   "id": "client_status_update",
+   "minutes": 3,
+   "replace_existing": true,
+   "trigger": "interval"
+  },
+  {
+   "coalesce": true,
+   "func": "web_lib.bg.contents.check_content_extractor_health",
+   "id": "content_extractor_healthcheck",
+   "max_instances": 1,
+   "misfire_grace_time": 30,
+   "replace_existing": true,
+   "seconds": 60,
+   "trigger": "interval"
+  },
+  {
+   "coalesce": true,
+   "func": "web_lib.bg.scheduler.check_main_crawler_health",
+   "id": "main_crawler_healthcheck",
+   "max_instances": 1,
+   "misfire_grace_time": 30,
+   "replace_existing": true,
+   "seconds": 60,
+   "trigger": "interval"
+  },
+  {
+   "coalesce": true,
+   "func": "web_lib.ai_gemma4_worker.run_gemma4_summary_cycle",
+   "id": "gemma4_summary_worker",
+   "max_instances": 1,
+   "misfire_grace_time": 60,
+   "replace_existing": true,
+   "seconds": 20,
+   "trigger": "interval"
+  },
+  {
+   "coalesce": true,
+   "func": "web_lib.bg.post_judge.run_post_judge_cycle",
+   "id": "post_judge",
+   "max_instances": 1,
+   "misfire_grace_time": 120,
+   "replace_existing": true,
+   "seconds": 120,
+   "trigger": "interval"
+  },
+  {
+   "func": "web_lib.bg.scheduler.cleanup_visitor_status",
+   "id": "visitor_status_cleanup",
+   "minutes": 10,
+   "replace_existing": true,
+   "trigger": "interval"
+  },
+  {
+   "coalesce": true,
+   "func": "web_lib.bg.visitor_log.flush_visitor_logs",
+   "id": "visitor_log_flush",
+   "max_instances": 1,
+   "misfire_grace_time": 15,
+   "replace_existing": true,
+   "seconds": 20,
+   "trigger": "interval"
+  },
+  {
+   "func": "app.check_remote_kill_web",
+   "id": "remote_kill_web_check",
+   "max_instances": 1,
+   "minutes": 2,
+   "replace_existing": true,
+   "trigger": "interval"
+  },
+  {
+   "coalesce": true,
+   "func": "web_lib.bg.health_sampler.sample_health_metrics",
+   "id": "health_sampler",
+   "max_instances": 1,
+   "minutes": 1,
+   "misfire_grace_time": 30,
+   "replace_existing": true,
+   "trigger": "interval"
+  },
+  {
+   "coalesce": true,
+   "func": "web_lib.bg.broadcast.emit_status_update",
+   "id": "status_update_emit",
+   "max_instances": 1,
+   "misfire_grace_time": 15,
+   "replace_existing": true,
+   "seconds": 30,
+   "trigger": "interval"
+  },
+  {
+   "coalesce": true,
+   "func": "web_lib.bg.volume_backup.run_volume_backup_cycle",
+   "hours": 6,
+   "id": "volume_backup_weekly",
+   "max_instances": 1,
+   "misfire_grace_time": 3600,
+   "replace_existing": true,
+   "trigger": "interval"
+  },
+  {
+   "coalesce": true,
+   "func": "web_lib.bg.web_push.run_push_watch_cycle",
+   "id": "web_push_watch",
+   "max_instances": 1,
+   "misfire_grace_time": 60,
+   "replace_existing": true,
+   "seconds": 30,
+   "trigger": "interval"
+  },
+  {
+   "coalesce": true,
+   "func": "web_lib.bg.anomaly.run_anomaly_cycle",
+   "id": "anomaly_watch",
+   "max_instances": 1,
+   "minute": 5,
+   "misfire_grace_time": 600,
+   "replace_existing": true,
+   "trigger": "cron"
+  },
+  {
+   "func": "web_lib.bg.anomaly.run_anomaly_cycle",
+   "id": "anomaly_bootstrap_run",
+   "max_instances": 1,
+   "misfire_grace_time": 600,
+   "replace_existing": true,
+   "run_date": "t0+300s",
+   "trigger": "date"
+  },
+  {
+   "coalesce": true,
+   "func": "web_lib.bg.retention.run_retention_cycle",
+   "hours": 6,
+   "id": "retention_purge",
+   "max_instances": 1,
+   "misfire_grace_time": 3600,
+   "replace_existing": true,
+   "trigger": "interval"
+  },
+  {
+   "func": "web_lib.bg.retention.run_retention_cycle",
+   "id": "retention_bootstrap_run",
+   "max_instances": 1,
+   "misfire_grace_time": 1800,
+   "replace_existing": true,
+   "run_date": "t0+900s",
+   "trigger": "date"
+  }
+ ],
+ "scheduler_started": true,
+ "side_effects": [
+  "heartbeat",
+  [
+   "toggles",
+   {
+    "keyword_alert": false
+   }
+  ]
+ ],
+ "threads": [
+  "web_lib.bg.scheduler.start_crawler_with_delay"
+ ]
+}

@@ -1,0 +1,116 @@
+            <div class="app-topbar" id="appTopbar" role="toolbar" aria-label="앱 도구 모음">
+                <div class="app-topbar__group app-topbar__group--right">
+
+                    {# [v6.7.278] 그룹 0: 툴 상태등 - JS = static/js/main/topbar-status.js. 램프 클릭 시 해당 탭 열기(toggleAppPane).
+                       [v6.7.741] 워처 상태등(네이버 · POE · 디코) 삭제 - 워처 종료(사용자 2026-10-24). 남은 것은 그라파나 CCU 3종뿐이라
+                       그라파나가 은닉이면 그룹째 그리지 않는다(빈 그룹이 상단 바 간격만 먹지 않게). #}
+                    {% if is_admin or is_manager %}{# [v6.7.383] 상태등 + 알림 보관소 manager 개방 (AI 배너/탭은 admin 유지) #}
+                    {% if 'ccu-grafana' not in hidden_apps %}{# [v6.7.725] 그라파나 CCU 상태등 3종 은닉 #}
+                    <div class="app-topbar__group topbar-status topbar-role-tool" id="topbarStatus" role="group" aria-label="툴 상태">
+                        <button type="button" class="topbar-lamp" id="topbar-lamp-ccu-poe2"
+                                onclick="toggleAppPane('ccu-grafana')" title="POE2 동접 — 상태 확인 중">
+                            <span class="topbar-lamp__dot" data-state="unknown" aria-hidden="true"></span>
+                            <span class="topbar-lamp__label">POE2</span>
+                            {# [v6.7.608] 현재 동접 + 증감칩. topbar-status.js 가 채운다(비어 있으면 폭 0). #}
+                            <span class="topbar-lamp__ccu" aria-hidden="true"></span>
+                        </button>
+                        <button type="button" class="topbar-lamp" id="topbar-lamp-ccu-poe1"
+                                onclick="toggleAppPane('ccu-grafana')" title="POE1 동접 — 상태 확인 중">
+                            <span class="topbar-lamp__dot" data-state="unknown" aria-hidden="true"></span>
+                            <span class="topbar-lamp__label">POE1</span>
+                            {# [v6.7.608] 현재 동접 + 증감칩. topbar-status.js 가 채운다(비어 있으면 폭 0). #}
+                            <span class="topbar-lamp__ccu" aria-hidden="true"></span>
+                        </button>
+                        <button type="button" class="topbar-lamp" id="topbar-lamp-ccu-pubg"
+                                onclick="toggleAppPane('ccu-grafana')" title="배틀그라운드 동접 — 상태 확인 중">
+                            <span class="topbar-lamp__dot" data-state="unknown" aria-hidden="true"></span>
+                            <span class="topbar-lamp__label">배그</span>
+                            {# [v6.7.608] 현재 동접 + 증감칩. topbar-status.js 가 채운다(비어 있으면 폭 0). #}
+                            <span class="topbar-lamp__ccu" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                    {% endif %}
+                    <!-- [v6.7.427] 알림 보관소 (admin + manager) — 서버 공유 원장(web_lib/bg/notif_store.py). JS = static/js/main/notif-inbox.js.
+                         종 클릭 = 드롭다운(GET /api/notif-inbox 최신 목록), 항목 클릭 = 내부 탭 이동. 읽음/미확인 배지·전체 삭제 없음(사용자 결정). -->
+                    <div class="app-topbar__group topbar-notif topbar-role-tool" id="topbarNotif">
+                        <button type="button" class="app-topbar__btn topbar-notif__btn" id="topbar-notif-btn"
+                                title="알림 보관소" aria-label="알림 보관소" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-bell" aria-hidden="true"></i>
+                            {# [v6.7.434] 미확인 카운트 배지 — per-device(localStorage) 마지막 열람 이후 도착분. CSS(.topbar-notif__badge)는 v6.7.427 잔존분 재사용. #}
+                            <span class="topbar-notif__badge" id="topbar-notif-badge" style="display:none;" aria-hidden="true"></span>
+                        </button>
+                        <div class="topbar-notif__panel" id="topbar-notif-panel" role="menu" aria-hidden="true" aria-label="알림 목록">
+                            <div class="topbar-notif__head">
+                                <span class="topbar-notif__title">알림 보관소</span>
+                                {# [v6.7.435] '모두 확인' = 이 기기 lastSeen 리셋(미확인·배지 초기화). 서버 공유 원장·타 기기 무영향. #}
+                                <button type="button" class="topbar-notif__markread" id="topbar-notif-markread"
+                                        title="이 기기에서 모두 확인 (미확인 초기화 — 서버·타 기기 무영향)">모두 확인</button>
+                                <!-- [v6.7.360] PWA 푸시 토글 - 이 기기(설치형 PWA)로 배너 3종을 OS 푸시 수신. 기기별 옵트인. -->
+                                {# [v6.7.383] 푸시 버튼은 admin 유지 — /api/push/subscribe 가 admin 게이트라 매니저는 403(헛클릭 방지),
+                                   폰 푸시엔 AI 요약도 실려 매니저 AI 유출 경로가 되므로 열지 않음. 매니저는 인앱 배너/보관소만. #}
+                                {% if is_admin %}
+                                <button type="button" class="topbar-notif__push" id="topbar-notif-push"
+                                        title="이 기기로 푸시 알림 받기 (설치형 PWA)" aria-pressed="false">푸시 OFF</button>
+                                {% endif %}
+                            </div>
+                            {# [v6.7.435] L2 미확인(이 기기 lastSeen 이후) / L1 전체 원장 탭 #}
+                            <div class="topbar-notif__tabs" role="tablist">
+                                <button type="button" class="topbar-notif__tab is-active" id="topbar-notif-tab-unseen" data-view="unseen" role="tab">미확인</button>
+                                <button type="button" class="topbar-notif__tab" id="topbar-notif-tab-all" data-view="all" role="tab">전체</button>
+                            </div>
+                            <div class="topbar-notif__list" id="topbar-notif-list"></div>
+                        </div>
+                    </div>
+                    <span class="app-topbar__divider topbar-role-tool" aria-hidden="true"></span>
+                    {% endif %}
+
+                    <!-- 그룹 1: 글로벌 액션 -->
+                    <button type="button" class="app-topbar__btn" onclick="openFilteringModal()"
+                            title="필터링" aria-label="필터링">
+                        <i class="fas fa-filter" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="app-topbar__btn" id="topbarRefreshBtn"
+                            onclick="topbarRefreshClick(event)"
+                            title="새로고침 (개인 설정 초기화 후 랜딩 페이지에서 다시 시작)"
+                            aria-label="새로고침">
+                        <i class="fas fa-sync-alt" aria-hidden="true"></i>
+                    </button>
+
+                    <span class="app-topbar__divider" aria-hidden="true"></span>
+
+                    {# [v6.7.307] 비관리자 소스 은닉 — 탑바 시스템 그룹(로그) 서버 조건부 렌더.
+                       [v6.7.741] '업데이트' 버튼 삭제(업데이트 탭 제거 - 가독성, 사용자 2026-10-24). #}
+                    {% if is_admin %}
+                    <!-- 그룹 2: 시스템 (admin-only) — id 보존으로 _revokeAdminUI/toggleAppPane 호환 -->
+                    <button type="button" class="app-topbar__btn topbar-admin-only" id="app-box-log-viewer"
+                            onclick="toggleAppPane('log-viewer')"
+                            title="로그" aria-label="로그" style="display:none;">
+                        <i class="fas fa-terminal" aria-hidden="true"></i>
+                    </button>
+
+                    <span class="app-topbar__divider topbar-admin-only" aria-hidden="true"></span>
+                    {% endif %}
+
+                    <!-- 그룹 3: 앱 도구 — 테마 피커 / 라이트다크 토글 / PWA 설치 -->
+                    <button type="button" class="app-topbar__btn" id="theme-toggle-btn"
+                            onclick="toggleThemeMenu(event)"
+                            title="테마 선택" aria-label="테마 선택"
+                            aria-haspopup="menu" aria-expanded="false">
+                        <i class="fas fa-palette" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="app-topbar__btn" id="lightDarkToggleBtn"
+                            onclick="toggleLightDark(event)"
+                            title="라이트/다크 모드 전환"
+                            aria-label="라이트/다크 모드 전환">
+                        <!-- [v6.6.506] fa-sun(태양 광선) 이 fa-cog(톱니바퀴)와 실루엣 유사 → fa-adjust(반원 채움) 로 변경.
+                             테마 토글 표준 아이콘. 라이트/다크 모두 동일 아이콘, 활성 여부는 .light-active 클래스 + 색으로 표현. -->
+                        <i class="fas fa-adjust" aria-hidden="true" id="lightDarkToggleIcon"></i>
+                    </button>
+                    <button type="button" class="app-topbar__btn" id="pwa-install-btn"
+                            onclick="installPWA()"
+                            title="앱 설치 (홈화면에 추가)" aria-label="앱 설치"
+                            style="display:none;">
+                        <i class="fas fa-download" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>

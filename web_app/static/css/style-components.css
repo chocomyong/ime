@@ -1,0 +1,460 @@
+/* [v6.7.392] style.css 분할 style-components.css — 뱃지 토큰·클릭/포커스 피드백·admin/ops/sql·계정거래 스크롤 (순서 보존 분할: 로드 순서 변경 금지, index.html link 순서 = 원본 cascade) */
+/* [v6.6.252] 뱃지 토큰 표준화 — Phase 2-2. 모든 variant 가 동일 기반 규격 공유 */
+.badge {
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    line-height: 1.3;
+    white-space: nowrap;
+}
+
+/* 요약 테이블과 상세 테이블 사이의 충분한 여백 확보 */
+#jasa-summary-container,
+#tasa-summary-container {
+    margin-bottom: 30px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 15px;
+}
+
+/* 타이틀 옆 안내 문구 (은은한 회색) */
+.header-note {
+    font-size: 0.85rem;
+    font-weight: normal;
+    color: var(--text-muted);
+    margin-left: 12px;
+    vertical-align: middle;
+}
+
+/* 버튼 크기 및 간격 최적화 */
+.small-button {
+    padding: 6px 12px !important;
+    font-size: 0.8rem !important;
+    border-radius: 6px !important;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-header-with-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    /* 제목과 버튼들의 하단 라인을 맞춰 정돈됨 */
+    margin-bottom: 15px;
+    gap: 15px;
+}
+
+.badge.daum {
+    background: var(--color-brand-daum);
+    color: #000;
+}
+
+.badge.dc {
+    background: #5b8bd8;
+    color: #000;
+}
+
+.badge.keyword {
+    background: #ff8a80;
+    color: #000;
+}
+
+.badge.super-keyword {
+    background: var(--color-warning);
+    color: #000;
+}
+
+#logOutput {
+    background: #09090b;
+    border-radius: 16px;
+    padding: 20px;
+    font-family: monospace;
+    font-size: 0.85rem;
+    height: 100%;
+    min-height: 400px;
+    border: 1px solid #1a1a1f;
+    overflow-y: auto;
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+/* ?쒖뒪??濡쒓렇 而щ윭 ?쒓렇 吏??*/
+.log-line {
+    margin-bottom: 4px;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.log-time {
+    color: var(--text-muted);
+}
+
+.log-level {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.log-line.INFO .log-level {
+    color: #4CAF50;
+}
+
+.log-line.WARNING .log-level {
+    color: #FF9800;
+}
+
+.log-line.ERROR .log-level {
+    color: #F44336;
+}
+
+.log-line.DEBUG .log-level {
+    color: #9E9E9E;
+}
+
+.log-tag.tag-cafe {
+    color: var(--color-brand-daum);
+}
+
+.log-tag.tag-dc {
+    color: #5b8bd8;
+}
+
+.log-tag.tag-system {
+    color: #00bcd4;
+}
+
+.log-tag.tag-alert {
+    color: #f44336;
+}
+
+.log-tag.tag-odin_global {
+    color: var(--color-warning-bright);
+}
+
+.log-tag.tag-account_trade {
+    color: #ff9800;
+}
+
+.log-tag.tag-jasa_games {
+    color: #8bc34a;
+}
+
+.log-tag.tag-tasa_games {
+    color: #03a9f4;
+}
+
+.log-tag.tag-batch {
+    color: #9c27b0;
+}
+
+.log-tag.tag-config {
+    color: #e91e63;
+}
+
+.log-tag.tag-access {
+    color: #009688;
+}
+
+.log-tag.tag-comments {
+    color: var(--color-info-deep);
+}
+
+.log-tag.tag-content {
+    color: #ab47bc;
+}
+
+.log-tag.tag-database {
+    color: #ff5722;
+}
+
+.log-tag.tag-default {
+    color: #9e9e9e;
+}
+
+.log-message {
+    color: #ddd;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.status-badge.waiting {
+    background: #222;
+    color: var(--text-muted);
+}
+
+.status-badge.running {
+    background: var(--primary-color);
+    color: #000;
+}
+
+button {
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--primary-color);
+    background: transparent;
+    color: var(--primary-color);
+    font-weight: 500;
+    cursor: pointer;
+    /* [v6.6.249] transition:all → 구체 속성 (성능 + GPU 가속 유도) + 토큰 통일 */
+    transition: background var(--transition-base),
+                color var(--transition-base),
+                border-color var(--transition-base),
+                box-shadow var(--transition-base),
+                transform var(--transition-fast);
+}
+
+button:hover {
+    background: var(--primary-color);
+    color: #000;
+    box-shadow: 0 0 15px var(--accent-glow);
+}
+
+/* [v6.6.249] 클릭 피드백 — 살짝 눌리는 느낌 */
+button:active {
+    transform: scale(0.98);
+}
+
+button.secondary {
+    border-color: #444;
+    color: #666;
+}
+
+button.secondary:hover {
+    background: #333;
+    color: #fff;
+}
+
+/* [v6.6.249] 접근성 — 키보드 포커스 시 파란 링. 마우스 클릭 시엔 표시 안 함 (:focus-visible) */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+/* 테이블 행 호버 부드럽게 */
+.excel-table tr,
+.full-width-table tr {
+    transition: background var(--transition-fast),
+                box-shadow var(--transition-fast);
+}
+
+.tab-content {
+    /* 湲곕낯?곸쑝濡쒕뒗 ?④? ?꾨뱶 (??μ냼 蹂닿??? */
+    display: none;
+    overflow: hidden;
+}
+
+/* ??쒕낫???덈룄???대??먯꽌????긽 ?쒖떆 */
+.pane-window .tab-content {
+    display: flex !important;
+    flex-direction: column;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 20px !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden !important; /* 바깥쪽 스크롤 제거 */
+}
+/* 야간동향/관리자/게임 탭: 내부 콘텐츠가 많으므로 스크롤 허용 */
+#trends-tab { overflow: auto !important; }
+/* 게임 탭: flex 높이 압축으로 그리드 셀이 겹치는 현상 방지 — 자연 높이 + 스크롤 */
+#games-tab { overflow-y: auto !important; }
+#games-tab > .card {
+    height: auto !important;
+    flex: none !important;
+}
+#games-tab .card-grid {
+    flex: none !important;
+    height: auto !important;
+}
+/* [v6.6.290] 관리자/운영/SQL 탭: pane 내부 스크롤 방식으로 복원.
+   v6.6.278~289 에서 외부(main-wrapper) 스크롤로 이관 시도했으나, 사용자가 pane 을 수동
+   resize 로 줄이면 내부 콘텐츠가 잘려 보이는 문제 발생. UX 결론: pane 은 수동 리사이즈 가능한
+   박스로 두고, 내용이 박스보다 길면 박스 안에서 세로 스크롤하는 게 자연스러움.
+
+   기본 .pane-window 의 고정 높이(600px) + overflow: hidden 유지하되, 탭 컨텐츠(#ops-tab 등)에
+   overflow-y: auto 를 주어 내부 스크롤 활성화. 카드 내부 테이블은 max-height 제거 유지
+   (카드별 내부 스크롤 없음 → 박스 하나만 스크롤). */
+#admin-tab, #ops-tab, #sql-console-tab {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+#admin-tab > .card, #ops-tab > .card, #sql-console-tab > .card {
+    height: auto !important;
+    flex: none !important;
+}
+
+/* [v6.6.278] 관리자/운영/SQL 탭 — 연속된 카드 사이 여백 확대 (inline 20px → 36px). */
+#admin-tab > .card + .card,
+#ops-tab > .card + .card,
+#sql-console-tab > .card + .card {
+    margin-top: 36px !important;
+    padding-top: 8px !important;
+    border-top: 1px dashed rgba(255, 255, 255, 0.06) !important;
+}
+
+/* [v6.6.288] 카드 내부 excel-table-container 의 max-height 제한 해제 — 카드 내 이중 스크롤 방지.
+   카드 자체는 자연 높이로 늘어나고 pane 내부 스크롤 한 곳만 생김. */
+#admin-tab .excel-table-container,
+#ops-tab .excel-table-container,
+#sql-console-tab .excel-table-container {
+    max-height: none !important;
+    overflow-y: visible !important;
+}
+
+/* [v6.7.637] 위 규칙의 **예외 1건** - 기기 접속 로그만 높이를 가둔다.
+   v6.6.288 이 admin 탭 전체의 max-height 를 푼 이유(카드 내 이중 스크롤 방지)는 지금도 유효하다.
+   다만 이 표는 **브라우저(visitor_id) 하나당 1행이 영구 누적**되고 API 가 limit=2000 으로 주기
+   때문에, 시간이 갈수록 페이지가 그만큼 길어지고 **그 아래 카드가 화면 밖으로 밀린다**
+   (사용자 지적 2026-09-04: "스크롤 끝까지 내려야 아래 테이블이 보인다").
+   실측(200행): 컨테이너 9,050px -> 420px / 문서 9,177px -> 900px.
+   표 자체가 훑어보는 용도가 아니라 **찾아보는 용도**라 안쪽 스크롤이 맞다.
+   th 는 이미 `position: sticky; top: 0` 이라 헤더는 스크롤 중에도 남는다(별도 규칙 불요).
+   `!important` 는 위 규칙을 이기기 위한 것이고, 화면이 작으면 60vh 로 더 줄인다. */
+#admin-tab .excel-table-container.admin-visitlog-scroll {
+    max-height: min(420px, 60vh) !important;
+    overflow-y: auto !important;
+}
+
+
+.tab-content h2 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    letter-spacing: -0.5px;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Drag and Drop States */
+.pane-window.dragging {
+    opacity: 0.4;
+    transform: scale(0.98);
+    border: 2px dashed var(--primary-color);
+}
+
+.pane-window.drag-over {
+    border: 2px solid var(--primary-color) !important;
+    box-shadow: 0 0 30px rgba(49, 130, 246, 0.5) !important;
+}
+/* 드래그 중 대상 pane의 자식 요소들은 이벤트를 가로채지 않도록 */
+.pane-window.drag-over > * { pointer-events: none; }
+.pane-window.drag-over > .pane-header { pointer-events: auto; }
+
+/* Excel Table Style */
+.excel-table-container,
+#totalArticlesContainer,
+#aiAnalysisContainer,
+.game-articles-container {
+    width: 100%;
+    background: #1a1a1e;
+    border-radius: 12px;
+    border: 1px solid #333;
+    margin-top: 5px;
+    margin-right: 5px;
+    padding-right: 8px;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto !important; /* 안쪽 테이블 컨테이너만 스크롤 활성화 */
+    overflow-x: auto; /* [추가] 좁은 화면 가로 스크롤 지원 */
+}
+
+/* [v6.7.42] 계정거래/다이아시세: 탭 자체 스크롤로 복원 (v6.6.290 admin/ops/sql 동일 패턴).
+   배경: v6.6.278 "외부 main-wrapper 스크롤 위임" 시도 후 v6.6.290 에서 admin/ops/sql 만 복원,
+   계정거래/다이아 시세는 복원 누락. 3-pane 도입 이후 main-wrapper 가 fixed-height 화되어
+   위임 자체가 깨짐 — 데이터 행이 많아도 어디서도 스크롤 안 발생.
+   해법: 탭 자체에 overflow-y: auto + 카드 height:auto + 테이블 컨테이너 max-height:none/visible.
+   사이의 results-container wrapper 가 plain div 라 .excel-table-container 의 flex:1 이 안 먹는
+   문제도 동시에 해소 (flex 의존 X, 자연 높이로 펴고 탭이 한 곳만 스크롤). */
+#account-trade-tab,
+#diamond-trade-tab {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+#account-trade-tab > .card,
+#diamond-trade-tab > .card {
+    height: auto !important;
+    flex: none !important;
+}
+#account-trade-table-container,
+#jasa-results-table-container,
+#g2g-results-table-container,
+#tasa-results-table-container {
+    max-height: none !important;
+    overflow-y: visible !important;
+}
+
+.excel-table,
+.full-width-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.0rem;
+    color: #e0e0e0;
+}
+
+.excel-table th,
+.full-width-table th {
+    background: #1e1e24;
+    color: var(--primary-color);
+    padding: 12px 15px;
+    text-align: center !important;
+    font-size: 0.9rem;
+    font-weight: 700;
+    border-bottom: 2px solid #333;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    white-space: nowrap;
+}
+
+.excel-table td,
+.full-width-table td {
+    padding: 10px 15px;
+    border-bottom: 1px solid #2a2a2f;
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.full-width-table tr:hover {
+    box-shadow: inset 0 0 0 999px rgba(255, 255, 255, 0.03) !important;
+}
+
+/* 전체/댓글/게임/커뮤니티 탭 마지막 열 (시간) 보장 */
+.full-width-table th:last-child,
+.full-width-table td:last-child {
+    min-width: 90px;
+    width: 90px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+/* 전체 탭: 댓글 탭과 동일하게 table-layout fixed로 시간 열 절대 보장 */
+#totalArticlesContainer table {
+    table-layout: fixed !important;
+    width: 100% !important;
+    min-width: 420px;
+}

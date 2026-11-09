@@ -1,0 +1,637 @@
+{
+ "custom_origins": {
+  "attributes": {
+   "CRAWLER_EXECUTIONS": {
+    "kind": "dict",
+    "value": {
+     "account_trade": {
+      "execution": null,
+      "info": {}
+     },
+     "jasa_games": {
+      "execution": null,
+      "info": {}
+     },
+     "main": {
+      "execution": null,
+      "info": {}
+     },
+     "odin_global": {
+      "execution": null,
+      "info": {}
+     },
+     "tasa_games": {
+      "execution": null,
+      "info": {}
+     }
+    }
+   },
+   "_comment_data_manager": "None",
+   "_comment_lock": "lock",
+   "_content_extractor_restart_count": "int:0",
+   "_content_extractor_thread": "None",
+   "_crawler_manager": "None",
+   "_crawler_started": "bool:False",
+   "_init_lock": "lock",
+   "_visit_lock": "lock",
+   "account_trade_status": {
+    "kind": "dict",
+    "value": {
+     "crawled_date": null,
+     "error": null,
+     "gsheet_checked_date": null,
+     "last_crawl_duration_seconds": null,
+     "last_run_finish": null,
+     "last_run_start": null,
+     "latest_results": [],
+     "running": false,
+     "status_message": "대기",
+     "trigger_type": null
+    }
+   },
+   "admin_visit_logs": {
+    "kind": "list",
+    "value": []
+   },
+   "comment_data_status": {
+    "kind": "dict",
+    "value": {
+     "last_updated": null,
+     "latest_results": []
+    }
+   },
+   "comment_trigger_event": "Event(set=False)",
+   "contents_stop_event": "Event(set=False)",
+   "crawler_init_thread": "None",
+   "display_settings": {
+    "kind": "dict",
+    "value": {
+     "comment_limit": 100,
+     "limits": {},
+     "visibility": {}
+    }
+   },
+   "executor": {
+    "kind": "ThreadPoolExecutor",
+    "max_workers": 1
+   },
+   "export_executor": {
+    "kind": "ThreadPoolExecutor",
+    "max_workers": 1
+   },
+   "gsheet_write_enabled": "bool:False",
+   "jasa_games_status": {
+    "kind": "dict",
+    "value": {
+     "crawled_date": null,
+     "error": null,
+     "gsheet_checked_date": null,
+     "last_crawl_duration_seconds": null,
+     "last_run_finish": null,
+     "last_run_start": null,
+     "latest_results": [],
+     "running": false,
+     "status_message": "대기",
+     "trigger_type": null
+    }
+   },
+   "main_crawler_executor": {
+    "kind": "ThreadPoolExecutor",
+    "max_workers": 1
+   },
+   "notification_toggles": {
+    "kind": "dict",
+    "value": {
+     "ai_summary": true,
+     "crash_report": true,
+     "crawler_healing": true,
+     "crawler_restart": true,
+     "keyword_alert": true,
+     "official_alert": true,
+     "trend_digest": true
+    }
+   },
+   "notification_toggles_lock": "lock",
+   "odin_global_status": {
+    "kind": "dict",
+    "value": {
+     "crawled_date": null,
+     "error": null,
+     "gsheet_checked_date": null,
+     "last_crawl_duration_seconds": null,
+     "last_run_finish": null,
+     "last_run_start": null,
+     "latest_results": [],
+     "running": false,
+     "status_message": "대기",
+     "trigger_type": null
+    }
+   },
+   "scheduler": "None",
+   "socketio": {
+    "kind": "SocketIO",
+    "server_options": {
+     "async_mode": "threading",
+     "compression_threshold": 1024,
+     "cors_allowed_origins": [
+      "https://a.example",
+      "https://b.example",
+      "https://c.example"
+     ],
+     "ping_interval": 25,
+     "ping_timeout": 60
+    }
+   },
+   "tasa_games_status": {
+    "kind": "dict",
+    "value": {
+     "crawled_date": null,
+     "error": null,
+     "gsheet_checked_date": null,
+     "last_crawl_duration_seconds": null,
+     "last_run_finish": null,
+     "last_run_start": null,
+     "latest_results": [],
+     "running": false,
+     "status_message": "대기",
+     "trigger_type": null
+    }
+   },
+   "visitor_db_touch": {
+    "kind": "dict",
+    "value": {}
+   },
+   "visitor_log_queue": {
+    "items": [],
+    "kind": "deque",
+    "maxlen": 2000
+   },
+   "visitor_names": {
+    "kind": "dict",
+    "value": {}
+   },
+   "visitor_status": {
+    "kind": "dict",
+    "value": {}
+   }
+  },
+  "identity_aliases": [],
+  "order": [
+   "socketio",
+   "contents_stop_event",
+   "comment_trigger_event",
+   "_comment_data_manager",
+   "_content_extractor_thread",
+   "_content_extractor_restart_count",
+   "gsheet_write_enabled",
+   "notification_toggles",
+   "notification_toggles_lock",
+   "_crawler_manager",
+   "crawler_init_thread",
+   "_crawler_started",
+   "_init_lock",
+   "executor",
+   "main_crawler_executor",
+   "export_executor",
+   "odin_global_status",
+   "account_trade_status",
+   "jasa_games_status",
+   "tasa_games_status",
+   "CRAWLER_EXECUTIONS",
+   "_comment_lock",
+   "comment_data_status",
+   "scheduler",
+   "display_settings",
+   "admin_visit_logs",
+   "visitor_names",
+   "visitor_status",
+   "visitor_db_touch",
+   "_visit_lock",
+   "visitor_log_queue"
+  ]
+ },
+ "default_origins_unset": {
+  "attributes": {
+   "CRAWLER_EXECUTIONS": {
+    "kind": "dict",
+    "value": {
+     "account_trade": {
+      "execution": null,
+      "info": {}
+     },
+     "jasa_games": {
+      "execution": null,
+      "info": {}
+     },
+     "main": {
+      "execution": null,
+      "info": {}
+     },
+     "odin_global": {
+      "execution": null,
+      "info": {}
+     },
+     "tasa_games": {
+      "execution": null,
+      "info": {}
+     }
+    }
+   },
+   "_comment_data_manager": "None",
+   "_comment_lock": "lock",
+   "_content_extractor_restart_count": "int:0",
+   "_content_extractor_thread": "None",
+   "_crawler_manager": "None",
+   "_crawler_started": "bool:False",
+   "_init_lock": "lock",
+   "_visit_lock": "lock",
+   "account_trade_status": {
+    "kind": "dict",
+    "value": {
+     "crawled_date": null,
+     "error": null,
+     "gsheet_checked_date": null,
+     "last_crawl_duration_seconds": null,
+     "last_run_finish": null,
+     "last_run_start": null,
+     "latest_results": [],
+     "running": false,
+     "status_message": "대기",
+     "trigger_type": null
+    }
+   },
+   "admin_visit_logs": {
+    "kind": "list",
+    "value": []
+   },
+   "comment_data_status": {
+    "kind": "dict",
+    "value": {
+     "last_updated": null,
+     "latest_results": []
+    }
+   },
+   "comment_trigger_event": "Event(set=False)",
+   "contents_stop_event": "Event(set=False)",
+   "crawler_init_thread": "None",
+   "display_settings": {
+    "kind": "dict",
+    "value": {
+     "comment_limit": 100,
+     "limits": {},
+     "visibility": {}
+    }
+   },
+   "executor": {
+    "kind": "ThreadPoolExecutor",
+    "max_workers": 1
+   },
+   "export_executor": {
+    "kind": "ThreadPoolExecutor",
+    "max_workers": 1
+   },
+   "gsheet_write_enabled": "bool:False",
+   "jasa_games_status": {
+    "kind": "dict",
+    "value": {
+     "crawled_date": null,
+     "error": null,
+     "gsheet_checked_date": null,
+     "last_crawl_duration_seconds": null,
+     "last_run_finish": null,
+     "last_run_start": null,
+     "latest_results": [],
+     "running": false,
+     "status_message": "대기",
+     "trigger_type": null
+    }
+   },
+   "main_crawler_executor": {
+    "kind": "ThreadPoolExecutor",
+    "max_workers": 1
+   },
+   "notification_toggles": {
+    "kind": "dict",
+    "value": {
+     "ai_summary": true,
+     "crash_report": true,
+     "crawler_healing": true,
+     "crawler_restart": true,
+     "keyword_alert": true,
+     "official_alert": true,
+     "trend_digest": true
+    }
+   },
+   "notification_toggles_lock": "lock",
+   "odin_global_status": {
+    "kind": "dict",
+    "value": {
+     "crawled_date": null,
+     "error": null,
+     "gsheet_checked_date": null,
+     "last_crawl_duration_seconds": null,
+     "last_run_finish": null,
+     "last_run_start": null,
+     "latest_results": [],
+     "running": false,
+     "status_message": "대기",
+     "trigger_type": null
+    }
+   },
+   "scheduler": "None",
+   "socketio": {
+    "kind": "SocketIO",
+    "server_options": {
+     "async_mode": "threading",
+     "compression_threshold": 1024,
+     "cors_allowed_origins": [
+      "https://public.example",
+      "http://localhost:5008",
+      "http://127.0.0.1:5008",
+      "http://localhost:5001"
+     ],
+     "ping_interval": 25,
+     "ping_timeout": 60
+    }
+   },
+   "tasa_games_status": {
+    "kind": "dict",
+    "value": {
+     "crawled_date": null,
+     "error": null,
+     "gsheet_checked_date": null,
+     "last_crawl_duration_seconds": null,
+     "last_run_finish": null,
+     "last_run_start": null,
+     "latest_results": [],
+     "running": false,
+     "status_message": "대기",
+     "trigger_type": null
+    }
+   },
+   "visitor_db_touch": {
+    "kind": "dict",
+    "value": {}
+   },
+   "visitor_log_queue": {
+    "items": [],
+    "kind": "deque",
+    "maxlen": 2000
+   },
+   "visitor_names": {
+    "kind": "dict",
+    "value": {}
+   },
+   "visitor_status": {
+    "kind": "dict",
+    "value": {}
+   }
+  },
+  "identity_aliases": [],
+  "order": [
+   "socketio",
+   "contents_stop_event",
+   "comment_trigger_event",
+   "_comment_data_manager",
+   "_content_extractor_thread",
+   "_content_extractor_restart_count",
+   "gsheet_write_enabled",
+   "notification_toggles",
+   "notification_toggles_lock",
+   "_crawler_manager",
+   "crawler_init_thread",
+   "_crawler_started",
+   "_init_lock",
+   "executor",
+   "main_crawler_executor",
+   "export_executor",
+   "odin_global_status",
+   "account_trade_status",
+   "jasa_games_status",
+   "tasa_games_status",
+   "CRAWLER_EXECUTIONS",
+   "_comment_lock",
+   "comment_data_status",
+   "scheduler",
+   "display_settings",
+   "admin_visit_logs",
+   "visitor_names",
+   "visitor_status",
+   "visitor_db_touch",
+   "_visit_lock",
+   "visitor_log_queue"
+  ]
+ },
+ "whitespace_only_falls_back": {
+  "attributes": {
+   "CRAWLER_EXECUTIONS": {
+    "kind": "dict",
+    "value": {
+     "account_trade": {
+      "execution": null,
+      "info": {}
+     },
+     "jasa_games": {
+      "execution": null,
+      "info": {}
+     },
+     "main": {
+      "execution": null,
+      "info": {}
+     },
+     "odin_global": {
+      "execution": null,
+      "info": {}
+     },
+     "tasa_games": {
+      "execution": null,
+      "info": {}
+     }
+    }
+   },
+   "_comment_data_manager": "None",
+   "_comment_lock": "lock",
+   "_content_extractor_restart_count": "int:0",
+   "_content_extractor_thread": "None",
+   "_crawler_manager": "None",
+   "_crawler_started": "bool:False",
+   "_init_lock": "lock",
+   "_visit_lock": "lock",
+   "account_trade_status": {
+    "kind": "dict",
+    "value": {
+     "crawled_date": null,
+     "error": null,
+     "gsheet_checked_date": null,
+     "last_crawl_duration_seconds": null,
+     "last_run_finish": null,
+     "last_run_start": null,
+     "latest_results": [],
+     "running": false,
+     "status_message": "대기",
+     "trigger_type": null
+    }
+   },
+   "admin_visit_logs": {
+    "kind": "list",
+    "value": []
+   },
+   "comment_data_status": {
+    "kind": "dict",
+    "value": {
+     "last_updated": null,
+     "latest_results": []
+    }
+   },
+   "comment_trigger_event": "Event(set=False)",
+   "contents_stop_event": "Event(set=False)",
+   "crawler_init_thread": "None",
+   "display_settings": {
+    "kind": "dict",
+    "value": {
+     "comment_limit": 100,
+     "limits": {},
+     "visibility": {}
+    }
+   },
+   "executor": {
+    "kind": "ThreadPoolExecutor",
+    "max_workers": 1
+   },
+   "export_executor": {
+    "kind": "ThreadPoolExecutor",
+    "max_workers": 1
+   },
+   "gsheet_write_enabled": "bool:False",
+   "jasa_games_status": {
+    "kind": "dict",
+    "value": {
+     "crawled_date": null,
+     "error": null,
+     "gsheet_checked_date": null,
+     "last_crawl_duration_seconds": null,
+     "last_run_finish": null,
+     "last_run_start": null,
+     "latest_results": [],
+     "running": false,
+     "status_message": "대기",
+     "trigger_type": null
+    }
+   },
+   "main_crawler_executor": {
+    "kind": "ThreadPoolExecutor",
+    "max_workers": 1
+   },
+   "notification_toggles": {
+    "kind": "dict",
+    "value": {
+     "ai_summary": true,
+     "crash_report": true,
+     "crawler_healing": true,
+     "crawler_restart": true,
+     "keyword_alert": true,
+     "official_alert": true,
+     "trend_digest": true
+    }
+   },
+   "notification_toggles_lock": "lock",
+   "odin_global_status": {
+    "kind": "dict",
+    "value": {
+     "crawled_date": null,
+     "error": null,
+     "gsheet_checked_date": null,
+     "last_crawl_duration_seconds": null,
+     "last_run_finish": null,
+     "last_run_start": null,
+     "latest_results": [],
+     "running": false,
+     "status_message": "대기",
+     "trigger_type": null
+    }
+   },
+   "scheduler": "None",
+   "socketio": {
+    "kind": "SocketIO",
+    "server_options": {
+     "async_mode": "threading",
+     "compression_threshold": 1024,
+     "cors_allowed_origins": [
+      "https://public.example",
+      "http://localhost:5008",
+      "http://127.0.0.1:5008",
+      "http://localhost:5001"
+     ],
+     "ping_interval": 25,
+     "ping_timeout": 60
+    }
+   },
+   "tasa_games_status": {
+    "kind": "dict",
+    "value": {
+     "crawled_date": null,
+     "error": null,
+     "gsheet_checked_date": null,
+     "last_crawl_duration_seconds": null,
+     "last_run_finish": null,
+     "last_run_start": null,
+     "latest_results": [],
+     "running": false,
+     "status_message": "대기",
+     "trigger_type": null
+    }
+   },
+   "visitor_db_touch": {
+    "kind": "dict",
+    "value": {}
+   },
+   "visitor_log_queue": {
+    "items": [],
+    "kind": "deque",
+    "maxlen": 2000
+   },
+   "visitor_names": {
+    "kind": "dict",
+    "value": {}
+   },
+   "visitor_status": {
+    "kind": "dict",
+    "value": {}
+   }
+  },
+  "identity_aliases": [],
+  "order": [
+   "socketio",
+   "contents_stop_event",
+   "comment_trigger_event",
+   "_comment_data_manager",
+   "_content_extractor_thread",
+   "_content_extractor_restart_count",
+   "gsheet_write_enabled",
+   "notification_toggles",
+   "notification_toggles_lock",
+   "_crawler_manager",
+   "crawler_init_thread",
+   "_crawler_started",
+   "_init_lock",
+   "executor",
+   "main_crawler_executor",
+   "export_executor",
+   "odin_global_status",
+   "account_trade_status",
+   "jasa_games_status",
+   "tasa_games_status",
+   "CRAWLER_EXECUTIONS",
+   "_comment_lock",
+   "comment_data_status",
+   "scheduler",
+   "display_settings",
+   "admin_visit_logs",
+   "visitor_names",
+   "visitor_status",
+   "visitor_db_touch",
+   "_visit_lock",
+   "visitor_log_queue"
+  ]
+ }
+}

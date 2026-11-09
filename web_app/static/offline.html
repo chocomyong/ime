@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오프라인 - IME</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #1a1b1e;
+            color: #c9d1d9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 24px;
+        }
+        .container { max-width: 360px; }
+        .icon {
+            margin-bottom: 24px;
+            opacity: 0.6;
+            color: #8b949e;
+        }
+        /* [v6.7.348] 라이트 테마 연동 - 앱 본체 body[data-theme=light] 팔레트(theme-variants.css:199) 동조.
+           오프라인 문서라 외부 CSS 로드 불가 - localStorage imt_theme 를 인라인 스크립트로 읽어 body.light 부여. */
+        body.light { background: #F1F5F9; color: #475569; }
+        body.light h1 { color: #1e293b; }
+        body.light p { color: #64748B; }
+        body.light .icon { color: #64748B; }
+        h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #e6edf3;
+            margin-bottom: 12px;
+        }
+        p {
+            font-size: 14px;
+            color: #8b949e;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+        button {
+            background: #7c5cbf;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 28px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        button:active { opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <script>
+        // [v6.7.348] 테마 연동 - 렌더 전 동기 적용 (라이트 사용자 다크 플래시 방지)
+        try { if (localStorage.getItem('imt_theme') === 'light') document.body.className = 'light'; } catch (e) {}
+    </script>
+    <div class="container">
+        <!-- [v6.7.348] 이모지(레포 금지 정책) 제거 - Feather wifi-off 인라인 SVG (오프라인이라 외부 아이콘 폰트 불가) -->
+        <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path><path d="M10.71 5.05A16 16 0 0 1 22.58 9"></path><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg></div>
+        <h1>네트워크 연결 없음</h1>
+        <p>IME 서버에 연결할 수 없습니다.<br>네트워크 상태를 확인한 후 다시 시도해 주세요.</p>
+        <button onclick="location.reload()">다시 시도</button>
+    </div>
+</body>
+</html>

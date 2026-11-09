@@ -1,0 +1,289 @@
+/* [v6.7.392] style.css 분할 style-results.css — 주요 결과 탭(계정거래/다이아/로그) 레이아웃 (순서 보존 분할: 로드 순서 변경 금지, index.html link 순서 = 원본 cascade) */
+/* =========================================================================
+   [추가] 주요 결과 탭 레이아웃 최적화 (너비 80%, 박스 축소 & 중앙 정렬)
+   (계정거래, 다이아 시세, 시스템 로그 탭 적용)
+   ========================================================================= */
+/* 테두리 박스(Pane) 전체 크기 축소 및 중앙 배치 (유틸 모드 전환 시 기본 크기) */
+#pane-account-trade,
+#pane-diamond-trade,
+#pane-log-viewer {
+    width: 48%; /* 초기 너비를 2열 배치에 맞춤 */
+    min-width: 400px;
+    max-width: 1400px;
+    margin: 0;
+}
+/* [v6.6.432] #pane-comments 는 카드 디자인 통합(v6.6.424) 후 본문이 짧아 슬림 폭(300~320px) 정상.
+   400px 강제 폐지 — render.js 의 동적 폭(2pane 320 / 3pane 300) 그대로 적용되도록. */
+#pane-comments {
+    /* width 는 render.js 가 부여, min/max 는 .pane-window 글로벌(min 280) 만 적용 */
+    margin: 0;
+}
+
+/* 내부 콘텐츠는 박스에 꽉 채움 */
+#account-trade-tab .card,
+#diamond-trade-tab .card,
+#log-viewer-tab .card,
+#comments-tab .card {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 테이블 제목 및 데이터 전체 가운데 정렬 (댓글 탭 포함) */
+/* [수정] 모든 테이블(전체/게임/커뮤니티/댓글/시세)의 열 제목 폰트 스타일 통일 */
+.excel-table th,
+.full-width-table th,
+#account-trade-tab .excel-table th,
+#account-trade-tab .summary-table th {
+    background: #25252b;
+    color: var(--primary-color);
+    padding: 10px 15px; /* [수정] 패딩 축소 */
+    text-align: center !important;
+    font-size: 0.9rem; /* [수정] 0.82rem -> 0.9rem (가독성 상향) */
+    font-weight: 600;   /* [수정] 700 -> 600 (과도한 굵기 제거) */
+    border-bottom: 2px solid #333;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    white-space: nowrap;
+}
+
+/* 전체 탭: 게임명(1), 구분(2), 시간(4) 중앙 정렬 */
+#totalArticlesBody td:nth-child(1),
+#totalArticlesBody td:nth-child(2),
+#totalArticlesBody td:nth-child(4) {
+    text-align: center !important;
+}
+
+#totalArticlesBody td:nth-child(4) {
+    color: #fff !important; /* [수정] 시간 정보 흰색 강조 */
+}
+
+/* [v6.6.246] 게임 탭/커뮤니티 탭 — 의미 class 기반 정렬/색상 */
+#gamesSections .full-width-table td.col-source,
+#gamesSections .full-width-table td.col-time {
+    text-align: center !important;
+}
+#gamesSections .full-width-table td.col-time {
+    color: #fff !important;
+}
+
+#communitySections .full-width-table td.col-game,
+#communitySections .full-width-table td.col-time {
+    text-align: center !important;
+}
+#communitySections .full-width-table td.col-time {
+    color: #fff !important;
+}
+
+/* 댓글 테이블 관제 효율화 (table-layout: fixed를 통해 너비 강제 적용) */
+#comments-tab .excel-table {
+    table-layout: fixed !important;
+    width: 100% !important;
+}
+
+/* [v6.6.245] 댓글 탭 컬럼 스타일 — 의미 class(col-*) 기반. 컬럼 순서 변경에 강건. */
+/* [v6.6.269] 게임명 120px → 140px — 6자 한글(아키에이지워 등) 가독성 확보.
+   전체 탭은 3컬럼(소스·게임명·시간) 중 게임명이 flex 공간을 가져가 120px 여유가 있지만,
+   댓글 탭은 4컬럼(게임명·글제목·댓글내용·시간) 고정 레이아웃이라 120px 일 때 경계 초과. */
+#comments-tab .excel-table .col-game {
+    width: 140px !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+}
+/* [v6.6.260] font-weight: 500 제거 — 전체 탭 col-game(기본 weight 400)과 동일하게 맞춰
+   120px 경계 초과로 "아키에이지워" 등 6자 한글 게임명이 절단되던 문제 해결. */
+#comments-tab .excel-table td.col-game {
+    /* 글자 두께는 전체 탭과 동일한 기본(400). 색상만 게임별 인라인 style 로 부여. */
+}
+
+/* [v6.6.355] 글 제목 — auto 너비로 전환하여 pane 좁을 때 여기만 ellipsis 로 줄어들게.
+   기존(v6.6.273 이전): col-title 155px 고정 / col-content auto → 좁아지면 댓글 내용이 먼저 잘림.
+   변경 의도: 댓글 내용 + 시간 칼럼은 항상 읽기 좋게 유지, 글 제목이 줄어드는 쪽으로 희생. */
+#comments-tab .excel-table th.col-title {
+    width: auto !important;
+    min-width: 80px !important;
+    text-align: center !important;
+}
+#comments-tab .excel-table td.col-title {
+    width: auto !important;
+    min-width: 80px !important;
+    text-align: left !important;
+    color: #ccc !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* [v6.6.355] 댓글 내용 — 고정 폭 240px 로 전환하여 pane 좁아져도 읽기 좋은 너비 유지.
+   table-layout: auto 에서 width 가 명시된 셀은 우선 확보되고, auto 인 col-title 이 잔여 공간을 먹음. */
+#comments-tab .excel-table th.col-content {
+    width: 240px !important;
+    min-width: 200px !important;
+    text-align: center !important;
+}
+#comments-tab .excel-table td.col-content {
+    width: 240px !important;
+    min-width: 200px !important;
+    text-align: left !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 시간 — 항상 노출 (반응형에서도 숨김 금지) */
+#comments-tab .excel-table .col-time {
+    width: 70px !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    display: table-cell !important;
+}
+#comments-tab .excel-table td.col-time {
+    color: #fff !important;
+}
+
+
+
+
+/* 댓글 탭 호버: 공통 excel-table 호버(box-shadow)를 무력화하고 독립 처리 */
+#comments-tab .excel-table tr:hover {
+    box-shadow: none !important;
+}
+/* 행 호버 [v6.7.455] is_new 은퇴로 카페/일반 분기 제거 — 단일 규칙 */
+#comments-tab .excel-table tr:hover td {
+    background: rgba(49, 130, 246, 0.08);
+}
+
+/* 다이아 시세 탭: 크롤러 상태 메시지 완전 숨김 (대시보드에서 확인 가능) */
+#jasa-status-message,
+#tasa-status-message,
+#odin-global-status-message {
+    display: none !important;
+}
+
+/* 게임 탭: table-layout fixed 적용 - 시간 열 항상 보장 */
+/* [v6.6.356] min-width: 380px 제거 — 이전엔 pane 이 380px 아래로 좁아지면 테이블이 가로 스크롤로 밀려
+   시간 컬럼이 뷰 밖으로 나갔다. min-width 를 없애 pane 너비에 맞춰 테이블이 축소되고, col-title 은
+   `.excel-table td { overflow: hidden; text-overflow: ellipsis }` 로 ellipsis 처리되어 시간 컬럼은
+   항상 가시권에 유지된다. */
+#gamesSections .full-width-table {
+    table-layout: fixed !important;
+    width: 100% !important;
+}
+/* [v6.6.246] 게임 탭 너비 — 의미 class 기반 */
+#gamesSections .full-width-table .col-source {
+    width: 65px !important;
+    white-space: nowrap;
+    text-align: center;
+    overflow: visible;
+}
+#gamesSections .full-width-table .col-time {
+    width: 65px !important;
+    white-space: nowrap !important;
+}
+
+/* 커뮤니티 탭: table-layout fixed 적용 - 시간 열 항상 보장 */
+/* [v6.6.356] min-width: 380px 제거 — 게임 탭과 동일 사유. col-title 만 ellipsis 로 줄어들고
+   시간 컬럼은 항상 가시권에 유지. */
+#communitySections .full-width-table {
+    table-layout: fixed !important;
+    width: 100% !important;
+}
+/* [v6.6.246] 커뮤니티 탭 너비 — 의미 class 기반 */
+/* [v6.6.420] 100px → 140px — 전체 탭/댓글 탭(140px)과 일관. "아키에이지워" 등 6자 한글 게임명 절단 방지. */
+#communitySections .full-width-table .col-game {
+    width: 140px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#communitySections .full-width-table .col-time {
+    width: 75px !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+}
+
+/* 상태 메시지 및 특정 헤더 영역 중앙 정렬 */
+#account-trade-tab .card-header-with-button {
+    justify-content: center !important;
+    text-align: center;
+    gap: 20px;
+}
+
+#account-trade-status-message {
+    text-align: center !important;
+    width: 100%;
+}
+
+/* [추가] 사이드바 접었을 때 대시보드 4열 레이아웃 자동 전환 (최대 효율) */
+@media (min-width: 1300px) {
+    body.sidebar-collapsed .pane-window:not([style*="width"]) {
+        width: calc(25% - 15px) !important;
+        flex: 0 0 calc(25% - 15px) !important;
+    }
+}
+
+/* 수동 조절된 탭은 flex-basis 고정 */
+.pane-window[style*="width"] {
+    flex: 0 0 auto !important;
+}
+
+/* 전체 탭 뱃지: 게임 탭과 동일 크기 (min-width 제거) */
+#totalArticlesBody td:nth-child(2) span.badge {
+    display: inline-block;
+}
+
+/* 전역 테이블 폰트 및 스타일 표준화 (댓글 탭 기준 동기화) */
+.excel-table,
+.full-width-table {
+    font-size: 1.0rem !important; /* 전체 기본 폰트 크기 통일 */
+    color: #e0e0e0;
+}
+
+.excel-table td,
+.full-width-table td {
+    font-size: 1.0rem !important; /* 데이터 폰트 크기 통일 */
+    padding: 10px 15px;
+    vertical-align: middle;
+}
+
+/* 글 제목 열 폰트 스타일 통일 (모든 탭 동일 적용) */
+#totalArticlesContainer .col-title,
+#gamesSections .col-title,
+#communitySections .col-title,
+/* [v6.6.245] 의미 class 기반 폰트 통일 — 글 제목 + 댓글 내용 */
+#comments-tab .col-title,
+#comments-tab td.col-title,
+#comments-tab td.col-content {
+    font-size: 1.05rem !important;
+    font-weight: 400 !important;
+}
+
+/* [v6.6.273] col-title 헤더(th) 전용 강화 통일 — games/community(.full-width-table) 와
+   total/comments 에 각각 다른 base 규칙(1178/1314/1436/1578)이 누적되어 브라우저별로
+   미세한 폰트 weight·크기 차이가 보이던 현상 제거. th 에만 적용 (body td 는 기존 1791 규칙 그대로). */
+#totalArticlesContainer th.col-title,
+#gamesSections th.col-title,
+#communitySections th.col-title,
+#comments-tab th.col-title {
+    font-size: 1.05rem !important;
+    font-weight: 600 !important;          /* 헤더는 body(400) 보다 한 단계 굵게 — 구분 강화 */
+    font-family: inherit !important;      /* 부모(body) 폰트 상속 — IBM Plex + Noto Sans KR */
+    letter-spacing: normal !important;
+    line-height: 1.3 !important;
+    padding: 10px 15px !important;
+    text-align: center !important;
+}
+
+/* 시간 열 폰트는 약간 작게 유지하되 색상 통일 */
+.excel-table td:last-child,
+.full-width-table td:last-child {
+    font-size: 0.85rem !important;
+    color: #fff !important;
+}
+
+
+
+

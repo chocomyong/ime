@@ -1,0 +1,1252 @@
+{
+ "backfill_error": {
+  "calls": [
+   "start_content_extractor_thread()",
+   "get_crawler()",
+   "backfill_comment_games(cb=extract_game_from_comment_link)",
+   "get_comments(limit=250)",
+   "extract_game_from_comment_link('http://x/2')",
+   "get_sub_crawler_cache('ODIN_GLOBAL', 'YESTERDAY')",
+   "get_sub_crawler_cache('ACCOUNT_TRADE', 'YESTERDAY')",
+   "get_sub_crawler_cache('JASA_GAMES', 'YESTERDAY')",
+   "get_sub_crawler_cache('TASA_GAMES', 'YESTERDAY')",
+   "time.sleep(3)",
+   "get_crawler()",
+   "get_latest_posts(limit=10000)",
+   "load_existing_data(n=3)",
+   "get_handler(log_func=_log)",
+   "DataManagerAndUploader(initial_df_len=2, spreadsheet_url='DYNAMIC_URL')",
+   "ensure_sub_populated('ODIN_GLOBAL', sub_key='ODIN_GLOBAL', summary_type='G2G')",
+   "ensure_sub_populated('ACCOUNT_TRADE', sub_key='ACCOUNT', summary_type='ACCOUNT')",
+   "ensure_sub_populated('JASA_GAMES', sub_key='JASA', summary_type='ITEMMANIA')",
+   "ensure_sub_populated('TASA_GAMES', sub_key='TASA', summary_type='ITEMMANIA')",
+   "Thread(target=_run_contents_crawler_supervised, kwargs={'skip_initial_load': True}, daemon=True)",
+   "Thread.start()",
+   "start_content_extractor_thread()",
+   "init_crawler_async()"
+  ],
+  "logs": [
+   "WARNING: [SYNC] 댓글 game 백필 실패(무시): boom-backfill",
+   "INFO: [SYNC] SQLite 캐시에서 기존 데이터 즉시 선로드...",
+   "INFO: [SYNC] SQLite 댓글 2건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ODIN_GLOBAL 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ACCOUNT_TRADE 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite JASA_GAMES 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite TASA_GAMES 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite 게시글 3건 메모리 복구 완료.",
+   "INFO: [SYNC] DataManager에 SQLite 캐시 2건 주입.",
+   "INFO: [SYNC] 데이터 동기화 완료. 크롤링 스케줄러를 가동합니다."
+  ],
+  "raised": null,
+  "state": {
+   "account_trade_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 2
+     }
+    ]
+   },
+   "comment_data_manager": "<DataManagerAndUploader>",
+   "comment_data_status": {
+    "last_update": "03:04:05",
+    "last_updated": null,
+    "latest_results": [
+     {
+      "comment_link": "http://x/1",
+      "game": "ODIN",
+      "link": "http://cafe.daum.net/a",
+      "source_community": "DAUM"
+     },
+     {
+      "comment_link": "http://x/2",
+      "game": "GAME:http://x/2",
+      "link": "http://gall.dcinside.com/b",
+      "source_community": "DC"
+     }
+    ],
+    "total_count": 2
+   },
+   "jasa_games_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 3
+     }
+    ]
+   },
+   "odin_global_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 1
+     }
+    ]
+   },
+   "tasa_games_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 4
+     }
+    ]
+   }
+  }
+ },
+ "comment_game_fallback_error": {
+  "calls": [
+   "start_content_extractor_thread()",
+   "get_crawler()",
+   "backfill_comment_games(cb=extract_game_from_comment_link)",
+   "get_comments(limit=250)",
+   "extract_game_from_comment_link('http://x/2')",
+   "get_sub_crawler_cache('ODIN_GLOBAL', 'YESTERDAY')",
+   "get_sub_crawler_cache('ACCOUNT_TRADE', 'YESTERDAY')",
+   "get_sub_crawler_cache('JASA_GAMES', 'YESTERDAY')",
+   "get_sub_crawler_cache('TASA_GAMES', 'YESTERDAY')",
+   "time.sleep(3)",
+   "get_crawler()",
+   "get_latest_posts(limit=10000)",
+   "load_existing_data(n=3)",
+   "get_handler(log_func=_log)",
+   "DataManagerAndUploader(initial_df_len=2, spreadsheet_url='DYNAMIC_URL')",
+   "ensure_sub_populated('ODIN_GLOBAL', sub_key='ODIN_GLOBAL', summary_type='G2G')",
+   "ensure_sub_populated('ACCOUNT_TRADE', sub_key='ACCOUNT', summary_type='ACCOUNT')",
+   "ensure_sub_populated('JASA_GAMES', sub_key='JASA', summary_type='ITEMMANIA')",
+   "ensure_sub_populated('TASA_GAMES', sub_key='TASA', summary_type='ITEMMANIA')",
+   "Thread(target=_run_contents_crawler_supervised, kwargs={'skip_initial_load': True}, daemon=True)",
+   "Thread.start()",
+   "start_content_extractor_thread()",
+   "init_crawler_async()"
+  ],
+  "logs": [
+   "INFO: [SYNC] 댓글 game 백필: 5건 채움, 2건 미매칭.",
+   "INFO: [SYNC] SQLite 캐시에서 기존 데이터 즉시 선로드...",
+   "INFO: [SYNC] SQLite 댓글 2건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ODIN_GLOBAL 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ACCOUNT_TRADE 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite JASA_GAMES 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite TASA_GAMES 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite 게시글 3건 메모리 복구 완료.",
+   "INFO: [SYNC] DataManager에 SQLite 캐시 2건 주입.",
+   "INFO: [SYNC] 데이터 동기화 완료. 크롤링 스케줄러를 가동합니다."
+  ],
+  "raised": null,
+  "state": {
+   "account_trade_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 2
+     }
+    ]
+   },
+   "comment_data_manager": "<DataManagerAndUploader>",
+   "comment_data_status": {
+    "last_update": "03:04:05",
+    "last_updated": null,
+    "latest_results": [
+     {
+      "comment_link": "http://x/1",
+      "game": "ODIN",
+      "link": "http://cafe.daum.net/a",
+      "source_community": "DAUM"
+     },
+     {
+      "comment_link": "http://x/2",
+      "game": "",
+      "link": "http://gall.dcinside.com/b",
+      "source_community": "DC"
+     }
+    ],
+    "total_count": 2
+   },
+   "jasa_games_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 3
+     }
+    ]
+   },
+   "odin_global_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 1
+     }
+    ]
+   },
+   "tasa_games_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 4
+     }
+    ]
+   }
+  }
+ },
+ "early_extractor_error": {
+  "calls": [
+   "start_content_extractor_thread()",
+   "get_crawler()",
+   "backfill_comment_games(cb=extract_game_from_comment_link)",
+   "get_comments(limit=250)",
+   "extract_game_from_comment_link('http://x/2')",
+   "get_sub_crawler_cache('ODIN_GLOBAL', 'YESTERDAY')",
+   "get_sub_crawler_cache('ACCOUNT_TRADE', 'YESTERDAY')",
+   "get_sub_crawler_cache('JASA_GAMES', 'YESTERDAY')",
+   "get_sub_crawler_cache('TASA_GAMES', 'YESTERDAY')",
+   "time.sleep(3)",
+   "get_crawler()",
+   "get_latest_posts(limit=10000)",
+   "load_existing_data(n=3)",
+   "get_handler(log_func=_log)",
+   "DataManagerAndUploader(initial_df_len=2, spreadsheet_url='DYNAMIC_URL')",
+   "ensure_sub_populated('ODIN_GLOBAL', sub_key='ODIN_GLOBAL', summary_type='G2G')",
+   "ensure_sub_populated('ACCOUNT_TRADE', sub_key='ACCOUNT', summary_type='ACCOUNT')",
+   "ensure_sub_populated('JASA_GAMES', sub_key='JASA', summary_type='ITEMMANIA')",
+   "ensure_sub_populated('TASA_GAMES', sub_key='TASA', summary_type='ITEMMANIA')",
+   "Thread(target=_run_contents_crawler_supervised, kwargs={'skip_initial_load': True}, daemon=True)",
+   "Thread.start()",
+   "start_content_extractor_thread()",
+   "init_crawler_async()"
+  ],
+  "logs": [
+   "ERROR: [CONTENT] 조기 자동 기동 실패(무시): boom-extractor",
+   "INFO: [SYNC] 댓글 game 백필: 5건 채움, 2건 미매칭.",
+   "INFO: [SYNC] SQLite 캐시에서 기존 데이터 즉시 선로드...",
+   "INFO: [SYNC] SQLite 댓글 2건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ODIN_GLOBAL 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ACCOUNT_TRADE 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite JASA_GAMES 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite TASA_GAMES 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite 게시글 3건 메모리 복구 완료.",
+   "INFO: [SYNC] DataManager에 SQLite 캐시 2건 주입.",
+   "INFO: [SYNC] 데이터 동기화 완료. 크롤링 스케줄러를 가동합니다."
+  ],
+  "raised": null,
+  "state": {
+   "account_trade_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 2
+     }
+    ]
+   },
+   "comment_data_manager": "<DataManagerAndUploader>",
+   "comment_data_status": {
+    "last_update": "03:04:05",
+    "last_updated": null,
+    "latest_results": [
+     {
+      "comment_link": "http://x/1",
+      "game": "ODIN",
+      "link": "http://cafe.daum.net/a",
+      "source_community": "DAUM"
+     },
+     {
+      "comment_link": "http://x/2",
+      "game": "GAME:http://x/2",
+      "link": "http://gall.dcinside.com/b",
+      "source_community": "DC"
+     }
+    ],
+    "total_count": 2
+   },
+   "jasa_games_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 3
+     }
+    ]
+   },
+   "odin_global_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 1
+     }
+    ]
+   },
+   "tasa_games_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 4
+     }
+    ]
+   }
+  }
+ },
+ "empty_all": {
+  "calls": [
+   "start_content_extractor_thread()",
+   "get_crawler()",
+   "get_comments(limit=250)",
+   "get_sub_crawler_cache('ODIN_GLOBAL', 'YESTERDAY')",
+   "get_sub_crawler_cache('ACCOUNT_TRADE', 'YESTERDAY')",
+   "get_sub_crawler_cache('JASA_GAMES', 'YESTERDAY')",
+   "get_sub_crawler_cache('TASA_GAMES', 'YESTERDAY')",
+   "time.sleep(3)",
+   "get_crawler()",
+   "get_latest_posts(limit=10000)",
+   "get_handler(log_func=_log)",
+   "DataManagerAndUploader(initial_df_len=0, spreadsheet_url='DYNAMIC_URL')",
+   "Thread(target=_run_contents_crawler_supervised, kwargs={'skip_initial_load': True}, daemon=True)",
+   "Thread.start()",
+   "start_content_extractor_thread()",
+   "init_crawler_async()"
+  ],
+  "logs": [
+   "INFO: [SYNC] raw_config_games 아직 로드 전 — 백필 스킵 (Phase 3 이후 재시도 없음, 조회 폴백으로 커버).",
+   "INFO: [SYNC] SQLite 캐시에서 기존 데이터 즉시 선로드...",
+   "INFO: [SYNC] SQLite에 기존 게시글 없음. 크롤링으로 누적합니다.",
+   "INFO: [SYNC] 데이터 동기화 완료. 크롤링 스케줄러를 가동합니다."
+  ],
+  "raised": null,
+  "state": {
+   "account_trade_status": {},
+   "comment_data_manager": "<DataManagerAndUploader>",
+   "comment_data_status": {},
+   "jasa_games_status": {},
+   "odin_global_status": {},
+   "tasa_games_status": {}
+  }
+ },
+ "happy": {
+  "calls": [
+   "start_content_extractor_thread()",
+   "get_crawler()",
+   "backfill_comment_games(cb=extract_game_from_comment_link)",
+   "get_comments(limit=250)",
+   "extract_game_from_comment_link('http://x/2')",
+   "get_sub_crawler_cache('ODIN_GLOBAL', 'YESTERDAY')",
+   "get_sub_crawler_cache('ACCOUNT_TRADE', 'YESTERDAY')",
+   "get_sub_crawler_cache('JASA_GAMES', 'YESTERDAY')",
+   "get_sub_crawler_cache('TASA_GAMES', 'YESTERDAY')",
+   "time.sleep(3)",
+   "get_crawler()",
+   "get_latest_posts(limit=10000)",
+   "load_existing_data(n=3)",
+   "get_handler(log_func=_log)",
+   "DataManagerAndUploader(initial_df_len=2, spreadsheet_url='DYNAMIC_URL')",
+   "ensure_sub_populated('ODIN_GLOBAL', sub_key='ODIN_GLOBAL', summary_type='G2G')",
+   "ensure_sub_populated('ACCOUNT_TRADE', sub_key='ACCOUNT', summary_type='ACCOUNT')",
+   "ensure_sub_populated('JASA_GAMES', sub_key='JASA', summary_type='ITEMMANIA')",
+   "ensure_sub_populated('TASA_GAMES', sub_key='TASA', summary_type='ITEMMANIA')",
+   "Thread(target=_run_contents_crawler_supervised, kwargs={'skip_initial_load': True}, daemon=True)",
+   "Thread.start()",
+   "start_content_extractor_thread()",
+   "init_crawler_async()"
+  ],
+  "logs": [
+   "INFO: [SYNC] 댓글 game 백필: 5건 채움, 2건 미매칭.",
+   "INFO: [SYNC] SQLite 캐시에서 기존 데이터 즉시 선로드...",
+   "INFO: [SYNC] SQLite 댓글 2건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ODIN_GLOBAL 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ACCOUNT_TRADE 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite JASA_GAMES 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite TASA_GAMES 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite 게시글 3건 메모리 복구 완료.",
+   "INFO: [SYNC] DataManager에 SQLite 캐시 2건 주입.",
+   "INFO: [SYNC] 데이터 동기화 완료. 크롤링 스케줄러를 가동합니다."
+  ],
+  "raised": null,
+  "state": {
+   "account_trade_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 2
+     }
+    ]
+   },
+   "comment_data_manager": "<DataManagerAndUploader>",
+   "comment_data_status": {
+    "last_update": "03:04:05",
+    "last_updated": null,
+    "latest_results": [
+     {
+      "comment_link": "http://x/1",
+      "game": "ODIN",
+      "link": "http://cafe.daum.net/a",
+      "source_community": "DAUM"
+     },
+     {
+      "comment_link": "http://x/2",
+      "game": "GAME:http://x/2",
+      "link": "http://gall.dcinside.com/b",
+      "source_community": "DC"
+     }
+    ],
+    "total_count": 2
+   },
+   "jasa_games_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 3
+     }
+    ]
+   },
+   "odin_global_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 1
+     }
+    ]
+   },
+   "tasa_games_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 4
+     }
+    ]
+   }
+  }
+ },
+ "phase07_get_crawler_raises": {
+  "calls": [
+   "start_content_extractor_thread()",
+   "get_crawler()",
+   "get_comments(limit=250)",
+   "get_sub_crawler_cache('ODIN_GLOBAL', 'YESTERDAY')",
+   "get_sub_crawler_cache('ACCOUNT_TRADE', 'YESTERDAY')",
+   "get_sub_crawler_cache('JASA_GAMES', 'YESTERDAY')",
+   "get_sub_crawler_cache('TASA_GAMES', 'YESTERDAY')",
+   "time.sleep(3)",
+   "get_crawler()",
+   "get_latest_posts(limit=10000)",
+   "load_existing_data(n=3)",
+   "get_handler(log_func=_log)",
+   "DataManagerAndUploader(initial_df_len=2, spreadsheet_url='DYNAMIC_URL')",
+   "ensure_sub_populated('ODIN_GLOBAL', sub_key='ODIN_GLOBAL', summary_type='G2G')",
+   "ensure_sub_populated('ACCOUNT_TRADE', sub_key='ACCOUNT', summary_type='ACCOUNT')",
+   "ensure_sub_populated('JASA_GAMES', sub_key='JASA', summary_type='ITEMMANIA')",
+   "ensure_sub_populated('TASA_GAMES', sub_key='TASA', summary_type='ITEMMANIA')",
+   "Thread(target=_run_contents_crawler_supervised, kwargs={'skip_initial_load': True}, daemon=True)",
+   "Thread.start()",
+   "start_content_extractor_thread()",
+   "init_crawler_async()"
+  ],
+  "logs": [
+   "WARNING: [SYNC] 댓글 game 백필 실패(무시): boom-get-crawler-1",
+   "INFO: [SYNC] SQLite 캐시에서 기존 데이터 즉시 선로드...",
+   "INFO: [SYNC] SQLite 댓글 2건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ODIN_GLOBAL 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ACCOUNT_TRADE 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite JASA_GAMES 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite TASA_GAMES 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite 게시글 3건 메모리 복구 완료.",
+   "INFO: [SYNC] DataManager에 SQLite 캐시 2건 주입.",
+   "INFO: [SYNC] 데이터 동기화 완료. 크롤링 스케줄러를 가동합니다."
+  ],
+  "raised": null,
+  "state": {
+   "account_trade_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 2
+     }
+    ]
+   },
+   "comment_data_manager": "<DataManagerAndUploader>",
+   "comment_data_status": {
+    "last_update": "03:04:05",
+    "last_updated": null,
+    "latest_results": [
+     {
+      "comment_link": "http://x/1",
+      "game": "ODIN",
+      "link": "http://cafe.daum.net/a",
+      "source_community": "DAUM"
+     },
+     {
+      "comment_link": "http://x/2",
+      "game": "",
+      "link": "http://gall.dcinside.com/b",
+      "source_community": "DC"
+     }
+    ],
+    "total_count": 2
+   },
+   "jasa_games_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 3
+     }
+    ]
+   },
+   "odin_global_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 1
+     }
+    ]
+   },
+   "tasa_games_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 4
+     }
+    ]
+   }
+  }
+ },
+ "phase2_get_crawler_raises": {
+  "calls": [
+   "start_content_extractor_thread()",
+   "get_crawler()",
+   "backfill_comment_games(cb=extract_game_from_comment_link)",
+   "get_comments(limit=250)",
+   "extract_game_from_comment_link('http://x/2')",
+   "get_sub_crawler_cache('ODIN_GLOBAL', 'YESTERDAY')",
+   "get_sub_crawler_cache('ACCOUNT_TRADE', 'YESTERDAY')",
+   "get_sub_crawler_cache('JASA_GAMES', 'YESTERDAY')",
+   "get_sub_crawler_cache('TASA_GAMES', 'YESTERDAY')",
+   "time.sleep(3)",
+   "get_crawler()"
+  ],
+  "logs": [
+   "INFO: [SYNC] 댓글 game 백필: 5건 채움, 2건 미매칭.",
+   "INFO: [SYNC] SQLite 캐시에서 기존 데이터 즉시 선로드...",
+   "INFO: [SYNC] SQLite 댓글 2건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ODIN_GLOBAL 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ACCOUNT_TRADE 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite JASA_GAMES 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite TASA_GAMES 캐시 1건 즉시 로드 완료."
+  ],
+  "raised": "RuntimeError: boom-get-crawler-2",
+  "state": {
+   "account_trade_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 2
+     }
+    ]
+   },
+   "comment_data_manager": null,
+   "comment_data_status": {
+    "last_update": "03:04:05",
+    "last_updated": null,
+    "latest_results": [
+     {
+      "comment_link": "http://x/1",
+      "game": "ODIN",
+      "link": "http://cafe.daum.net/a",
+      "source_community": "DAUM"
+     },
+     {
+      "comment_link": "http://x/2",
+      "game": "GAME:http://x/2",
+      "link": "http://gall.dcinside.com/b",
+      "source_community": "DC"
+     }
+    ],
+    "total_count": 2
+   },
+   "jasa_games_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 3
+     }
+    ]
+   },
+   "odin_global_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 1
+     }
+    ]
+   },
+   "tasa_games_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 4
+     }
+    ]
+   }
+  }
+ },
+ "phase2c_error": {
+  "calls": [
+   "start_content_extractor_thread()",
+   "get_crawler()",
+   "backfill_comment_games(cb=extract_game_from_comment_link)",
+   "get_comments(limit=250)",
+   "extract_game_from_comment_link('http://x/2')",
+   "get_sub_crawler_cache('ODIN_GLOBAL', 'YESTERDAY')",
+   "get_sub_crawler_cache('ACCOUNT_TRADE', 'YESTERDAY')",
+   "get_sub_crawler_cache('JASA_GAMES', 'YESTERDAY')",
+   "get_sub_crawler_cache('TASA_GAMES', 'YESTERDAY')",
+   "time.sleep(3)",
+   "get_crawler()",
+   "get_latest_posts(limit=10000)",
+   "get_handler(log_func=_log)",
+   "DataManagerAndUploader(initial_df_len=2, spreadsheet_url='DYNAMIC_URL')",
+   "ensure_sub_populated('ODIN_GLOBAL', sub_key='ODIN_GLOBAL', summary_type='G2G')",
+   "ensure_sub_populated('ACCOUNT_TRADE', sub_key='ACCOUNT', summary_type='ACCOUNT')",
+   "ensure_sub_populated('JASA_GAMES', sub_key='JASA', summary_type='ITEMMANIA')",
+   "ensure_sub_populated('TASA_GAMES', sub_key='TASA', summary_type='ITEMMANIA')",
+   "Thread(target=_run_contents_crawler_supervised, kwargs={'skip_initial_load': True}, daemon=True)",
+   "Thread.start()",
+   "start_content_extractor_thread()",
+   "init_crawler_async()"
+  ],
+  "logs": [
+   "INFO: [SYNC] 댓글 game 백필: 5건 채움, 2건 미매칭.",
+   "INFO: [SYNC] SQLite 캐시에서 기존 데이터 즉시 선로드...",
+   "INFO: [SYNC] SQLite 댓글 2건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ODIN_GLOBAL 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ACCOUNT_TRADE 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite JASA_GAMES 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite TASA_GAMES 캐시 1건 즉시 로드 완료.",
+   "ERROR: [SYNC] 게시글 선로드 실패: boom-posts",
+   "INFO: [SYNC] DataManager에 SQLite 캐시 2건 주입.",
+   "INFO: [SYNC] 데이터 동기화 완료. 크롤링 스케줄러를 가동합니다."
+  ],
+  "raised": null,
+  "state": {
+   "account_trade_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 2
+     }
+    ]
+   },
+   "comment_data_manager": "<DataManagerAndUploader>",
+   "comment_data_status": {
+    "last_update": "03:04:05",
+    "last_updated": null,
+    "latest_results": [
+     {
+      "comment_link": "http://x/1",
+      "game": "ODIN",
+      "link": "http://cafe.daum.net/a",
+      "source_community": "DAUM"
+     },
+     {
+      "comment_link": "http://x/2",
+      "game": "GAME:http://x/2",
+      "link": "http://gall.dcinside.com/b",
+      "source_community": "DC"
+     }
+    ],
+    "total_count": 2
+   },
+   "jasa_games_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 3
+     }
+    ]
+   },
+   "odin_global_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 1
+     }
+    ]
+   },
+   "tasa_games_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 4
+     }
+    ]
+   }
+  }
+ },
+ "phase2d_error": {
+  "calls": [
+   "start_content_extractor_thread()",
+   "get_crawler()",
+   "backfill_comment_games(cb=extract_game_from_comment_link)",
+   "get_comments(limit=250)",
+   "extract_game_from_comment_link('http://x/2')",
+   "get_sub_crawler_cache('ODIN_GLOBAL', 'YESTERDAY')",
+   "get_sub_crawler_cache('ACCOUNT_TRADE', 'YESTERDAY')",
+   "get_sub_crawler_cache('JASA_GAMES', 'YESTERDAY')",
+   "get_sub_crawler_cache('TASA_GAMES', 'YESTERDAY')",
+   "time.sleep(3)",
+   "get_crawler()",
+   "get_latest_posts(limit=10000)",
+   "load_existing_data(n=3)",
+   "get_handler(log_func=_log)",
+   "ensure_sub_populated('ODIN_GLOBAL', sub_key='ODIN_GLOBAL', summary_type='G2G')",
+   "ensure_sub_populated('ACCOUNT_TRADE', sub_key='ACCOUNT', summary_type='ACCOUNT')",
+   "ensure_sub_populated('JASA_GAMES', sub_key='JASA', summary_type='ITEMMANIA')",
+   "ensure_sub_populated('TASA_GAMES', sub_key='TASA', summary_type='ITEMMANIA')",
+   "Thread(target=_run_contents_crawler_supervised, kwargs={'skip_initial_load': True}, daemon=True)",
+   "Thread.start()",
+   "start_content_extractor_thread()",
+   "init_crawler_async()"
+  ],
+  "logs": [
+   "INFO: [SYNC] 댓글 game 백필: 5건 채움, 2건 미매칭.",
+   "INFO: [SYNC] SQLite 캐시에서 기존 데이터 즉시 선로드...",
+   "INFO: [SYNC] SQLite 댓글 2건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ODIN_GLOBAL 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ACCOUNT_TRADE 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite JASA_GAMES 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite TASA_GAMES 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite 게시글 3건 메모리 복구 완료.",
+   "ERROR: [SYNC] DataManager 초기화 실패: boom-handler",
+   "INFO: [SYNC] 데이터 동기화 완료. 크롤링 스케줄러를 가동합니다."
+  ],
+  "raised": null,
+  "state": {
+   "account_trade_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 2
+     }
+    ]
+   },
+   "comment_data_manager": null,
+   "comment_data_status": {
+    "last_update": "03:04:05",
+    "last_updated": null,
+    "latest_results": [
+     {
+      "comment_link": "http://x/1",
+      "game": "ODIN",
+      "link": "http://cafe.daum.net/a",
+      "source_community": "DAUM"
+     },
+     {
+      "comment_link": "http://x/2",
+      "game": "GAME:http://x/2",
+      "link": "http://gall.dcinside.com/b",
+      "source_community": "DC"
+     }
+    ],
+    "total_count": 2
+   },
+   "jasa_games_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 3
+     }
+    ]
+   },
+   "odin_global_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 1
+     }
+    ]
+   },
+   "tasa_games_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 4
+     }
+    ]
+   }
+  }
+ },
+ "phase2e_error": {
+  "calls": [
+   "start_content_extractor_thread()",
+   "get_crawler()",
+   "backfill_comment_games(cb=extract_game_from_comment_link)",
+   "get_comments(limit=250)",
+   "extract_game_from_comment_link('http://x/2')",
+   "get_sub_crawler_cache('ODIN_GLOBAL', 'YESTERDAY')",
+   "get_sub_crawler_cache('ACCOUNT_TRADE', 'YESTERDAY')",
+   "get_sub_crawler_cache('JASA_GAMES', 'YESTERDAY')",
+   "get_sub_crawler_cache('TASA_GAMES', 'YESTERDAY')",
+   "time.sleep(3)",
+   "get_crawler()",
+   "get_latest_posts(limit=10000)",
+   "load_existing_data(n=3)",
+   "get_handler(log_func=_log)",
+   "DataManagerAndUploader(initial_df_len=2, spreadsheet_url='DYNAMIC_URL')",
+   "ensure_sub_populated('ODIN_GLOBAL', sub_key='ODIN_GLOBAL', summary_type='G2G')",
+   "ensure_sub_populated('ACCOUNT_TRADE', sub_key='ACCOUNT', summary_type='ACCOUNT')",
+   "ensure_sub_populated('JASA_GAMES', sub_key='JASA', summary_type='ITEMMANIA')",
+   "ensure_sub_populated('TASA_GAMES', sub_key='TASA', summary_type='ITEMMANIA')",
+   "Thread(target=_run_contents_crawler_supervised, kwargs={'skip_initial_load': True}, daemon=True)",
+   "Thread.start()",
+   "start_content_extractor_thread()",
+   "init_crawler_async()"
+  ],
+  "logs": [
+   "INFO: [SYNC] 댓글 game 백필: 5건 채움, 2건 미매칭.",
+   "INFO: [SYNC] SQLite 캐시에서 기존 데이터 즉시 선로드...",
+   "INFO: [SYNC] SQLite 댓글 2건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ODIN_GLOBAL 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ACCOUNT_TRADE 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite JASA_GAMES 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite TASA_GAMES 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite 게시글 3건 메모리 복구 완료.",
+   "INFO: [SYNC] DataManager에 SQLite 캐시 2건 주입.",
+   "INFO: [SYNC] 데이터 동기화 완료. 크롤링 스케줄러를 가동합니다."
+  ],
+  "raised": null,
+  "state": {
+   "account_trade_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 2
+     }
+    ]
+   },
+   "comment_data_manager": "<DataManagerAndUploader>",
+   "comment_data_status": {
+    "last_update": "03:04:05",
+    "last_updated": null,
+    "latest_results": [
+     {
+      "comment_link": "http://x/1",
+      "game": "ODIN",
+      "link": "http://cafe.daum.net/a",
+      "source_community": "DAUM"
+     },
+     {
+      "comment_link": "http://x/2",
+      "game": "GAME:http://x/2",
+      "link": "http://gall.dcinside.com/b",
+      "source_community": "DC"
+     }
+    ],
+    "total_count": 2
+   },
+   "jasa_games_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 3
+     }
+    ]
+   },
+   "odin_global_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 1
+     }
+    ]
+   },
+   "tasa_games_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 4
+     }
+    ]
+   }
+  }
+ },
+ "preload_outer_error": {
+  "calls": [
+   "start_content_extractor_thread()",
+   "get_crawler()",
+   "backfill_comment_games(cb=extract_game_from_comment_link)",
+   "get_comments(limit=250)",
+   "time.sleep(3)",
+   "get_crawler()",
+   "get_latest_posts(limit=10000)",
+   "load_existing_data(n=3)",
+   "get_handler(log_func=_log)",
+   "DataManagerAndUploader(initial_df_len=0, spreadsheet_url='DYNAMIC_URL')",
+   "Thread(target=_run_contents_crawler_supervised, kwargs={'skip_initial_load': True}, daemon=True)",
+   "Thread.start()",
+   "start_content_extractor_thread()",
+   "init_crawler_async()"
+  ],
+  "logs": [
+   "INFO: [SYNC] 댓글 game 백필: 5건 채움, 2건 미매칭.",
+   "INFO: [SYNC] SQLite 캐시에서 기존 데이터 즉시 선로드...",
+   "WARNING: [SYNC] SQLite 즉시 선로드 실패 (무시): boom-comments",
+   "INFO: [SYNC] SQLite 게시글 3건 메모리 복구 완료.",
+   "INFO: [SYNC] 데이터 동기화 완료. 크롤링 스케줄러를 가동합니다."
+  ],
+  "raised": null,
+  "state": {
+   "account_trade_status": {},
+   "comment_data_manager": "<DataManagerAndUploader>",
+   "comment_data_status": {},
+   "jasa_games_status": {},
+   "odin_global_status": {},
+   "tasa_games_status": {}
+  }
+ },
+ "settings_delayed": {
+  "calls": [
+   "start_content_extractor_thread()",
+   "get_crawler()",
+   "backfill_comment_games(cb=extract_game_from_comment_link)",
+   "get_comments(limit=250)",
+   "extract_game_from_comment_link('http://x/2')",
+   "get_sub_crawler_cache('ODIN_GLOBAL', 'YESTERDAY')",
+   "get_sub_crawler_cache('ACCOUNT_TRADE', 'YESTERDAY')",
+   "get_sub_crawler_cache('JASA_GAMES', 'YESTERDAY')",
+   "get_sub_crawler_cache('TASA_GAMES', 'YESTERDAY')",
+   "time.sleep(3)",
+   "get_crawler()",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "get_latest_posts(limit=10000)",
+   "load_existing_data(n=3)",
+   "get_handler(log_func=_log)",
+   "DataManagerAndUploader(initial_df_len=2, spreadsheet_url='DYNAMIC_URL')",
+   "ensure_sub_populated('ODIN_GLOBAL', sub_key='ODIN_GLOBAL', summary_type='G2G')",
+   "ensure_sub_populated('ACCOUNT_TRADE', sub_key='ACCOUNT', summary_type='ACCOUNT')",
+   "ensure_sub_populated('JASA_GAMES', sub_key='JASA', summary_type='ITEMMANIA')",
+   "ensure_sub_populated('TASA_GAMES', sub_key='TASA', summary_type='ITEMMANIA')",
+   "Thread(target=_run_contents_crawler_supervised, kwargs={'skip_initial_load': True}, daemon=True)",
+   "Thread.start()",
+   "start_content_extractor_thread()",
+   "init_crawler_async()"
+  ],
+  "logs": [
+   "INFO: [SYNC] 댓글 game 백필: 5건 채움, 2건 미매칭.",
+   "INFO: [SYNC] SQLite 캐시에서 기존 데이터 즉시 선로드...",
+   "INFO: [SYNC] SQLite 댓글 2건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ODIN_GLOBAL 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ACCOUNT_TRADE 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite JASA_GAMES 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite TASA_GAMES 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite 게시글 3건 메모리 복구 완료.",
+   "INFO: [SYNC] DataManager에 SQLite 캐시 2건 주입.",
+   "INFO: [SYNC] 데이터 동기화 완료. 크롤링 스케줄러를 가동합니다."
+  ],
+  "raised": null,
+  "state": {
+   "account_trade_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 2
+     }
+    ]
+   },
+   "comment_data_manager": "<DataManagerAndUploader>",
+   "comment_data_status": {
+    "last_update": "03:04:05",
+    "last_updated": null,
+    "latest_results": [
+     {
+      "comment_link": "http://x/1",
+      "game": "ODIN",
+      "link": "http://cafe.daum.net/a",
+      "source_community": "DAUM"
+     },
+     {
+      "comment_link": "http://x/2",
+      "game": "GAME:http://x/2",
+      "link": "http://gall.dcinside.com/b",
+      "source_community": "DC"
+     }
+    ],
+    "total_count": 2
+   },
+   "jasa_games_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 3
+     }
+    ]
+   },
+   "odin_global_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 1
+     }
+    ]
+   },
+   "tasa_games_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 4
+     }
+    ]
+   }
+  }
+ },
+ "settings_never": {
+  "calls": [
+   "start_content_extractor_thread()",
+   "get_crawler()",
+   "backfill_comment_games(cb=extract_game_from_comment_link)",
+   "get_comments(limit=250)",
+   "extract_game_from_comment_link('http://x/2')",
+   "get_sub_crawler_cache('ODIN_GLOBAL', 'YESTERDAY')",
+   "get_sub_crawler_cache('ACCOUNT_TRADE', 'YESTERDAY')",
+   "get_sub_crawler_cache('JASA_GAMES', 'YESTERDAY')",
+   "get_sub_crawler_cache('TASA_GAMES', 'YESTERDAY')",
+   "time.sleep(3)",
+   "get_crawler()",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "time.sleep(1)",
+   "get_latest_posts(limit=10000)",
+   "load_existing_data(n=3)",
+   "get_handler(log_func=_log)",
+   "DataManagerAndUploader(initial_df_len=2, spreadsheet_url='CONTENTS_URL_DEFAULT')",
+   "ensure_sub_populated('ODIN_GLOBAL', sub_key='ODIN_GLOBAL', summary_type='G2G')",
+   "ensure_sub_populated('ACCOUNT_TRADE', sub_key='ACCOUNT', summary_type='ACCOUNT')",
+   "ensure_sub_populated('JASA_GAMES', sub_key='JASA', summary_type='ITEMMANIA')",
+   "ensure_sub_populated('TASA_GAMES', sub_key='TASA', summary_type='ITEMMANIA')",
+   "Thread(target=_run_contents_crawler_supervised, kwargs={'skip_initial_load': True}, daemon=True)",
+   "Thread.start()",
+   "start_content_extractor_thread()",
+   "init_crawler_async()"
+  ],
+  "logs": [
+   "INFO: [SYNC] 댓글 game 백필: 5건 채움, 2건 미매칭.",
+   "INFO: [SYNC] SQLite 캐시에서 기존 데이터 즉시 선로드...",
+   "INFO: [SYNC] SQLite 댓글 2건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ODIN_GLOBAL 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ACCOUNT_TRADE 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite JASA_GAMES 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite TASA_GAMES 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite 게시글 3건 메모리 복구 완료.",
+   "INFO: [SYNC] DataManager에 SQLite 캐시 2건 주입.",
+   "INFO: [SYNC] 데이터 동기화 완료. 크롤링 스케줄러를 가동합니다."
+  ],
+  "raised": null,
+  "state": {
+   "account_trade_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 2
+     }
+    ]
+   },
+   "comment_data_manager": "<DataManagerAndUploader>",
+   "comment_data_status": {
+    "last_update": "03:04:05",
+    "last_updated": null,
+    "latest_results": [
+     {
+      "comment_link": "http://x/1",
+      "game": "ODIN",
+      "link": "http://cafe.daum.net/a",
+      "source_community": "DAUM"
+     },
+     {
+      "comment_link": "http://x/2",
+      "game": "GAME:http://x/2",
+      "link": "http://gall.dcinside.com/b",
+      "source_community": "DC"
+     }
+    ],
+    "total_count": 2
+   },
+   "jasa_games_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 3
+     }
+    ]
+   },
+   "odin_global_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 1
+     }
+    ]
+   },
+   "tasa_games_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 4
+     }
+    ]
+   }
+  }
+ },
+ "sub_cache_partial_error": {
+  "calls": [
+   "start_content_extractor_thread()",
+   "get_crawler()",
+   "backfill_comment_games(cb=extract_game_from_comment_link)",
+   "get_comments(limit=250)",
+   "extract_game_from_comment_link('http://x/2')",
+   "get_sub_crawler_cache('ODIN_GLOBAL', 'YESTERDAY')",
+   "get_sub_crawler_cache('ACCOUNT_TRADE', 'YESTERDAY')",
+   "get_sub_crawler_cache('JASA_GAMES', 'YESTERDAY')",
+   "get_sub_crawler_cache('TASA_GAMES', 'YESTERDAY')",
+   "time.sleep(3)",
+   "get_crawler()",
+   "get_latest_posts(limit=10000)",
+   "load_existing_data(n=3)",
+   "get_handler(log_func=_log)",
+   "DataManagerAndUploader(initial_df_len=2, spreadsheet_url='DYNAMIC_URL')",
+   "ensure_sub_populated('ODIN_GLOBAL', sub_key='ODIN_GLOBAL', summary_type='G2G')",
+   "ensure_sub_populated('ACCOUNT_TRADE', sub_key='ACCOUNT', summary_type='ACCOUNT')",
+   "ensure_sub_populated('TASA_GAMES', sub_key='TASA', summary_type='ITEMMANIA')",
+   "Thread(target=_run_contents_crawler_supervised, kwargs={'skip_initial_load': True}, daemon=True)",
+   "Thread.start()",
+   "start_content_extractor_thread()",
+   "init_crawler_async()"
+  ],
+  "logs": [
+   "INFO: [SYNC] 댓글 game 백필: 5건 채움, 2건 미매칭.",
+   "INFO: [SYNC] SQLite 캐시에서 기존 데이터 즉시 선로드...",
+   "INFO: [SYNC] SQLite 댓글 2건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ODIN_GLOBAL 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite ACCOUNT_TRADE 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite TASA_GAMES 캐시 1건 즉시 로드 완료.",
+   "INFO: [SYNC] SQLite 게시글 3건 메모리 복구 완료.",
+   "INFO: [SYNC] DataManager에 SQLite 캐시 2건 주입.",
+   "INFO: [SYNC] 데이터 동기화 완료. 크롤링 스케줄러를 가동합니다."
+  ],
+  "raised": null,
+  "state": {
+   "account_trade_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 2
+     }
+    ]
+   },
+   "comment_data_manager": "<DataManagerAndUploader>",
+   "comment_data_status": {
+    "last_update": "03:04:05",
+    "last_updated": null,
+    "latest_results": [
+     {
+      "comment_link": "http://x/1",
+      "game": "ODIN",
+      "link": "http://cafe.daum.net/a",
+      "source_community": "DAUM"
+     },
+     {
+      "comment_link": "http://x/2",
+      "game": "GAME:http://x/2",
+      "link": "http://gall.dcinside.com/b",
+      "source_community": "DC"
+     }
+    ],
+    "total_count": 2
+   },
+   "jasa_games_status": {},
+   "odin_global_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 1
+     }
+    ]
+   },
+   "tasa_games_status": {
+    "crawled_date": "YESTERDAY",
+    "gsheet_checked_date": "YESTERDAY",
+    "latest_results": [
+     {
+      "row": 4
+     }
+    ]
+   }
+  }
+ }
+}

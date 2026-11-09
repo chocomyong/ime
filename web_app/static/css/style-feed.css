@@ -1,0 +1,1147 @@
+/* [v6.7.392] style.css 분할 style-feed.css — 통합 모니터링 환경 — 피드/댓글 카드·도착 플래시·고급·layout-cards (순서 보존 분할: 로드 순서 변경 금지, index.html link 순서 = 원본 cascade) */
+/* ==========================================================================
+   [v6.6.422] 통합 모니터링 환경 — 피드 pane + 대시보드 pane
+   ========================================================================== */
+
+/* === 피드 pane (단일 스트림) + 댓글 pane (피드 카드 통일) === */
+/* [v6.6.424] 피드 세그먼트 토글 폐지 — 단일 스트림. 댓글 탭도 .feed-card 마크업 통일. */
+#feed-tab,
+#comments-tab {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0 !important;
+}
+
+/* 대시보드 그래프 토글 등에서 재사용되는 칩 버튼 — 폐지된 세그먼트 바와 분리 */
+.feed-seg-btn {
+    flex: 1;
+    padding: 5px 8px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-muted);
+    border-radius: 6px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.feed-seg-btn:hover { color: #cbd2d9; border-color: rgba(255, 255, 255, 0.15); }
+.feed-seg-btn.active {
+    background: rgba(49, 130, 246, 0.18);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.feed-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px 8px;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/* 피드 카드 — 슬림형 (모바일 카드보다 한 단계 더 컴팩트) */
+/* [v6.7.407] 평평 리스트(아래 경계선) → 둥근 박스 카드. 디스코드 v6.7.406 톤을 피드/댓글/AI 요약 전 탭 통일
+   (좌우 경계 시인 + 카드 간격). .feed-card 는 카드 모드 4탭 공통 마크업이라 base 1곳 변경이 전 탭에 반영. */
+.feed-card {
+    padding: 6px 8px;
+    border: 1px solid var(--border-color, rgba(128, 128, 128, 0.16));
+    border-radius: 8px;
+    margin: 3px 4px;
+    background: rgba(255, 255, 255, 0.02);
+    cursor: pointer;
+    transition: background-color 0.12s ease, box-shadow 0.12s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+body[data-theme="light"] .feed-card { background: rgba(0, 0, 0, 0.02); border-color: rgba(0, 0, 0, 0.10); }
+.feed-card:hover {
+    /* [v6.7.399] 디스코드 탭 카드 호버 디자인 이식 (사용자 선호) — primary 틴트 + 테두리 강조.
+       inset box-shadow 로 테두리를 그려 레이아웃 무시프트(border 추가 시 밀림 방지). 테마 정합(--primary-rgb). */
+    background: rgba(var(--primary-rgb), 0.10);
+    box-shadow: inset 0 0 0 1px rgba(var(--primary-rgb), 0.32);
+    border-color: transparent;
+    transition: background 0.06s ease, box-shadow 0.06s ease;
+}
+.feed-card-title {
+    font-size: 0.85rem;
+    font-weight: 500;   /* [v6.7.323] 400→500 — 가독성 요청 (700 bold 는 과해서 폐기된 이력, medium 절충) */
+    color: #eaeaea;     /* [v6.7.323] #e0e0e0→#eaeaea — 제목 대비 소폭 강화 */
+    line-height: 1.35;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.feed-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+.feed-card-source {
+    /* [v6.7.109] 사이즈 확대 — padding 1px 6px→3px 9px / font 0.65→0.78rem / weight 600→700 /
+       radius 3px→5px / bg alpha 0.18→0.22. 사용자 보고 (2026-05-21): 식별성 강화.
+       [v6.7.112] 배지 자체 wrap 차단 — display inline-block + white-space nowrap 안전망.
+       표 모드의 좁은 col 안에서도 한 줄 유지 ('다음'/'네이버' 3글자까지). */
+    display: inline-block;
+    white-space: nowrap;
+    padding: 3px 9px;
+    border-radius: 5px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 1.4;
+}
+.feed-card-source--daum  { background: rgba(255, 200, 70, 0.22);  color: #ffc846; }
+.feed-card-source--dc    { background: rgba(120, 200, 255, 0.22); color: #78c8ff; }
+/* [v6.7.113] 네이버 카페 source — 네이버 브랜드 컬러 (#03c75a 그린). DAUM 노랑 / DC 푸른 / 공식 빨강 과 시각 충돌 0. */
+.feed-card-source--naver { background: rgba(3, 199, 90, 0.22);    color: #03c75a; }
+/* [v6.7.362] white-space:nowrap — 좁은 카드에서 긴 게임명('배틀그라운드' 6자)이 flex 압축으로
+   줄바꿈되던 것 차단 (feed-card-source 의 v6.7.112 nowrap 방어와 동형). 길면 형제 title 이 흡수. */
+.feed-card-game { font-weight: 500; font-size: 0.7rem; white-space: nowrap; }
+.feed-card-time { margin-left: auto; color: var(--text-muted); font-size: 0.68rem; }
+
+/* [v6.7.407] 카드 freshness(엣지스트립 ::before + fresh/recent/new-cafe/dc 틴트) 제거 —
+   _tab_helpers _freshnessClass/_applyFreshness no-op 화로 클래스 미부여. 신선도 신호는 도착 잔광(imt-arrival-glow)으로 일원화. */
+
+/* 소켓 push 도착 순간 플래시 (2초 fade-out) */
+/* [v6.7.403~406] 도착 잔광 — 새 항목이 틴트에서 서서히 투명으로 (도착 순서 = 농도 그라데이션).
+   재렌더 리셋 방지: JS 가 경과초를 negative animation-delay 로 부여 → 재렌더돼도 이어서 페이드(both).
+   [v6.7.406] 탭별 색·시간: 색은 --glow-rgb 변수(디코 블러플 / AI 바이올렛 / 피드 cyan / 댓글 emerald),
+   지속은 각 탭이 유입속도 맞춰 animation-duration 인라인 부여(디코 60s / 피드·댓글 120s / AI 300s).
+   keyframe 은 % 기반이라 색/시간 무관 단일 정의. 시작 0.24→0.13(55%)→투명, linear(초반 급락 없음). */
+@keyframes imtArrivalGlow {
+    0%   { background-color: rgba(var(--glow-rgb, 88, 101, 242), 0.24); }
+    55%  { background-color: rgba(var(--glow-rgb, 88, 101, 242), 0.13); }
+    100% { background-color: transparent; }
+}
+.imt-arrival-glow { animation-name: imtArrivalGlow; animation-timing-function: linear; animation-fill-mode: both; }
+@media (prefers-reduced-motion: reduce) { .imt-arrival-glow { animation: none; } }
+
+/* [v6.7.407] feedArrival 2s 플래시 + PC 표 freshness(feed-row--fresh/recent/new-cafe/dc/fresh-cafe) +
+   표 도착 플래시 전부 제거 — 카드/표 모두 도착 잔광(imt-arrival-glow) 단일 신호로 전환. AI 요약은 v6.7.403~에 이미 glow 전용. */
+
+/* [v6.6.428] 댓글 카드 — 크롤러 본문 한도(...) 로 한 줄 안에 끝남. line-clamp 3 → 1.
+   원글 제목을 더 노출하기 위해 max-width 50→60%. 댓글 pane 자체는 380px(2 pane) / 340px(3 pane) 로 슬림. */
+.feed-card--comment .feed-card-title {
+    -webkit-line-clamp: 1;
+    font-size: 0.82rem;
+    line-height: 1.35;
+    color: #d8dde3;
+    font-weight: 400;   /* [TEMP] 댓글 본문도 BOLD 풀고 normal 시도 */
+}
+.feed-card-comment-title {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 60%;
+    min-width: 0;
+}
+
+/* === [v6.6.426] 고급 (풀뷰) 섹션 — 접힘/펼침 토글 === */
+.sidebar-section--collapsible .sidebar-section-title--toggle {
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.15s ease;
+}
+.sidebar-section--collapsible .sidebar-section-title--toggle:hover { color: var(--primary-color); }
+.advanced-fold-arrow {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    width: 10px;
+    display: inline-block;
+}
+.sidebar-section-body { display: flex; flex-direction: column; gap: 0; }
+
+/* === [v6.6.426] 고급 탭(전체/게임/커뮤니티) 카드 변환 예외 — PC 테이블 UI 복원 === */
+/* body.layout-cards 가 활성이어도 고급 pane 안에서는 기존 테이블 마크업 그대로 유지.
+   v6.6.422 카드 변환 셀렉터(#totalArticlesContainer / #gamesSections / #communitySections / #comments-tab)
+   에 대해 #pane-total/games/community 를 부모로 하는 경우 reset. */
+body.layout-cards #pane-total #totalArticlesContainer table thead,
+body.layout-cards #pane-games #gamesSections table thead,
+body.layout-cards #pane-community #communitySections table thead { display: table-header-group !important; }
+body.layout-cards #pane-total #totalArticlesContainer table colgroup,
+body.layout-cards #pane-games #gamesSections table colgroup,
+body.layout-cards #pane-community #communitySections table colgroup { display: table-column-group !important; }
+body.layout-cards #pane-total #totalArticlesContainer table,
+body.layout-cards #pane-games #gamesSections table,
+body.layout-cards #pane-community #communitySections table {
+    display: table !important;
+    width: 100% !important;
+    table-layout: fixed !important;
+}
+body.layout-cards #pane-total #totalArticlesContainer table tbody,
+body.layout-cards #pane-games #gamesSections table tbody,
+body.layout-cards #pane-community #communitySections table tbody { display: table-row-group !important; }
+body.layout-cards #pane-total #totalArticlesContainer tr.clickable-row,
+body.layout-cards #pane-games #gamesSections tr.clickable-row,
+body.layout-cards #pane-community #communitySections tr.clickable-row {
+    display: table-row !important;
+    flex-wrap: nowrap !important;
+    padding: 0 !important;
+    gap: 0 !important;
+}
+body.layout-cards #pane-total #totalArticlesContainer tr.clickable-row td,
+body.layout-cards #pane-games #gamesSections tr.clickable-row td,
+body.layout-cards #pane-community #communitySections tr.clickable-row td {
+    display: table-cell !important;
+    padding: 8px 12px !important;
+    border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* 고급 pane 은 카드 480px 가 아니라 테이블 풀폭에 맞춰 더 넓게 */
+.pane-window#pane-total,
+.pane-window#pane-games,
+.pane-window#pane-community {
+    /* render.js 가 480px 로 부여하지만 사용자 resize 가 없으면 풀뷰 의도에 맞게 700px */
+    min-width: 600px;
+}
+
+/* === [v6.6.422] body.layout-cards — 데스크탑에서 카드 모드 강제 === */
+/* 모바일 @media (pointer:coarse) 의 핵심 카드 변환 규칙을 클래스 셀렉터로도 적용. */
+body.layout-cards #totalArticlesContainer table thead,
+body.layout-cards #gamesSections table thead,
+body.layout-cards #communitySections table thead,
+body.layout-cards #comments-tab .excel-table thead { display: none !important; }
+body.layout-cards #totalArticlesContainer table colgroup,
+body.layout-cards #gamesSections table colgroup,
+body.layout-cards #communitySections table colgroup { display: none !important; }
+body.layout-cards #totalArticlesContainer table,
+body.layout-cards #gamesSections table,
+body.layout-cards #communitySections table,
+body.layout-cards #comments-tab .excel-table { display: block !important; width: 100% !important; min-width: 0 !important; table-layout: auto !important; }
+body.layout-cards #totalArticlesContainer table tbody,
+body.layout-cards #gamesSections table tbody,
+body.layout-cards #communitySections table tbody,
+body.layout-cards #comments-tab .excel-table tbody { display: block !important; width: 100% !important; }
+body.layout-cards #totalArticlesContainer tr.clickable-row,
+body.layout-cards #gamesSections tr.clickable-row,
+body.layout-cards #communitySections tr.clickable-row,
+body.layout-cards #comments-tab .excel-table tr {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    padding: 6px 8px !important;
+    border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+    gap: 3px 6px !important;
+    align-items: center !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+body.layout-cards #totalArticlesContainer tr.clickable-row td,
+body.layout-cards #gamesSections tr.clickable-row td,
+body.layout-cards #communitySections tr.clickable-row td,
+body.layout-cards #comments-tab .excel-table tr td {
+    display: block !important;
+    padding: 0 !important;
+    border: none !important;
+    width: auto !important;
+    max-width: none !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    text-align: left !important;
+}
+/* 전체 탭 카드 모드 */
+body.layout-cards #totalArticlesContainer tr.clickable-row td.col-title  { order: 1 !important; flex: 0 0 100% !important; font-size: 0.85rem !important; line-height: 1.35 !important; }
+body.layout-cards #totalArticlesContainer tr.clickable-row td.col-source { order: 2 !important; flex: 0 0 auto !important; font-size: 0.7rem !important; width: auto !important; }
+body.layout-cards #totalArticlesContainer tr.clickable-row td.col-game   { order: 3 !important; flex: 1 !important; font-size: 0.7rem !important; width: auto !important; }
+body.layout-cards #totalArticlesContainer tr.clickable-row td.col-time   { order: 4 !important; flex: 0 0 auto !important; margin-left: auto !important; min-width: 56px !important; font-size: 0.68rem !important; color: var(--text-muted) !important; }
+/* 게임 탭 카드 모드 */
+body.layout-cards #gamesSections tr.clickable-row td.col-title  { order: 1 !important; flex: 0 0 100% !important; font-size: 0.85rem !important; line-height: 1.35 !important; }
+body.layout-cards #gamesSections tr.clickable-row td.col-source { order: 2 !important; flex: 0 0 auto !important; font-size: 0.7rem !important; }
+body.layout-cards #gamesSections tr.clickable-row td.col-time   { order: 3 !important; flex: 0 0 auto !important; margin-left: auto !important; min-width: 56px !important; font-size: 0.68rem !important; color: var(--text-muted) !important; }
+/* 커뮤니티 탭 카드 모드 */
+body.layout-cards #communitySections tr.clickable-row td.col-title { order: 1 !important; flex: 0 0 100% !important; font-size: 0.85rem !important; line-height: 1.35 !important; }
+body.layout-cards #communitySections tr.clickable-row td.col-game  { order: 2 !important; flex: 1 !important; font-size: 0.7rem !important; }
+body.layout-cards #communitySections tr.clickable-row td.col-time  { order: 3 !important; flex: 0 0 auto !important; margin-left: auto !important; min-width: 56px !important; font-size: 0.68rem !important; color: var(--text-muted) !important; }
+/* 댓글 탭 카드 모드 */
+body.layout-cards #comments-tab .excel-table tr td.col-content {
+    order: 1 !important; flex: 0 0 100% !important; font-size: 0.85rem !important; line-height: 1.35 !important;
+    display: -webkit-box !important; -webkit-line-clamp: 3 !important; -webkit-box-orient: vertical !important;
+    white-space: normal !important; overflow: hidden !important; text-align: left !important;
+}
+body.layout-cards #comments-tab .excel-table tr td.col-game  { order: 2 !important; flex: 0 0 auto !important; font-size: 0.7rem !important; padding-right: 6px !important; }
+body.layout-cards #comments-tab .excel-table tr td.col-title { order: 3 !important; flex: 1 1 auto !important; font-size: 0.7rem !important; color: var(--text-muted) !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; min-width: 0 !important; }
+body.layout-cards #comments-tab .excel-table tr td.col-time  { order: 4 !important; flex: 0 0 auto !important; margin-left: auto !important; min-width: 56px !important; font-size: 0.68rem !important; color: #fff !important; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   [v6.7.16] PC 표 ↔ 모바일 카드 토글 — webview_app v7.0.0-alpha.15 등가.
+   - 피드 / 댓글 헤더 우측에 .layout-toggle (table / cards 버튼).
+   - 활성 모드: localStorage imt_layout_mode_feed / imt_layout_mode_comments.
+   - 표 모드: .feed-data-table 마크업 (구분/게임/제목/시간 4열).
+   - pane 폭: 카드 ≤ 440px / 표 ~720px (boot.js 가 inline width 조정).
+   ═══════════════════════════════════════════════════════════════════ */
+.layout-toggle {
+    display: inline-flex;
+    margin-left: 4px;
+    margin-right: 4px;
+    border: 1px solid var(--border-color, #2a2a2e);
+    border-radius: 5px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.02);
+    flex-shrink: 0;
+}
+.layout-toggle-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-color-secondary, #a1a1aa);
+    cursor: pointer;
+    width: 26px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    transition: background 0.12s, color 0.12s;
+    padding: 0;
+}
+.layout-toggle-btn + .layout-toggle-btn {
+    border-left: 1px solid var(--border-color, #2a2a2e);
+}
+.layout-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-color, #fafafa);
+}
+.layout-toggle-btn.active {
+    background: rgba(8, 145, 178, 0.18);
+    color: #22d3ee;
+}
+
+/* [v6.7.48] 피드 분류 토글 (시간순 / 게임별 / 출처별) — .layout-toggle 패턴 재사용, 활성 색만 amber 로 분리. */
+.feed-view-toggle {
+    display: inline-flex;
+    margin-left: 4px;
+    margin-right: 4px;
+    border: 1px solid var(--border-color, #2a2a2e);
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.02);
+    flex-shrink: 0;
+}
+.feed-view-toggle-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-color-secondary, #a1a1aa);
+    width: 30px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s;
+    padding: 0;
+}
+.feed-view-toggle-btn + .feed-view-toggle-btn {
+    border-left: 1px solid var(--border-color, #2a2a2e);
+}
+.feed-view-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-color, #fafafa);
+}
+.feed-view-toggle-btn.active {
+    background: rgba(245, 158, 11, 0.18);
+    color: #fbbf24;
+}
+body[data-theme="light"] .feed-view-toggle {
+    background: rgba(15, 23, 42, 0.03);
+    border-color: rgba(15, 23, 42, 0.10);
+}
+body[data-theme="light"] .feed-view-toggle-btn { color: #475569; }
+body[data-theme="light"] .feed-view-toggle-btn:hover {
+    background: rgba(15, 23, 42, 0.06);
+    color: #0F172A;
+}
+body[data-theme="light"] .feed-view-toggle-btn.active {
+    background: rgba(245, 158, 11, 0.15);
+    color: #b45309;
+}
+
+/* [v6.7.53] 결정적 fix — CSS grid → flexbox wrap. webview 는 table 마크업이라 grid 가 잘 동작했지만
+   Flask 는 div card stack 이라 grid row 가 max-content 계산 시 max-height 무시하는 케이스 발생 →
+   인접 section 들이 시각적으로 겹침. flexbox wrap + fixed flex-basis 50% 는 column 분배가 명시적
+   width 계산이라 magic 없음 — 어떤 콘텐츠 길이/높이에서도 겹침 0 보장. */
+.feed-body--grid-2col {
+    /* [v6.7.119] stretch + height 100% 폐기 — 사용자 보고 (2026-05-22 5번째): "기본값 너무 큼".
+       부모 pane height chain 안 전파 시 section content 무한 확장 (이미지 30+ row) 결함.
+       CSS only 로 pane height 비례 박제 어려움 — 5 row default cap 박제 + 동적 비례는 JS 후속.
+       align-content: flex-start (v6.7.114/117 복귀). */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-content: flex-start;
+}
+.feed-body--grid-2col > .feed-game-section,
+.feed-body--grid-2col > .feed-community-frame {
+    flex: 0 0 calc(50% - 6px);
+    max-width: calc(50% - 6px);
+    min-width: 0;
+    box-sizing: border-box;
+}
+/* [v6.7.57] by-game / by-community max-height layout mode 별로 분리.
+   각 카드 ~50px / 표 행 ~28px. 사용자 의도:
+   - by-game = 게임당 ~5 글 (모바일 카드/PC 표 둘 다)
+   - by-community = 커뮤니티당 ~10 글 (모바일 카드/PC 표 둘 다)
+   header ~36 + padding 16 + border 1 + 5/10 rows = max-height 계산. */
+.feed-body--grid-2col > .feed-game-section {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.feed-body--grid-2col > .feed-community-frame {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+/* [v6.7.120] CSS max-height 박제 폐기 — JS 가 정확 박제 (feed-tab.js _calcFeedGameSectionHeights).
+   사용자 정확 의도 (2026-05-22 6번째): section_height = max(MIN_5_ROWS, pane_inner / row_count).
+   pane.clientHeight 직접 측정 + ResizeObserver — CSS only 한계 회수. min-height 박제 유지 (JS 미작동 fallback). */
+body.feed-mode-cards .feed-body--grid-2col > .feed-game-section { min-height: 340px; }
+body.feed-mode-table .feed-body--grid-2col > .feed-game-section { min-height: 230px; }
+body.feed-mode-cards .feed-body--grid-2col > .feed-community-frame { min-height: 620px; }
+body.feed-mode-table .feed-body--grid-2col > .feed-community-frame { min-height: 380px; }
+.feed-body--grid-2col .feed-game-section-body,
+.feed-body--grid-2col .feed-community-frame-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+/* [v6.7.56] 분류 모드 표 마크업 — body 안 table 이 자체적으로 padding 0 + sticky thead 작동.
+   table-wrap div 가 overflow:hidden 으로 처리, 부모 body 의 overflow-y:auto 가 스크롤 컨테이너. */
+.feed-body--grid-2col .feed-game-section-body .feed-data-table-wrap,
+.feed-body--grid-2col .feed-community-frame-body .feed-data-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+.feed-body--grid-2col .feed-data-table--classify-game,
+.feed-body--grid-2col .feed-data-table--classify-community {
+    width: 100%;
+    font-size: 0.82rem;
+}
+.feed-body--grid-2col .feed-data-table--classify-game th,
+.feed-body--grid-2col .feed-data-table--classify-community th {
+    position: sticky;
+    top: 0;
+    background: var(--bg-secondary, #1e1e22);
+    z-index: 2;
+}
+.feed-body--grid-2col .feed-data-table--classify-game td,
+.feed-body--grid-2col .feed-data-table--classify-community td {
+    padding: 4px 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    vertical-align: middle;
+}
+.feed-body--grid-2col .feed-data-table--classify-game .col-source {
+    width: 60px;
+    text-align: center;
+    white-space: nowrap;
+}
+/* [v6.7.57] by-community 표 모드 게임 col 폭 확장 — "우마무스메" / "아키에이지워" 등 5~6자 게임명 잘림 방지. */
+.feed-body--grid-2col .feed-data-table--classify-community .col-game {
+    width: 95px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.feed-body--grid-2col .feed-data-table--classify-game .col-time,
+.feed-body--grid-2col .feed-data-table--classify-community .col-time {
+    width: 78px;   /* [v6.7.667] 50 -> 78 - 분류 표도 MM.DD HH:MM 을 받는다(2열 그리드라 본표보다 좁게) */
+    text-align: right;
+    white-space: nowrap;
+    color: var(--text-muted);
+    font-size: 0.74rem;
+}
+.feed-body--grid-2col .feed-data-table--classify-game .col-title,
+.feed-body--grid-2col .feed-data-table--classify-community .col-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.feed-body--grid-2col .feed-data-table--classify-game tbody tr,
+.feed-body--grid-2col .feed-data-table--classify-community tbody tr {
+    cursor: pointer;
+}
+.feed-body--grid-2col .feed-data-table--classify-game tbody tr:hover,
+.feed-body--grid-2col .feed-data-table--classify-community tbody tr:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+/* [v6.7.50] 긴 단어(URL/이모지 chain) 카드 폭 침범 방지. */
+.feed-body--grid-2col .feed-card-title,
+.feed-body--grid-2col .feed-card-meta {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+@media (max-width: 720px) {
+    .feed-body--grid-2col > .feed-game-section,
+    .feed-body--grid-2col > .feed-community-frame {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+/* [v6.7.731] 선언이 빈 body.feed-classify-active .layout-toggle 룰 삭제 - 효과 0. 동반해 JS 토글도 제거. */
+.feed-game-section {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color, #2a2a2e);
+    border-left-width: 3px;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.feed-game-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid var(--border-color, #2a2a2e);
+}
+.feed-game-section-name {
+    font-weight: 600;
+    font-size: 0.92rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.feed-game-section-count {
+    font-size: 0.78rem;
+    color: var(--text-color-secondary, #a1a1aa);
+    flex-shrink: 0;
+}
+.feed-game-section-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px;
+}
+/* [v6.7.53] v6.7.52 의 grid-시대 max-height 룰 통합 — 상단 flexbox wrap 정책으로 대체됨. */
+body[data-theme="light"] .feed-game-section {
+    background: rgba(15, 23, 42, 0.02);
+    border-color: rgba(15, 23, 42, 0.10);
+}
+body[data-theme="light"] .feed-game-section-header {
+    background: rgba(15, 23, 42, 0.03);
+    border-bottom-color: rgba(15, 23, 42, 0.10);
+}
+body[data-theme="light"] .feed-game-section-count { color: #475569; }
+
+/* [v6.7.48] Phase C — 출처별 frame (DAUM/DC) + board_name sub-group. webview v0.1.30 등가. */
+.feed-community-frame {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color, #2a2a2e);
+    border-left-width: 3px;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.feed-community-frame--daum { border-left-color: #f59e0b; }
+.feed-community-frame--dc { border-left-color: #06b6d4; }
+.feed-community-frame-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid var(--border-color, #2a2a2e);
+}
+.feed-community-frame-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+.feed-community-frame-count {
+    font-size: 0.78rem;
+    color: var(--text-color-secondary, #a1a1aa);
+}
+/* [v6.7.54] frame body — 단일 통합 카드 list (board sub-group 폐기). 직접 카드 stack. */
+.feed-community-frame-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px;
+}
+/* [v6.7.731] dead .feed-community-board* 룰 삭제 - board 분리 마크업은 v6.7.54 에 폐기돼 발생 안 함(레포 전체 grep 0). */
+.feed-community-empty {
+    padding: 12px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-color-secondary, #a1a1aa);
+    opacity: 0.7;
+}
+body[data-theme="light"] .feed-community-frame {
+    background: rgba(15, 23, 42, 0.02);
+    border-color: rgba(15, 23, 42, 0.10);
+}
+body[data-theme="light"] .feed-community-frame-header {
+    background: rgba(15, 23, 42, 0.03);
+    border-bottom-color: rgba(15, 23, 42, 0.10);
+}
+body[data-theme="light"] .feed-community-frame-count { color: #475569; }
+/* [v6.7.731] dead .feed-community-board-name/count/header 라이트 테마 룰 삭제 (board 마크업 폐기, 위 참조). */
+
+/* 피드 PC 표 모드 — body.feed-mode-table 활성 시 노출 */
+/* [v6.7.19] 폰트 추가 상향 — 본문 0.95rem (≈15px), 헤더 0.85rem. v6.7.18 의 0.85/0.78 은 차이 인지 부족 피드백. */
+.feed-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    table-layout: fixed;
+}
+.feed-data-table thead th {
+    text-align: center;   /* [v6.7.20] 4 컬럼 모두 중앙 정렬 */
+    padding: 9px 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-color-secondary, #a1a1aa);
+    border-bottom: 1px solid var(--border-color, #2a2a2e);
+    text-transform: none;
+    letter-spacing: 0;
+    background: rgba(255, 255, 255, 0.015);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+.feed-data-table tbody td {
+    padding: 9px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    vertical-align: middle;
+    color: var(--text-color, #fafafa);
+    font-size: 0.95rem;
+    /* [v6.7.21] 본문은 좌측 정렬(default). thead 만 중앙 정렬. */
+}
+.feed-data-table tbody tr {
+    cursor: pointer;
+    transition: background 0.1s;
+}
+.feed-data-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+.feed-data-table .col-source { width: 80px; }   /* [v6.7.112] 60→80px — 3글자 '네이버' 까지 nowrap 한 줄 (배지 padding 9×2 + font 0.78rem×3글자 + 여유) */
+.feed-data-table .col-game   { width: 100px; }
+.feed-data-table .col-title  { width: auto; min-width: 0; }
+.feed-data-table .col-time   { width: 96px; color: var(--text-color-secondary, #a1a1aa); font-variant-numeric: tabular-nums; text-align: right; padding-right: 14px; }   /* [v6.7.21] 시간 본문 right 복원. [v6.7.322] 우측 14px - col-more 존 경계 분리 (AI 탭 정합) */
+.feed-data-table .col-title-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+}
+/* [v6.7.17] 표 모드 뱃지 — 카드 모드의 .feed-card-source 클래스 재사용 (별도 클래스 폐지).
+   아래 .feed-card-source 글로벌 룰(line ~3117) 의 색상·padding 그대로 상속.
+   추가로 공식 사이트(OFFICIAL_WEB) 뱃지만 신규 정의. */
+.feed-card-source--official_web {
+    /* [v6.7.109] 자주(#c084fc) → 빨강(#ef4444 red-500). 사용자 요청 (2026-05-21):
+       공식 배지 식별성 더 강화. DAUM 노랑(#ffc846) / DC 푸른(#78c8ff) / 빨강 3색 분리
+       — 시각 충돌 0 + 공식 = "중요 출처" 시각 우선순위 최상위. */
+    background: rgba(239, 68, 68, 0.22);
+    color: #ef4444;
+}
+.feed-data-table .col-game-name {
+    color: var(--text-color, #fafafa);
+    font-size: 0.9rem;   /* [v6.7.19] 0.8 → 0.9 — 본문 톤 보조 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+}
+
+/* 모드 분기 — feed/comments 카드 vs 표 */
+body.feed-mode-cards #feed-body .feed-data-table-wrap { display: none !important; }
+body.feed-mode-table #feed-body > .feed-card { display: none !important; }
+body.feed-mode-table #feed-body .feed-data-table-wrap {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+}
+
+/* [v6.7.17] 댓글 탭 표 모드 — 4열(게임/글 제목/댓글/시간). share_desktop v6.5.251 등가. */
+/* [v6.7.19] 폰트 추가 상향 — 본문 0.95rem, 헤더 0.85rem. 피드 표와 동일 톤. */
+.comments-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    table-layout: fixed;
+}
+.comments-data-table thead th {
+    text-align: center;   /* [v6.7.20] 4 컬럼 모두 중앙 정렬 */
+    padding: 9px 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-color-secondary, #a1a1aa);
+    border-bottom: 1px solid var(--border-color, #2a2a2e);
+    background: rgba(255, 255, 255, 0.015);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+.comments-data-table tbody td {
+    padding: 9px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    vertical-align: middle;
+    color: var(--text-color, #fafafa);
+    font-size: 0.95rem;
+    /* [v6.7.21] 본문은 좌측 정렬(default). thead 만 중앙 정렬. */
+}
+.comments-data-table tbody tr {
+    cursor: pointer;
+    transition: background 0.1s;
+}
+.comments-data-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+.comments-data-table .col-game     { width: 100px; }
+.comments-data-table .col-title    { width: 25%; min-width: 0; color: var(--text-color-secondary, #a1a1aa); }
+.comments-data-table .col-content  { width: auto; min-width: 0; }
+.comments-data-table .col-time     { width: 70px; color: var(--text-color-secondary, #a1a1aa); font-variant-numeric: tabular-nums; text-align: right; }   /* [v6.7.21] 시간 본문 right 복원 */
+.comments-data-table .col-title-text,
+.comments-data-table .col-content-text,
+.comments-data-table .col-game-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+}
+
+body.comments-mode-cards #comments-body .comments-data-table-wrap { display: none !important; }
+body.comments-mode-table #comments-body > .feed-card { display: none !important; }
+body.comments-mode-table #comments-body .comments-data-table-wrap {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+}
+
+/* 라이트 모드 — 댓글 표 */
+body[data-theme="light"] .comments-data-table thead th {
+    background: rgba(15, 23, 42, 0.03);
+    border-bottom-color: rgba(15, 23, 42, 0.10);
+    color: #475569;
+}
+body[data-theme="light"] .comments-data-table tbody td { border-bottom-color: rgba(15, 23, 42, 0.06); color: #0F172A; }
+body[data-theme="light"] .comments-data-table tbody tr:hover { background: rgba(15, 23, 42, 0.04); }
+body[data-theme="light"] .comments-data-table .col-time,
+body[data-theme="light"] .comments-data-table .col-title { color: #475569; }
+
+/* 라이트 모드 보정 */
+body[data-theme="light"] .layout-toggle {
+    background: rgba(15, 23, 42, 0.03);
+    border-color: rgba(15, 23, 42, 0.10);
+}
+body[data-theme="light"] .layout-toggle-btn { color: #475569; }
+body[data-theme="light"] .layout-toggle-btn:hover {
+    background: rgba(15, 23, 42, 0.06);
+    color: #0F172A;
+}
+body[data-theme="light"] .layout-toggle-btn.active {
+    background: rgba(8, 145, 178, 0.15);
+    color: #0891B2;
+}
+body[data-theme="light"] .feed-data-table thead th {
+    background: rgba(15, 23, 42, 0.03);
+    border-bottom-color: rgba(15, 23, 42, 0.10);
+    color: #475569;
+}
+body[data-theme="light"] .feed-data-table tbody td { border-bottom-color: rgba(15, 23, 42, 0.06); color: #0F172A; }
+body[data-theme="light"] .feed-data-table tbody tr:hover { background: rgba(15, 23, 42, 0.04); }
+body[data-theme="light"] .feed-data-table .col-time { color: #475569; }
+body[data-theme="light"] .feed-data-table .col-game-name { color: #0F172A; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   [v6.7.317] 피드 더보기(상세 확장) — 카드/표/분류 6형식 공통.
+   상세 = 게임/구분/제목/일시(YYYY-MM-DD HH:MM)/본문(미수집 시 "본문 수집 중")/링크+복사.
+   취합 워크플로 최적화: 글 진입 없이 판단 + 링크 즉시 복사.
+   ═══════════════════════════════════════════════════════════════════ */
+/* [v6.7.321] 더보기 버튼 = 우측 끝 세로 전체 클릭 존 — 작은 아이콘 정밀 조준 대신 넓은 존(오클릭 방지). */
+.feed-more-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 0.92rem;   /* 존 확대에 맞춰 아이콘도 키움 */
+    line-height: 1;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-left: 1px solid rgba(255, 255, 255, 0.06);   /* 원문/더보기 경계 시각화 */
+}
+.feed-more-btn:hover { color: #22d3ee; background: rgba(34, 211, 238, 0.10); }
+.feed-more-btn i { transition: transform 0.15s ease; }
+.feed-card.expanded .feed-more-btn i,
+.feed-data-table tbody tr.expanded .feed-more-btn i { transform: rotate(180deg); }
+/* 카드 — head wrapper 우측 세로 바 (detail 은 head 밖이라 존이 상세 링크복사 버튼 안 덮음) */
+.feed-card-head { position: relative; }
+/* [v6.7.362] 더보기 존 44→34px 축소 (사용자 요청 — 좌우 너비 좁힘). 세로는 여전히 행 전체라 터치 존 유지.
+   title/meta padding-right 도 34(=존폭)/42(존+8px 숨통, v6.7.322 시간·경계선 간격 보존)로 동반 축소. */
+.feed-card-head > .feed-card-title { padding-right: 34px; }
+.feed-card-head > .feed-card-meta { padding-right: 42px; }
+.feed-card-head > .feed-more-btn { position: absolute; top: 0; right: 0; bottom: 0; width: 34px; }
+/* 표 — col-more 셀 전체가 존 (셀 padding 0 + 버튼 inset 0) */
+.feed-data-table .col-more { width: 34px; padding: 0; position: relative; }
+.feed-data-table td.col-more .feed-more-btn { position: absolute; inset: 0; width: 100%; }
+
+/* [v6.7.382] 더보기(펼침) 애니메이션 — 상세가 부드럽게 나타남(페이드+살짝 슬라이드).
+   .imt-detail-reveal 는 JS 확장(사용자 클릭) 경로에서만 상세 그리드에 부여 → 재렌더 bake 경로는 미부여이므로
+   소켓 재렌더마다 상세가 깜빡이지 않음(PATTERN-38 정신). 피드/AI 요약 × 카드/표 4면 공용(그리드에 부여).
+   접힘은 즉시(스냅) — 반응 즉각성 우선. reduced-motion 사용자는 애니메이션 없음. */
+@keyframes imtDetailReveal {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.imt-detail-reveal { animation: imtDetailReveal 0.18s ease-out; }
+@media (prefers-reduced-motion: reduce) { .imt-detail-reveal { animation: none; } }
+
+/* [v6.7.385] 더보기(접힘) 애니메이션 — 상세가 페이드+슬라이드로 사라진 뒤 JS 가 DOM 제거/hide.
+   JS(toggleFeedDetail / _toggleExpand)가 접힘 시 그리드에 부여 → animationend 후 실제 제거. forwards 로
+   제거 직전 최종 상태(투명) 유지해 깜빡임 방지. reduced-motion 은 애니 없이 즉시(JS 가 media 판정으로 스킵). */
+@keyframes imtDetailCollapse {
+    from { opacity: 1; transform: translateY(0); }
+    to   { opacity: 0; transform: translateY(-6px); }
+}
+.imt-detail-collapsing { animation: imtDetailCollapse 0.16s ease-in forwards; }
+@media (prefers-reduced-motion: reduce) { .imt-detail-collapsing { animation: none; } }
+
+.feed-card-detail {
+    margin-top: 6px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    cursor: default;
+}
+.feed-data-table tr.feed-detail-row > td {
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid var(--border-color, #2a2a2e);
+    cursor: default;
+}
+.feed-detail-grid {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 8px 12px;      /* [v6.7.332] 행간 4→8 (제목/내용 블록 분리, AI 상세 정합) · [v6.7.323] 라벨-값 간격 */
+    font-size: 0.78rem;
+    line-height: 1.45;
+}
+.feed-detail-lbl { color: var(--text-muted); font-weight: 500; }  /* [v6.7.332] 라벨 굵기 — 좌측 스캔 가이드 강화 (AI 상세 정합) */
+.feed-detail-val { color: var(--text-color, #e0e0e0); word-break: break-word; min-width: 0; }
+/* [v6.7.319] 내용/링크 그리드 행 편입. [v6.7.323] 본문만 그리드(0.78rem)보다 키움 + 행간 여유 — 긴 글 가독성 */
+/* [v6.7.332] 내용=본문 톤(흐림) — 제목(밝음)과 밝기로 분리. val 다음 줄이라 동일 specificity source 순서 승. */
+.feed-detail-content {
+    color: var(--text-muted);
+    font-size: 0.84rem;
+    line-height: 1.65;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 4px;   /* 스크롤바-텍스트 간섭 완화 */
+}
+.feed-detail-pending { color: var(--text-muted); }
+.feed-detail-linkrow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+.feed-detail-link {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.75rem;
+    color: #22d3ee;
+    text-decoration: none;
+}
+.feed-detail-link:hover { text-decoration: underline; }
+.feed-copy-btn {
+    flex: none;
+    background: rgba(8, 145, 178, 0.14);
+    border: 1px solid rgba(34, 211, 238, 0.35);
+    color: #22d3ee;
+    font-size: 0.72rem;
+    padding: 3px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.12s, color 0.12s;
+}
+.feed-copy-btn:hover { background: rgba(8, 145, 178, 0.26); }
+.feed-copy-btn.copied { color: #4ade80; border-color: rgba(74, 222, 128, 0.4); background: rgba(74, 222, 128, 0.10); }
+/* [v6.7.459] AI 요약 행 (admin 전용) — 상태 표시 + 수동 요청 버튼 + 사유 칩.
+   색 예산: 요약문은 본문 톤(흐림)을 따르고, 버튼만 링크 복사와 같은 시안 계열을 쓴다.
+   엣지스트립/빨강 틴트는 위험 표시 전용 예약이라(PATTERN-26 폐기 후 현행 시각 문법) 여기 안 쓴다. */
+.feed-detail-ai { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; min-width: 0; }
+/* [2026-09-16] 제목 변경 표식. **없어진 규칙을 참조하는 조용한 no-op 을 만들지 않으려고**
+   형제(.feed-detail-ai) 바로 옆에 둔다 - v6.7.126 에서 CSS 정의가 카드에만 있어 표 모드에
+   아무 효과가 없던 자리와 같은 함정이다. 옛 제목은 죽은 값이라 muted + 취소선, 화살표 뒤가
+   현재 제목이다. 긴 제목은 줄바꿈으로 흘린다(가로 스크롤 금지). */
+.feed-detail-titlechg { color: var(--text-muted); font-size: 0.78rem; line-height: 1.5;
+    word-break: break-word; min-width: 0; }
+.feed-detail-titlechg .feed-titlechg-arrow { opacity: 0.6; margin: 0 2px; }
+.feed-ai-pending, .feed-ai-none { color: var(--text-muted); font-size: 0.75rem; }
+.feed-ai-summary {
+    flex: 1 1 100%;
+    color: var(--text-color, #e0e0e0);
+    font-size: 0.8rem;
+    line-height: 1.55;
+    word-break: break-word;
+}
+.feed-ai-err { flex: 1 1 100%; color: #fbbf24; font-size: 0.72rem; }
+.feed-ai-btn {
+    flex: none;
+    background: rgba(8, 145, 178, 0.14);
+    border: 1px solid rgba(34, 211, 238, 0.35);
+    color: #22d3ee;
+    font-size: 0.72rem;
+    padding: 3px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.12s, color 0.12s;
+}
+.feed-ai-btn:hover { background: rgba(8, 145, 178, 0.26); }
+.feed-ai-btn:disabled { opacity: 0.55; cursor: default; }
+.feed-ai-btn--again { background: transparent; }
+.feed-ai-chips { flex: 1 1 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.feed-ai-chips-lbl { color: var(--text-muted); font-size: 0.7rem; margin-right: 2px; }
+.feed-ai-chip {
+    background: transparent;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    padding: 2px 9px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.feed-ai-chip:hover { border-color: rgba(34, 211, 238, 0.45); color: #22d3ee; }
+.feed-ai-chip.selected { background: rgba(8, 145, 178, 0.18); border-color: rgba(34, 211, 238, 0.5); color: #22d3ee; }
+/* 터치 환경 — 탭 타깃 확대 (카드 전체가 openArticle 클릭 영역이라 오탭 방지) */
+@media (pointer: coarse) {
+    .feed-more-btn { padding: 6px 9px; font-size: 0.8rem; }
+    .feed-copy-btn { padding: 6px 12px; }
+    .feed-ai-btn { padding: 6px 12px; }
+    .feed-ai-chip { padding: 5px 12px; }
+}
+/* 라이트 모드 동반 — 다크 가정 rgba(255,255,255,*)/하드코딩 시안만 보정 (var 기반은 자동 추종) */
+body[data-theme="light"] .feed-card-detail { background: rgba(15, 23, 42, 0.04); border-color: rgba(15, 23, 42, 0.10); }
+body[data-theme="light"] .feed-data-table tr.feed-detail-row > td { background: rgba(15, 23, 42, 0.03); border-bottom-color: rgba(15, 23, 42, 0.10); }
+body[data-theme="light"] .feed-detail-val { color: #1E293B; }
+/* [v6.7.332] 내용 흐림 라이트 정합 — val 규칙(동일 specificity)을 source 순서로 상쇄. 다크 --text-muted(#a8a8a8) 대응값. */
+body[data-theme="light"] .feed-detail-content { color: #64748B; }
+body[data-theme="light"] .feed-more-btn { border-left-color: rgba(15, 23, 42, 0.08); }
+body[data-theme="light"] .feed-more-btn:hover { color: #0891b2; background: rgba(8, 145, 178, 0.10); }
+body[data-theme="light"] .feed-detail-link { color: #0891b2; }
+body[data-theme="light"] .feed-copy-btn { background: rgba(8, 145, 178, 0.10); border-color: rgba(8, 145, 178, 0.35); color: #0891b2; }
+body[data-theme="light"] .feed-copy-btn:hover { background: rgba(8, 145, 178, 0.18); }
+body[data-theme="light"] .feed-copy-btn.copied { color: #15803d; border-color: rgba(21, 128, 61, 0.4); background: rgba(21, 128, 61, 0.08); }
+
+
+/* ====================================================================
+   [v6.7.664] 출처 필터 pill + 제재 토글 + 제재 판정 표식
+   ==================================================================== */
+/* 헤더 둘째 줄. 디스코드 .dc-bar 와 같은 문법이되 피드는 #feed-body 가 무한스크롤 observer 의
+   root 이고 renderFeedPane 이 매 렌더 innerHTML 을 비우므로 body 가 아니라 헤더에 산다. */
+.feed-src-bar {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px;
+    padding: 4px 8px 8px;
+    border-bottom: 1px solid var(--border-color, rgba(128, 128, 128, 0.18));
+    flex-shrink: 0;
+}
+.feed-srcpills { display: flex; flex-wrap: wrap; gap: 5px; }
+
+/* [v6.7.672] 축 전환 중 표시 - 옛 목록을 둔 채 '갈아끼우는 중' 을 말한다(feed-tab.js _setFeedBusy).
+   **0.18초 지연 후에 나타난다**: 제재 조회가 웜 0.007초라 지연이 없으면 매 토글이 깜빡인다.
+   빠를 때 조용하고 느릴 때만 말하는 신호여야 사용자가 그 신호를 읽는다. */
+.feed-src-bar { position: relative; }
+.feed-src-bar.is-busy::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px;
+    background-image: linear-gradient(90deg, transparent, var(--primary-color, #5865F2), transparent);
+    background-size: 40% 100%; background-repeat: no-repeat;
+    animation: feed-busy-fade 0.18s linear forwards, feed-busy-sweep 0.9s linear 0.18s infinite;
+}
+@keyframes feed-busy-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes feed-busy-sweep {
+    from { background-position: -40% 0; }
+    to   { background-position: 140% 0; }
+}
+/* 흐리기는 지연을 갖고 들어가되 **걷는 것은 즉시**다 - 아래 기본 선언이 지연 없는 transition 을
+   갖고, 흐린 상태 선언만 지연을 갖는다(클래스가 빠지면 기본 쪽이 적용된다). */
+#feed-body { transition: opacity 0.12s ease; }
+#feed-body.feed-body--swapping { opacity: 0.45; transition: opacity 0.18s ease 0.18s; }
+@media (prefers-reduced-motion: reduce) {
+    .feed-src-bar.is-busy::after { animation: feed-busy-fade 0.18s linear forwards; }
+}
+.feed-srcpill {
+    appearance: none; cursor: pointer; font: inherit; font-size: 0.78rem;
+    padding: 3px 10px; border-radius: 999px;
+    background: transparent; color: var(--text-muted);
+    border: 1px solid var(--border-color, rgba(128, 128, 128, 0.25));
+    transition: background 0.12s, color 0.12s, filter 0.12s;
+}
+.feed-srcpill:hover { filter: brightness(1.25); }
+.feed-srcpill.active {
+    background: var(--primary-color, #5865F2); color: #fff;
+    border-color: var(--primary-color, #5865F2);
+}
+/* 제재 토글 - 크기는 .feed-srcpill 과 같게(같은 줄에 선다). 구분은 좌측 여백 + 경고 표식 +
+   활성 시 빨강. 디스코드 .dc-flagpill(v6.7.466) 과 같은 문법이라 두 탭의 '제재'가 같아 보인다. */
+.feed-flagpill {
+    appearance: none; cursor: pointer; font: inherit; font-size: 0.78rem; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 4px;
+    margin-left: 10px; padding: 3px 10px; border-radius: 999px;
+    border: 1px solid var(--border-color, rgba(128, 128, 128, 0.25));
+    background: transparent; color: var(--text-muted);
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.feed-flagpill::before { content: '\26A0'; font-size: 11px; opacity: .8; }
+.feed-flagpill:hover { color: #fca5a5; border-color: #ef444488; }
+.feed-flagpill.active { color: #fff; border-color: #ef4444; background: #ef444433; }
+
+/* ── 제재 판정 표식 - 좌측 바. **빨간 테두리를 안 쓴다**: 피드탭의 빨강(#ef4444)은 이미
+   .feed-card-source--official_web(공식 배지, v6.7.109)이 "중요 출처, 봐라"로 쓰고 있고
+   판정 대상이 공식 게시물뿐이라 전건 겹친다. 그래서 색이 아니라 **형태(좌측 바)** 가 새 축이고,
+   표식이 붙은 카드는 중복인 공식 배지를 생략한다(feed-tab.js _feedSourceBadgeHtml).
+   레인 2종: act(개인정보·불법거래·홍보 = 예외 없는 삭제) / rev(욕설·비방 = 사람이 맥락 판단).
+   한 색으로 묶지 않는 이유 - 물량이 많은 rev 가 act 신호를 덮는다(디코 실측 flag 의 69%가 rev 축). */
+.feed-card.feed-flagged { border-left-width: 4px; border-left-style: solid; }
+.feed-card.feed-flagged--act { border-left-color: #ef4444; }
+.feed-card.feed-flagged--rev { border-left-color: #f59e0b; }
+/* 표 행 - border-collapse 때문에 <tr> 보더가 안 먹는다(IMT ame_web 의 .feed-row.ai-sum-crit 이
+   바로 그 함정의 실사례 - 클래스는 붙는데 화면에 아무것도 안 나온다). 첫 셀 inset shadow 로 건다.
+   AI 요약 탭 .ai-sum-crit 이 이미 쓰는 우회와 같은 방식이다. */
+.feed-data-table tr.feed-flagged > td:first-child { box-shadow: inset 3px 0 0 currentColor; }
+.feed-data-table tr.feed-flagged--act > td:first-child { color: #ef4444; }
+.feed-data-table tr.feed-flagged--rev > td:first-child { color: #f59e0b; }
+/* 값 셀의 글자색까지 물들지 않게 되돌린다 (currentColor 를 shadow 로만 쓴다). */
+.feed-data-table tr.feed-flagged > td:first-child > * { color: var(--text-color, #fafafa); }
+
+/* 종류 칩 - 색 하나로 5종을 못 담고, 운영자는 '왜 걸렸는지'를 알아야 조치한다. */
+.feed-flag-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 1px 7px; border-radius: 999px;
+    font-size: 0.7rem; font-weight: 700; white-space: nowrap;
+}
+.feed-flag-chip--act { background: rgba(239, 68, 68, 0.22); color: #ef4444; }
+.feed-flag-chip--rev { background: rgba(245, 158, 11, 0.20); color: #f59e0b; }
+/* 지목 대상 - 욕설/비방에서만 나온다. "게임사" 면 사람이 3초에 거를 수 있어야 해서 칩 안에 둔다. */
+.feed-flag-target { font-weight: 500; opacity: 0.85; font-size: 0.65rem; }
+.feed-flag-target::before { content: '·'; margin-right: 3px; opacity: 0.6; }
+
+/* [v6.7.664] 출처별 보기 프레임 - NAVER·OFFICIAL_WEB 신규. 두 출처가 그룹핑에서 통째로
+   탈락하던 결함(v6.7.54 화석)을 고치면서 프레임 색도 같이 붙인다. 기존 daum/dc 와 충돌 없는 색. */
+.feed-community-frame--official_web { border-left-color: #ef4444; }
+.feed-community-frame--naver { border-left-color: #22c55e; }
+
+/* 라이트 모드 동반 - 다크 가정 하드코딩 시안만 보정 (var 기반은 자동 추종).
+   빨강 페어는 AI 요약 탭 관례를 따른다: 다크 red-500(#ef4444) / 라이트 red-700(#b91c1c). */
+body[data-theme="light"] .feed-srcpill { color: #5b6472; border-color: #d7dbe3; }
+body[data-theme="light"] .feed-flagpill { color: #5b6472; border-color: #d7dbe3; }
+body[data-theme="light"] .feed-flagpill:hover { color: #b91c1c; border-color: #ef444488; }
+body[data-theme="light"] .feed-flagpill.active { color: #7f1d1d; background: #ef44441f; border-color: #ef4444; }
+body[data-theme="light"] .feed-card.feed-flagged--act { border-left-color: #b91c1c; }
+body[data-theme="light"] .feed-card.feed-flagged--rev { border-left-color: #b45309; }
+body[data-theme="light"] .feed-data-table tr.feed-flagged--act > td:first-child { color: #b91c1c; }
+body[data-theme="light"] .feed-data-table tr.feed-flagged--rev > td:first-child { color: #b45309; }
+body[data-theme="light"] .feed-data-table tr.feed-flagged > td:first-child > * { color: #1E293B; }
+body[data-theme="light"] .feed-flag-chip--act { background: rgba(185, 28, 28, 0.12); color: #b91c1c; }
+body[data-theme="light"] .feed-flag-chip--rev { background: rgba(180, 83, 9, 0.12); color: #b45309; }
+body[data-theme="light"] .feed-community-frame--official_web { border-left-color: #b91c1c; }
+body[data-theme="light"] .feed-community-frame--naver { border-left-color: #15803d; }
+
+/* [v6.7.666] 제재 판정 대기 점 - "검토했고 문제없음(clean)" 과 "아직 안 봄" 을 가른다.
+   표식은 소수인 '대기' 쪽에 붙인다(다수인 clean 에 붙이면 거의 전건이 표시돼 신호가 죽는다).
+   기존 강조색(보라=키워드 / 앰버=슈퍼키워드·rev / 빨강=공식배지·act / 파랑=도착잔광)과
+   겹치지 않게 **무채색**으로 둔다 - 대기는 판정이 아니라 상태다. */
+.feed-judge-pending {
+    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--text-muted, #a8a8a8); opacity: 0.45;
+    vertical-align: middle; flex-shrink: 0;
+}
+body[data-theme="light"] .feed-judge-pending { background: #94a3b8; opacity: 0.6; }
+
+/* ====================================================================
+   [v6.7.688] 피드 순단 제거 동반 UI - "새 글 N건" pill + 키보드 포커스 + 폴리시
+   ==================================================================== */
+/* pill 은 pane(#feed-tab) 에 붙는다 - #feed-body 는 렌더마다 innerHTML 이 비워지기 때문(feed-tab.js
+   _feedNewPillEl 주석). 그래서 pane 을 positioning context 로 만든다. */
+#feed-tab { position: relative; }
+.feed-newpill {
+    position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+    z-index: 30; appearance: none; cursor: pointer; font: inherit;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 14px; border-radius: 999px;
+    font-size: 0.76rem; font-weight: 600; white-space: nowrap;
+    color: #fff; background: var(--primary-color, #3182f6);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.32);
+    animation: feed-newpill-in 0.2s ease;
+}
+.feed-newpill i { font-size: 0.68rem; }
+.feed-newpill:hover { filter: brightness(1.08); }
+@keyframes feed-newpill-in {
+    from { opacity: 0; transform: translate(-50%, -6px); }
+    to   { opacity: 1; transform: translate(-50%, 0); }
+}
+@media (prefers-reduced-motion: reduce) { .feed-newpill { animation: none; } }
+
+/* [v6.7.688] 키보드 접근성 - :focus-visible 링(마우스 클릭엔 안 뜨고 Tab 이동에만 뜬다).
+   테마 토큰(--primary-rgb)만 써서 다크/라이트/phosphor 전부 자동 추종. !important 없음 —
+   기존 룰과 우선순위 다툼을 만들지 않기 위해 신규 셀렉터로만 얹는다(PATTERN-10/34). */
+.feed-srcpill:focus-visible,
+.feed-flagpill:focus-visible,
+.feed-more-btn:focus-visible,
+.feed-newpill:focus-visible,
+.feed-copy-btn:focus-visible,
+.feed-ai-btn:focus-visible {
+    outline: 2px solid var(--primary-color, #3182f6);
+    outline-offset: 2px;
+}
+/* 카드/행이 키보드 포커스를 받는 경우(호스트가 tabindex 를 부여하는 미래 대비) 대비 - 지금은
+   포커스 불가라 무해하고, 부여되면 자동으로 시인 가능한 링이 생긴다. */
+.feed-card:focus-visible,
+.feed-data-table tbody tr:focus-visible {
+    outline: 2px solid var(--primary-color, #3182f6);
+    outline-offset: -2px;
+}
+
+/* [v6.7.688] 시간 컬럼 tabular-nums - 카드/표에서 시:분이 자릿수마다 흔들리지 않게 정렬(가독성). */
+.feed-card-time, .feed-data-table td.col-time { font-variant-numeric: tabular-nums; }
+
+/* [v6.7.688] 모바일 터치 타겟 - pill 높이를 손가락 기준으로 키운다. @media 로 격리(PATTERN-34). */
+@media (pointer: coarse) {
+    .feed-srcpill, .feed-flagpill { min-height: 30px; padding-top: 5px; padding-bottom: 5px; }
+    .feed-newpill { min-height: 34px; padding: 7px 16px; }
+}
+
+/* [v6.7.692] 분류 모드(게임별/출처별) 섹션 헤더 "새 글 N" 칩 - 섹션이 각자 스크롤하므로 어느 섹션에
+   새 글이 붙었는지 헤더에서 알려준다. 클릭 시 그 섹션만 맨 위로(feed-tab.js _feedBindSecScroll). */
+.feed-sec-newchip {
+    margin-left: auto;
+    appearance: none; cursor: pointer; font: inherit;
+    padding: 2px 9px; border-radius: 999px;
+    font-size: 0.7rem; font-weight: 600; white-space: nowrap;
+    color: #fff; background: var(--primary-color, #3182f6);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+.feed-sec-newchip:hover { filter: brightness(1.08); }
+.feed-sec-newchip:focus-visible { outline: 2px solid var(--primary-color, #3182f6); outline-offset: 2px; }
+@media (pointer: coarse) {
+    .feed-sec-newchip { min-height: 28px; padding: 4px 12px; }
+}

@@ -1,0 +1,462 @@
+/* ════════════════════════════════════════════════════════════════
+   ai-summary.css - "AI 요약" 탭 (코어 멀티액티브 페인, admin + manager)
+   [v6.7.731] 주석 정정: 구 'admin 전용' 은 스테일 - v6.7.500 에 manager 재개방(app.py _ADMIN_MANAGER_JS +
+   ui-control.js MANAGER_EXTRA_APP_IDS). 데이터 API /api/ai-summary 는 v6.7.386 부터 manager 가드.
+   설계 계약: 댓글 탭(.comments-data-table) 1:1 미러 + 평면 리스트.
+   - 표(PC) ↔ 카드(모바일) 분기는 pointer:coarse 미디어 + 컨테이너 쿼리(폭).
+   - 모든 셀렉터 #ai-summary-tab / #ai-summary-body 스코프 — 전역/타 탭 누출 금지.
+   - PATTERN-26: AI 탭 좌측 컬러바(edge strip)/배경 틴트 금지.
+     [승인 예외 v6.7.316] critical 행 좌측 1px 보더(.ai-sum-crit) 1건 — 2026-07-12 사용자 결정(admin 전용 탭이라 완화). 그 외 계속 금지.
+   - PATTERN-34: PC default 와 모바일 정의 격리 (cascade 누출 차단).
+   톤은 댓글 표(style.css .comments-data-table ~1789·~3899)와 시각적으로 일관.
+   ════════════════════════════════════════════════════════════════ */
+
+/* pane(.tab-content) 기본 overflow:hidden!important 를 ID 우선순위로 오버라이드 — 스크롤 허용.
+   (ccu-grafana-tab / trends-tab 선례) */
+#ai-summary-tab { --ai-sum-pad-top: 12px; overflow-y: auto !important; padding: var(--ai-sum-pad-top) 14px 20px !important; }
+
+/* 페인 헤더 'AI' 텍스트 마크 (render.js appLabels iconText) — 피드의 아이콘 마크 대응. 사이드바 nav-icon-text 톤 미러(800 weight, primary). */
+.pane-header-mark { font-weight: 800; color: var(--primary-color); font-size: 0.92em; }
+
+/* [v6.7.686] 요약 대기(밀림) 배지 - 헤더 카운트 옆(#ai-summary-backlog). 이 요소는 pane 헤더에 있어
+   #ai-summary-body 밖이므로 id 스코프로 격리(전역 누출 없음, 단일 요소). 0건=muted, 임계 초과=경고색,
+   오래된 표본=italic. 빈 값이면 자리를 차지하지 않게 숨긴다. */
+#ai-summary-backlog {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    padding: 2px 8px;
+    border-radius: 20px;
+    border: 1px solid transparent;
+}
+#ai-summary-backlog:empty { display: none; }
+#ai-summary-backlog.ai-sum-backlog--idle { opacity: 0.6; }
+#ai-summary-backlog.ai-sum-backlog--warn {
+    color: #fbbf24;
+    border-color: rgba(245, 158, 11, 0.5);
+    background: rgba(245, 158, 11, 0.12);
+    font-weight: 700;
+}
+#ai-summary-backlog.ai-sum-backlog--stale { font-style: italic; opacity: 0.85; }
+body[data-theme="light"] #ai-summary-backlog.ai-sum-backlog--warn {
+    color: #92400e;
+    border-color: rgba(146, 64, 14, 0.4);
+    background: rgba(146, 64, 14, 0.08);
+}
+
+/* container query 기준 컨테이너 — col-title 이 폭에 따라 줄어들다 사라지는 핵심 */
+#ai-summary-body {
+    container-type: inline-size;
+    width: 100%;
+}
+
+/* ── PC 표 ────────────────────────────────────────────────────── */
+.ai-summary-data-table-wrap {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+}
+.ai-summary-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    table-layout: fixed;
+}
+.ai-summary-data-table thead th {
+    text-align: center;
+    padding: 9px 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-color, #2a2a2e);
+    background: rgba(255, 255, 255, 0.015);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+.ai-summary-data-table tbody td {
+    padding: 9px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08); /* [v6.7.315] P3 행 리듬 — 0.04 는 사실상 비가시 */
+    vertical-align: middle;
+    color: var(--text-color, #fafafa);
+    font-size: 0.95rem;
+}
+.ai-summary-data-table tbody tr {
+    cursor: pointer;
+    transition: background 0.1s;
+}
+.ai-summary-data-table tbody tr:hover {
+    /* [v6.7.399] 디스코드 탭 호버 디자인 이식 (사용자 선호) — primary 틴트. 표 행이라 box-shadow inset 은 셀 경계와
+       충돌하니 배경 틴트만(카드는 feed-card:hover 가 테두리까지). 테마 정합(--primary-rgb). */
+    background: rgba(var(--primary-rgb), 0.10);
+}
+
+/* 컬럼 폭 — AI 요약(col-content)=고정폭 우선 유지 / 글 제목(col-title)=가변(auto)이라 폭 줄면 먼저 축소·소멸.
+   table-layout:fixed 에서 auto 칼럼이 잔여폭(table - 고정합 546) 흡수 → 좁아질 때 title 만 줄고 content 380 유지. */
+.ai-summary-data-table .col-game    { width: 110px; text-align: center; }
+.ai-summary-data-table .col-title   { width: auto; min-width: 0; color: var(--text-muted); }
+.ai-summary-data-table .col-content { width: 380px; min-width: 0; }
+/* [v6.7.322] padding-right 14px — 시간 텍스트와 col-more 존 경계 분리 (사용자: "시간과 더보기 버튼이 너무 붙음") */
+.ai-summary-data-table .col-time    { width: 92px; color: var(--text-muted); font-variant-numeric: tabular-nums; text-align: right; padding-right: 14px; }
+
+/* 글 제목 / AI 요약 / 게임명 텍스트 — ellipsis (한 줄) */
+.ai-summary-data-table .col-title-text,
+.ai-summary-data-table .col-content-text,
+.ai-summary-data-table .col-game-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+}
+
+/* ── 모바일 카드 — 댓글 카드(.feed-card--comment) 톤 미러 ───────────
+   feed-card / feed-card-meta / feed-card-game / feed-card-comment-title / feed-card-time
+   는 style.css 공용 클래스 — 재정의 금지. .feed-card--ai .feed-card-title 만 신규 정의. */
+.feed-card--ai .feed-card-title {
+    -webkit-line-clamp: 1;
+    font-size: 0.82rem;
+    line-height: 1.35;
+    color: #e5e9ee;     /* [v6.7.323] #d8dde3→#e5e9ee — 요약 대비 강화 (피드 제목 톤업 정합) */
+    font-weight: 500;   /* [v6.7.323] 400→500 */
+}
+
+/* [v6.7.315] P3 행 리듬(카드) — 공용 .feed-card 구분선(0.05)이 흐려 AI 카드만 스코프 강화 + 상하 여백 소폭 확대.
+   공용 클래스 재정의 아님(#ai-summary-body 직속 스코프) — 피드/댓글 카드 비접촉. */
+#ai-summary-body > .feed-card {
+    border-bottom-color: rgba(255, 255, 255, 0.09);
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+/* ── 표시 분기 — 댓글 탭 동일: body.ai-summary-mode-{table,cards} 수동 토글 (PATTERN-34 격리) ──
+   _initAiSummaryLayoutMode 가 항상 한쪽 클래스를 body 에 부여(기본 table). 표 wrap 의 display:block 은 위 .ai-summary-data-table-wrap 규칙이 담당. */
+body.ai-summary-mode-cards #ai-summary-body .ai-summary-data-table-wrap { display: none !important; }
+body.ai-summary-mode-table #ai-summary-body > .feed-card { display: none !important; }
+
+/* 터치 환경(모바일/태블릿): 토글 무관 카드 강제 — body-class 룰과 동일 특이도 + 뒤 소스라 override (모바일 카드 보장) */
+@media (pointer: coarse) {
+    body.ai-summary-mode-table #ai-summary-body .ai-summary-data-table-wrap,
+    body.ai-summary-mode-cards #ai-summary-body .ai-summary-data-table-wrap { display: none !important; }
+    body.ai-summary-mode-table #ai-summary-body > .feed-card,
+    body.ai-summary-mode-cards #ai-summary-body > .feed-card { display: block !important; }
+}
+
+/* ── 컨테이너 쿼리 — 폭 줄면 '글 제목'만 사라짐(AI 요약 폭 보존) (사용자 요구) ──
+   col-title 는 width:auto 라 좁아질수록 이미 먼저 줄어듦 → 거의 0 이 되는 임계(560px=게임110+요약380+시간56+여유)에서
+   깔끔히 숨겨 AI 요약(380)에 공간 양보. AI 요약 칼럼은 끝까지 유지(부득이 더 좁으면 마지막에 함께 압축). */
+@container (max-width: 560px) {
+    #ai-summary-tab .ai-summary-data-table .col-title { display: none; }
+}
+
+/* ── [v6.7.313] 상단 바 — 게임 pill(탭 로컬 필터) + 마지막 갱신 시각 ── */
+#ai-summary-body .ai-sum-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 2px 0 10px; }
+/* [v6.7.326] 겹침 fix — 구 flex:1(basis 0)+min-width:0 은 무한 압축 허용인데 pill 은 nowrap 이라
+   컨테이너를 넘쳐 우측 심각도 칩과 겹쳤음(bar 의 wrap 도 basis 0 탓에 미발동). basis auto + 하한
+   240px(좁은 pane 은 100% 캡)로 전환 — 폭 부족 시 칩/갱신이 다음 줄로 자연 wrap. */
+#ai-summary-body .ai-sum-pills { display: flex; gap: 6px; flex-wrap: wrap; flex: 1 1 auto; min-width: min(100%, 240px); }
+#ai-summary-body .ai-sum-pill {
+    background: transparent;
+    border: 1px solid var(--border-color, #2a2a2e);
+    color: var(--text-muted);
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    cursor: pointer;
+    white-space: nowrap;
+}
+#ai-summary-body .ai-sum-pill:hover { color: var(--text-color, #fafafa); border-color: var(--text-muted); }
+#ai-summary-body .ai-sum-pill.active { color: var(--primary-color); border-color: var(--primary-color); font-weight: 600; }
+#ai-summary-body .ai-sum-fresh {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ── [v6.7.315] 심각도 리딩 도트 — 구 배지 2개(주의+부정, .ai-sum-sev) 대체. PATTERN-26 준수(인라인 소형 원 — 행 틴트·엣지스트립 아님) ── */
+#ai-summary-body .ai-sum-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 7px;
+    vertical-align: 1px;
+}
+#ai-summary-body .ai-sum-dot--critical { background: #ef4444; box-shadow: 0 0 5px rgba(239, 68, 68, 0.55); }
+#ai-summary-body .ai-sum-dot--warning  { background: #f59e0b; }
+#ai-summary-body .ai-sum-dot--info     { background: rgba(161, 161, 170, 0.45); }
+
+/* ── [v6.7.315] 상단 심각도/감정 카운트 칩 — 상황판 경보 바 축소판(클릭=필터, 재클릭 해제) ── */
+#ai-summary-body .ai-sum-sevchips { display: flex; gap: 6px; flex-wrap: wrap; }
+#ai-summary-body .ai-sum-sevchip {
+    background: transparent;
+    border: 1px solid;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    cursor: pointer;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+#ai-summary-body .ai-sum-sevchip--critical { color: #ff9492; border-color: rgba(239, 68, 68, 0.55); }
+#ai-summary-body .ai-sum-sevchip--warning  { color: #fbbf24; border-color: rgba(245, 158, 11, 0.5); }
+#ai-summary-body .ai-sum-sevchip--negative { color: #fda4af; border-color: rgba(244, 63, 94, 0.4); }
+#ai-summary-body .ai-sum-sevchip--critical:hover,
+#ai-summary-body .ai-sum-sevchip--critical.active { background: rgba(239, 68, 68, 0.14); font-weight: 700; }
+#ai-summary-body .ai-sum-sevchip--warning:hover,
+#ai-summary-body .ai-sum-sevchip--warning.active  { background: rgba(245, 158, 11, 0.12); font-weight: 700; }
+#ai-summary-body .ai-sum-sevchip--negative:hover,
+#ai-summary-body .ai-sum-sevchip--negative.active { background: rgba(244, 63, 94, 0.10); font-weight: 700; }
+
+/* ── [v6.7.316] P5 위험 행 초미세 강조 — critical 행만 좌측 1px 적색 보더(box-shadow inset, 레이아웃 무영향).
+   PATTERN-26 의 승인된 유일 예외(2026-07-12 사용자 결정 — admin 전용 탭). 확장행·카드 동반(시각 연속성). ── */
+#ai-summary-body tr.ai-sum-crit > td:first-child { box-shadow: inset 1px 0 0 rgba(239, 68, 68, 0.8); }
+#ai-summary-body .feed-card--ai.ai-sum-crit { box-shadow: inset 1px 0 0 rgba(239, 68, 68, 0.8); }
+
+/* [v6.7.408] ai-sum-recent(30분 파란 시간) 제거 — 도착 잔광(300s)으로 recency 일원화 (feed/comments v6.7.407 정신). */
+
+/* [v6.7.313] 검색어 하이라이트 */
+#ai-summary-body mark.ai-sum-mark { background: rgba(255, 213, 79, 0.32); color: inherit; padding: 0 1px; border-radius: 2px; }
+
+/* ── [v6.7.320] 피드 인터랙션 통일 — 행/카드 클릭=원문 이동, 우측 chevron=상세 확장 ──
+   구 v6.7.313 "행 클릭=확장 / 제목 링크=원문" 폐지. 확장행은 상세(inert)라 클릭 커서 제거. */
+/* [v6.7.321] 더보기 존 — 표 col-more 셀 전체(버튼 inset 0). 카드는 style.css .feed-card-head 공유.
+   [v6.7.362] 44→34px 축소 (사용자 요청, style.css 피드 표와 동일 폭). */
+.ai-summary-data-table .col-more { width: 34px; padding: 0; position: relative; text-align: center; }
+.ai-summary-data-table thead th.col-more { padding-left: 0; padding-right: 0; }
+.ai-summary-data-table td.col-more .feed-more-btn { position: absolute; inset: 0; width: 100%; }
+#ai-summary-body tr.ai-sum-row { cursor: pointer; }
+#ai-summary-body .feed-card--ai { cursor: pointer; }
+/* 표 확장 시 chevron 회전 (카드는 style.css .feed-card.expanded 규칙이 자동 커버 — feed-card--ai 도 .feed-card) */
+#ai-summary-body tr.ai-sum-row.expanded .ai-sum-more-btn i { transform: rotate(180deg); }
+/* [v6.7.386] .ai-sum-focus-flash 제거 — AI 배너/보관소 클릭이 탭 안착 대신 원문 이동으로 바뀌어 소비처 0(focusAiSummaryItem 동반 제거). */
+
+/* ── [v6.7.313→320] 확장행(요약 전문 + 상세) — 클릭 무동작(inert) ── */
+#ai-summary-body tr.ai-sum-expand { cursor: default; }
+#ai-summary-body tr.ai-sum-expand > td {
+    padding: 4px 10px 12px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--text-color, #fafafa);
+    word-break: break-word;
+    white-space: normal;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08); /* [v6.7.315] P3 행 리듬 — 본문 행 구분선과 동조 */
+}
+#ai-summary-body tr.ai-sum-row.expanded > td { border-bottom: none; }
+/* [v6.7.325] 출처 미니 배지 — 표 제목 앞/카드 meta 앞. 색·배경은 공용 .feed-card-source--*(style.css) 상속,
+   크기만 AI 밀도로 축소. 라이트 모드는 공용 배지의 기존 라이트 규칙 자동 승계. */
+#ai-summary-body .ai-sum-src {
+    padding: 1px 6px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    border-radius: 4px;
+    margin-right: 6px;
+    line-height: 1.3;
+    vertical-align: 1px;
+}
+
+/* [v6.7.320] .ai-sum-title-link 제거 — 제목 링크 폐지(행 클릭=원문 통일)로 소비처 0 (JS 2곳 삭제 동반). */
+
+/* [v6.7.313] 카드 확장 — 요약 line-clamp 해제 (feed-card-title 은 style.css -webkit-box 클램프) */
+.feed-card--ai.expanded .feed-card-title { -webkit-line-clamp: unset; overflow: visible; }
+
+/* ── [v6.7.318] 확장 상세 필드 — 게임/일시/제목/내용/링크+복사 (카카오 요약 알림 폼 구조 등가).
+   구 .ai-sum-expand-meta(제목+원문 열기) 대체. PATTERN-26 준수 — 텍스트 그리드, 엣지스트립·틴트 아님. ── */
+#ai-summary-body .ai-sum-detail-grid {
+    margin-top: 8px;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 8px 12px;      /* [v6.7.331] 행간 4→8 확대 (요약/제목/내용 블록 분리) · [v6.7.323] 라벨-값 간격 (피드 정합) */
+    font-size: 0.78rem;
+    line-height: 1.5;
+    cursor: default;
+}
+#ai-summary-body .ai-sum-detail-lbl { color: var(--text-muted); font-weight: 500; }  /* [v6.7.331] 라벨 굵기 — 좌측 스캔 가이드 강화 */
+#ai-summary-body .ai-sum-detail-val { color: var(--text-color, #e0e0e0); word-break: break-word; min-width: 0; }
+/* [v6.7.331] 값 위계 — 배경 없이 밝기·굵기로 요약>제목>내용 (PATTERN-26: 틴트/엣지스트립 아님). 요약=굵게(핵심), 내용=흐리게(본문). */
+#ai-summary-body .ai-sum-detail-summary { font-weight: 600; }
+/* [v6.7.323] 본문만 그리드보다 키움 + 행간 여유 (피드 .feed-detail-content 정합) */
+#ai-summary-body .ai-sum-detail-content { font-size: 0.84rem; line-height: 1.65; white-space: pre-wrap; max-height: 180px; overflow-y: auto; padding-right: 4px; color: var(--text-muted); }  /* [v6.7.331] 내용=본문 톤(흐림) */
+#ai-summary-body .ai-sum-detail-pending { color: var(--text-muted); }
+#ai-summary-body .ai-sum-detail-linkrow { display: flex; align-items: center; gap: 8px; }
+#ai-summary-body .ai-sum-detail-link {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--primary-color);
+    text-decoration: none;
+}
+#ai-summary-body .ai-sum-detail-link:hover { text-decoration: underline; }
+#ai-summary-body .ai-sum-copy-btn {
+    flex: none;
+    background: rgba(8, 145, 178, 0.14);
+    border: 1px solid rgba(34, 211, 238, 0.35);
+    color: #22d3ee;
+    font-size: 0.72rem;
+    padding: 3px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.12s, color 0.12s;
+}
+#ai-summary-body .ai-sum-copy-btn:hover { background: rgba(8, 145, 178, 0.26); }
+#ai-summary-body .ai-sum-copy-btn.copied { color: #4ade80; border-color: rgba(74, 222, 128, 0.4); background: rgba(74, 222, 128, 0.10); }
+/* 카드 상세 — expanded 시에만 표시 (지연 주입 + 접힘 시 제거 없이 CSS 로 숨김) */
+#ai-summary-body .ai-sum-card-detail { display: none; margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(255, 255, 255, 0.08); cursor: default; }
+#ai-summary-body .feed-card--ai.expanded .ai-sum-card-detail { display: block; }
+@media (pointer: coarse) {
+    #ai-summary-body .ai-sum-copy-btn { padding: 6px 12px; }
+}
+
+/* ── [v6.7.313/315] 라이트 모드 정합 — 하드코딩 색만 보정 (var 기반은 자동 추종) ── */
+body[data-theme="light"] #ai-summary-body .ai-sum-dot--critical { background: #dc2626; box-shadow: none; }
+body[data-theme="light"] #ai-summary-body .ai-sum-dot--warning  { background: #d97706; }
+body[data-theme="light"] #ai-summary-body .ai-sum-dot--info     { background: rgba(71, 85, 105, 0.35); }
+body[data-theme="light"] #ai-summary-body .ai-sum-sevchip--critical { color: #b91c1c; border-color: rgba(185, 28, 28, 0.45); }
+body[data-theme="light"] #ai-summary-body .ai-sum-sevchip--warning  { color: #92400e; border-color: rgba(146, 64, 14, 0.4); }
+body[data-theme="light"] #ai-summary-body .ai-sum-sevchip--negative { color: #be123c; border-color: rgba(190, 18, 60, 0.35); }
+body[data-theme="light"] #ai-summary-body .ai-sum-sevchip--critical:hover,
+body[data-theme="light"] #ai-summary-body .ai-sum-sevchip--critical.active { background: rgba(185, 28, 28, 0.08); }
+body[data-theme="light"] #ai-summary-body .ai-sum-sevchip--warning:hover,
+body[data-theme="light"] #ai-summary-body .ai-sum-sevchip--warning.active  { background: rgba(146, 64, 14, 0.08); }
+body[data-theme="light"] #ai-summary-body .ai-sum-sevchip--negative:hover,
+body[data-theme="light"] #ai-summary-body .ai-sum-sevchip--negative.active { background: rgba(190, 18, 60, 0.07); }
+body[data-theme="light"] #ai-summary-body mark.ai-sum-mark { background: rgba(202, 138, 4, 0.22); }
+body[data-theme="light"] #ai-summary-body tr.ai-sum-crit > td:first-child,
+body[data-theme="light"] #ai-summary-body .feed-card--ai.ai-sum-crit { box-shadow: inset 1px 0 0 rgba(185, 28, 28, 0.65); }
+/* [v6.7.315] P3 행 리듬 라이트 동반 — 종전 라이트 모드는 본문 행 구분선 오버라이드 부재(흰 배경 위 white 0.04 = 비가시) */
+body[data-theme="light"] .ai-summary-data-table tbody td { border-bottom-color: rgba(15, 23, 42, 0.10); }
+body[data-theme="light"] #ai-summary-body tr.ai-sum-expand > td { border-bottom-color: rgba(15, 23, 42, 0.10); }
+body[data-theme="light"] #ai-summary-body > .feed-card { border-bottom-color: rgba(15, 23, 42, 0.10); }
+/* [v6.7.318] 확장 상세 필드 라이트 동반 — 다크 가정 rgba(255,255,255,*)/하드코딩 시안만 보정 */
+body[data-theme="light"] #ai-summary-body .ai-sum-detail-val { color: #1E293B; }
+body[data-theme="light"] #ai-summary-body .ai-sum-detail-content { color: #64748B; }  /* [v6.7.331] 내용 흐림 라이트 정합 (다크 secondary 대응, val 규칙 specificity 우선 상쇄) */
+/* [v6.7.323] 라벨 라이트 대비 — --text-color-secondary 다크 fallback(#a1a1aa)이 흰 배경에서 약함 → 슬레이트 */
+body[data-theme="light"] #ai-summary-body .ai-sum-detail-lbl { color: #64748B; }
+body[data-theme="light"] #ai-summary-body .ai-sum-card-detail { border-top-color: rgba(15, 23, 42, 0.10); }
+body[data-theme="light"] #ai-summary-body .ai-sum-detail-link { color: #0891b2; }
+body[data-theme="light"] #ai-summary-body .ai-sum-copy-btn { background: rgba(8, 145, 178, 0.10); border-color: rgba(8, 145, 178, 0.35); color: #0891b2; }
+body[data-theme="light"] #ai-summary-body .ai-sum-copy-btn:hover { background: rgba(8, 145, 178, 0.18); }
+body[data-theme="light"] #ai-summary-body .ai-sum-copy-btn.copied { color: #15803d; border-color: rgba(21, 128, 61, 0.4); background: rgba(21, 128, 61, 0.08); }
+
+/* ════════════════════════════════════════════════════════════════
+   [v6.7.691] 진행형 렌더 + UX 폴리시 (순단 개선 동반)
+   - 모든 셀렉터 #ai-summary-tab / #ai-summary-body 스코프 유지(전역 누출 금지).
+   - 색만으로 심각도를 가르지 않는다(도트 형태 차등) - 접근성.
+   - 하드코딩 색 최소화 · 라이트 모드 하드코딩만 별도 보정 · reduced-motion 존중.
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── 진행형 렌더 sentinel - 관찰 전용 1px(레이아웃 무영향) ── */
+#ai-summary-body .ai-sum-sentinel { height: 1px; margin: 0; padding: 0; }
+
+/* ── sticky 필터 바 - 스크롤 중에도 게임 pill / 심각도 칩 / 갱신 시각을 상단 고정.
+   필터 기준은 #ai-summary-tab, 표 머리 기준은 가로 스크롤 wrap이다.
+   wrap은 이미 필터 아래에 있으므로 머리글에 필터 높이를 다시 더하지 않는다.
+   [v6.7.722] 스크롤러 위 여백(--ai-sum-pad-top)만큼 바를 위로 늘려 덮는다. top:0 은 그 여백 아래에 붙어
+   (Chromium 실측 12px) 스크롤된 카드·행이 그 틈으로 바 위에 비쳤다. 음수 margin 과 같은 양의 padding 이
+   상쇄돼 칩 위치는 그대로다. ── */
+#ai-summary-body .ai-sum-bar {
+    position: sticky;
+    top: calc(-1 * var(--ai-sum-pad-top, 0px));
+    margin-top: calc(-1 * var(--ai-sum-pad-top, 0px));
+    padding-top: calc(var(--ai-sum-pad-top, 0px) + 2px);   /* 2px = 기본 바 padding-top(위 [v6.7.313] 규칙) */
+    z-index: 3;
+    background: var(--ime-surface, var(--background-color, #0b0b0f));
+    box-shadow: 0 1px 0 var(--border-color, rgba(255, 255, 255, 0.08));
+}
+.ai-summary-data-table thead th { top: 0; }
+
+/* ── 심각도 도트 형태 차등(색맹 대비) - info=속 빈 링 / 주의=채움 / 위험=채움+외곽 링(+확대).
+   색상 자체는 기존 규칙 유지, 여기선 형태만 덧입힌다(later source 라 우선). ── */
+#ai-summary-body .ai-sum-dot--info {
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px rgba(161, 161, 170, 0.6);
+}
+#ai-summary-body .ai-sum-dot--critical {
+    width: 9px;
+    height: 9px;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.28), 0 0 5px rgba(239, 68, 68, 0.55);
+}
+body[data-theme="light"] #ai-summary-body .ai-sum-dot--info { box-shadow: inset 0 0 0 1.5px rgba(71, 85, 105, 0.55); }
+body[data-theme="light"] #ai-summary-body .ai-sum-dot--critical { box-shadow: 0 0 0 2px rgba(185, 28, 28, 0.25); }
+
+/* ── '새 요약 N건' 배지 - 스크롤러 sticky(본문 밖). 클릭=맨 위로. ── */
+#ai-summary-tab { position: relative; }
+#ai-summary-tab .ai-sum-newpill {
+    position: sticky;
+    top: 8px;
+    z-index: 20;
+    display: block;
+    margin: 0 auto 4px;
+    width: fit-content;
+    max-width: 90%;
+    padding: 6px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--primary-color);
+    background: var(--primary-color);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.3;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(var(--primary-rgb), 0.4);
+    white-space: nowrap;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+#ai-summary-tab .ai-sum-newpill:hover { box-shadow: 0 6px 18px rgba(var(--primary-rgb), 0.55); transform: translateY(-1px); }
+#ai-summary-tab .ai-sum-newpill i { font-size: 0.72rem; margin-right: 3px; }
+
+/* ── 스켈레톤 로딩 - 첫 데이터 전 형태 자리(빈 텍스트 대체) ── */
+#ai-summary-body .ai-sum-skeleton { padding: 4px 0; }
+#ai-summary-body .ai-sum-skel-bar,
+#ai-summary-body .ai-sum-skel-row {
+    border-radius: 6px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.04) 25%, rgba(255, 255, 255, 0.09) 37%, rgba(255, 255, 255, 0.04) 63%);
+    background-size: 400% 100%;
+    animation: aiSumSkeleton 1.4s ease infinite;
+}
+#ai-summary-body .ai-sum-skel-bar { height: 26px; width: 55%; margin: 4px 0 14px; }
+#ai-summary-body .ai-sum-skel-row { height: 18px; margin: 10px 0; }
+#ai-summary-body .ai-sum-skel-row:nth-child(odd) { width: 92%; }
+#ai-summary-body .ai-sum-skel-row:nth-child(even) { width: 78%; }
+@keyframes aiSumSkeleton { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
+body[data-theme="light"] #ai-summary-body .ai-sum-skel-bar,
+body[data-theme="light"] #ai-summary-body .ai-sum-skel-row {
+    background: linear-gradient(90deg, rgba(15, 23, 42, 0.05) 25%, rgba(15, 23, 42, 0.11) 37%, rgba(15, 23, 42, 0.05) 63%);
+    background-size: 400% 100%;
+}
+
+/* ── 키보드 포커스 가시화(:focus-visible) - pill / 칩 / 더보기 / 복사 / 배지 ── */
+#ai-summary-body .ai-sum-pill:focus-visible,
+#ai-summary-body .ai-sum-sevchip:focus-visible,
+#ai-summary-body .ai-sum-more-btn:focus-visible,
+#ai-summary-body .ai-sum-copy-btn:focus-visible,
+#ai-summary-tab .ai-sum-newpill:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* ── 터치 타깃(모바일) - pill/칩/배지 최소 높이 확보(WCAG 겨냥) ── */
+@media (pointer: coarse) {
+    #ai-summary-body .ai-sum-pill,
+    #ai-summary-body .ai-sum-sevchip {
+        min-height: 32px;
+        display: inline-flex;
+        align-items: center;
+    }
+    #ai-summary-tab .ai-sum-newpill { min-height: 36px; padding: 8px 18px; }
+}
+
+/* ── 모션 최소화 존중 - 스켈레톤 shimmer / 배지 트랜지션 정지 ── */
+@media (prefers-reduced-motion: reduce) {
+    #ai-summary-body .ai-sum-skel-bar,
+    #ai-summary-body .ai-sum-skel-row { animation: none; }
+    #ai-summary-tab .ai-sum-newpill { transition: none; }
+    #ai-summary-tab .ai-sum-newpill:hover { transform: none; }
+}

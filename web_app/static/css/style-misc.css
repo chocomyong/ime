@@ -1,0 +1,318 @@
+/* [v6.7.392] style.css 분할 style-misc.css — 사이드바 뱃지·하이라이트·AI분석 탭·헤더·Toast·Skeleton (순서 보존 분할: 로드 순서 변경 금지, index.html link 순서 = 원본 cascade) */
+/* === 사이드바 새 글 뱃지 === */
+.nav-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    background: #e53935;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 10;
+    line-height: 1;
+}
+
+/* 하단 탭바 뱃지: 아이콘 우상단에 작게 표시 */
+.btab-item .nav-badge {
+    top: 4px;
+    right: 6px;
+    min-width: 16px;
+    height: 16px;
+    font-size: 0.6rem;
+    padding: 0 3px;
+}
+
+/* === 키워드 하이라이트 === */
+.kw-highlight {
+    background: rgba(187, 134, 252, 0.22);
+    color: inherit;
+    font-weight: 700;
+    border-radius: 3px;
+    padding: 0 2px;
+}
+
+/* 슈퍼키워드 하이라이트 — 주황-앰버 */
+.kw-highlight-super {
+    background: rgba(255, 179, 71, 0.35);
+}
+
+/* === AI 분석 탭 — 컨테이너 flex fill (max-height: 75vh 하드코딩 제거) === */
+#aiAnalysisContainer {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+/* === 게임/커뮤니티 탭 내부 검색바 === */
+.tab-search-bar {
+    padding: 6px 0 8px;
+    flex-shrink: 0;
+}
+.tab-search-bar .header-search-container {
+    max-width: 360px;
+}
+
+/* === AI 분석 탭 카드 뷰 === */
+.ai-game-articles-container {
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ai-analysis-card {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background 0.15s;
+    position: relative;
+}
+.ai-analysis-card:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+/* [v6.7.26] .ai-analysis-card.ai-pick 제거 — dead branch */
+
+.ai-card-row1 {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.ai-card-title {
+    font-size: 0.95rem;
+    color: #e0e0e0;
+    text-decoration: none;
+    flex: 1;
+    min-width: 0;
+}
+.ai-card-title:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+.ai-summary-text {
+    font-size: 0.84rem;
+    color: #c8c8c8;
+    line-height: 1.65;
+    white-space: pre-wrap;
+    word-break: break-word;
+    padding: 6px 10px;
+    margin-top: 4px;
+    background: rgba(255, 255, 255, 0.035);
+    border-left: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0 4px 4px 0;
+}
+/* 출처별 요약 스트립 색상 */
+.ai-summary-text.src-daum { border-left-color: rgba(247, 230, 0, 0.6); }
+.ai-summary-text.src-dc   { border-left-color: rgba(100, 181, 246, 0.6); }
+.ai-card-row1 .card-time {
+    font-size: 0.75rem;
+    color: #666;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ===== 헤더 레이아웃 ===== */
+.pane-header-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+    min-width: 0;
+    cursor: grab;
+    user-select: none;
+}
+.pane-header-top[draggable="true"]:active { cursor: grabbing; }
+/* 인터랙티브 요소는 기본 커서로 복귀 */
+.pane-header-top input,
+.pane-header-top button,
+.pane-header-top .pane-controls,
+.pane-header-top .header-search-container,
+.pane-header-top .date-nav-bar { cursor: auto; }
+.pane-header-top button,
+.pane-header-top .pane-close-btn { cursor: pointer; }
+.pane-header-title { margin: 0; flex-shrink: 0; white-space: nowrap; }
+.pane-header-top .pane-controls { margin-left: auto; flex-shrink: 0; display: flex; align-items: center; gap: 6px; }
+
+/* 검색창만 남은 공간 전부 차지 */
+.pane-header-search {
+    flex: 1 1 0;
+    min-width: 60px;
+    max-width: none !important;
+}
+
+.pane-header-subbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 6px;
+    flex-wrap: wrap;
+}
+
+/* date input 다크 스타일 */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.7);
+    cursor: pointer;
+}
+input[type="date"]:focus { outline: none; border-color: var(--primary-color); }
+
+/* ===== 게임/커뮤니티 섹션 헤더 2행 ===== */
+.game-section-header-row1 {
+    display: flex;
+    align-items: center;
+}
+.game-section-header-row2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 4px;
+    flex-wrap: wrap;
+}
+/* 커뮤니티 탭: 게임 바로가기 버튼 행 */
+.community-game-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 6px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.count-item {
+    font-size: 0.78rem;
+    color: var(--text-muted, #888);
+}
+
+/* ====================================================================
+   [v6.6.248] Toast — 인라인 cssText 에서 클래스로 이관. 디자인 토큰 활용.
+   ==================================================================== */
+.imt-toast {
+    position: fixed;
+    right: var(--space-5);
+    bottom: var(--space-5); /* JS 가 바텀 오프셋 재계산 */
+    background: #2a2a30;
+    color: #fff;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--primary-color);
+    font-size: var(--text-sm);
+    z-index: var(--z-toast);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    transition: bottom var(--transition-base);
+    max-width: 320px;
+    line-height: 1.4;
+}
+.imt-toast--error {
+    border-left-color: var(--color-error);
+}
+/* [v6.6.254] 토스트 내부 구조 — 아이콘 / 메시지 / 닫기 / 진행바 */
+.imt-toast {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding-right: var(--space-5); /* 닫기 버튼 공간 */
+    overflow: hidden; /* 진행바 하단 정렬 */
+    position: relative; /* fixed 는 JS 재설정, 내부 position:fixed 아님 */
+}
+.imt-toast__icon {
+    color: var(--primary-color);
+    font-size: 1.05rem;
+    flex-shrink: 0;
+}
+.imt-toast--error .imt-toast__icon {
+    color: var(--color-error);
+}
+.imt-toast__msg {
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+}
+.imt-toast__close {
+    all: unset;
+    position: absolute;
+    top: var(--space-1);
+    right: var(--space-2);
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    font-size: 1.1rem;
+    line-height: 1;
+    border-radius: var(--radius-sm);
+    transition: color var(--transition-fast), background var(--transition-fast);
+}
+.imt-toast__close:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+}
+.imt-toast__progress {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--primary-color);
+    transform-origin: left;
+    animation: toast-progress linear forwards;
+}
+.imt-toast--error .imt-toast__progress {
+    background: var(--color-error);
+}
+@keyframes toast-progress {
+    from { transform: scaleX(1); }
+    to   { transform: scaleX(0); }
+}
+
+/* ====================================================================
+   [v6.6.254] Skeleton Loading — Phase 3-1
+   탭 진입 시 빈 화면 깜빡임 방지. 테이블 행 형태 회색 막대 shimmer.
+   사용: <tr class="skeleton-row"><td class="skeleton-bar"></td>...</tr>
+   ==================================================================== */
+@keyframes skeleton-shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+.skeleton-bar {
+    display: inline-block;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.03) 0%,
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0.03) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+    border-radius: var(--radius-sm);
+    height: 12px;
+    width: 100%;
+    vertical-align: middle;
+}
+.skeleton-row td {
+    padding: var(--space-3) var(--space-2) !important;
+}
+.skeleton-row td .skeleton-bar--sm { width: 48px; }
+.skeleton-row td .skeleton-bar--md { width: 70%; }
+.skeleton-row td .skeleton-bar--lg { width: 92%; }
+/* 카드 스켈레톤 (AI 탭 등) */
+.skeleton-card {
+    padding: var(--space-3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+.skeleton-card .skeleton-bar {
+    height: 14px;
+}
+

@@ -1,0 +1,19 @@
+                            <div id="ai-summary-tab" class="tab-content">
+                                <!-- [v6.7.691] '새 요약 N건' 배지 - #ai-summary-body 밖(스크롤러 직속) 이라 본문 재렌더에도 살아남음. sticky 로 스크롤 중 상단 고정. 클릭=맨 위로. -->
+                                <button id="ai-summary-newpill" type="button" class="ai-sum-newpill" style="display:none;" aria-live="polite">
+                                    <i class="fas fa-arrow-up" aria-hidden="true"></i> 새 요약 <span id="ai-summary-newpill-count">0</span>건
+                                </button>
+                                <div id="ai-summary-empty-state" class="empty-state" style="display:none;"><p>표시할 AI 요약이 없습니다</p></div>
+                                <div id="ai-summary-body">
+                                    {% with loading_label='AI 요약을 불러오는 중' %}{% include 'partials/data_loading.html' %}{% endwith %}
+                                    <!-- [v6.7.691] 스켈레톤 로딩 - 첫 데이터 도착 전 빈 텍스트('로드 중…') 대신 형태 자리. renderAiSummary 가 첫 렌더에서 통째 교체. -->
+                                    <div class="ai-sum-skeleton" aria-hidden="true">
+                                        <div class="ai-sum-skel-bar"></div>
+                                        <div class="ai-sum-skel-row"></div>
+                                        <div class="ai-sum-skel-row"></div>
+                                        <div class="ai-sum-skel-row"></div>
+                                        <div class="ai-sum-skel-row"></div>
+                                        <div class="ai-sum-skel-row"></div>
+                                    </div>
+                                </div>
+                            </div>

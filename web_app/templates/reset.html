@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex,nofollow">
+    <title>IME 초기화 중...</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f1115;
+            --panel: #151821;
+            --border: #2a2e36;
+            --text: #e5e7eb;
+            --text-muted: #9ca3af;
+            --primary: #3182f6;
+            --success: #10b981;
+            --warn: #fbbf24;
+        }
+        * { box-sizing: border-box; }
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+        }
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            max-width: 520px;
+            width: 100%;
+            padding: 32px 28px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+        .brand {
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.3em;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .title {
+            font-size: 22px;
+            font-weight: 700;
+            text-align: center;
+            margin: 0 0 20px 0;
+        }
+        .status {
+            margin: 18px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: var(--text-muted);
+            padding: 8px 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .step.done { color: var(--success); border-color: var(--success); }
+        .step.fail { color: var(--warn); border-color: var(--warn); }
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border);
+            flex-shrink: 0;
+        }
+        .step.done .dot { background: var(--success); }
+        .step.fail .dot { background: var(--warn); }
+        .note {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-align: center;
+            margin: 18px 0 0 0;
+            line-height: 1.6;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            margin-top: 16px;
+            padding: 12px 16px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: filter 0.15s;
+        }
+        .btn:hover { filter: brightness(1.1); }
+        .countdown {
+            font-weight: 700;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="brand">I M E</div>
+        <h1 class="title">화면 초기화 중입니다</h1>
+        <div class="status" id="statusList">
+            <div class="step" id="step-sw"><span class="dot"></span><span>Service Worker 해제</span></div>
+            <div class="step" id="step-cache"><span class="dot"></span><span>브라우저 캐시 정리</span></div>
+            <div class="step" id="step-ls"><span class="dot"></span><span>로컬 저장소 초기화</span></div>
+        </div>
+        <p class="note" id="note"><span class="countdown" id="countdown">3</span>초 후 메인 페이지로 자동 이동합니다.</p>
+        <button type="button" class="btn" id="goBtn" style="display:none;">지금 메인으로 이동</button>
+    </div>
+
+    <script>
+    (function () {
+        var HOME = '/';
+        var steps = {
+            sw: document.getElementById('step-sw'),
+            cache: document.getElementById('step-cache'),
+            ls: document.getElementById('step-ls')
+        };
+        function mark(key, ok) {
+            if (!steps[key]) return;
+            steps[key].classList.add(ok ? 'done' : 'fail');
+        }
+
+        function unregisterSW() {
+            if (!('serviceWorker' in navigator)) { mark('sw', true); return Promise.resolve(); }
+            return navigator.serviceWorker.getRegistrations()
+                .then(function (regs) {
+                    return Promise.all((regs || []).map(function (r) { return r.unregister(); }));
+                })
+                .then(function () { mark('sw', true); })
+                .catch(function () { mark('sw', false); });
+        }
+        function clearCaches() {
+            if (!('caches' in window)) { mark('cache', true); return Promise.resolve(); }
+            return caches.keys()
+                .then(function (keys) {
+                    return Promise.all((keys || []).map(function (k) { return caches.delete(k); }));
+                })
+                .then(function () { mark('cache', true); })
+                .catch(function () { mark('cache', false); });
+        }
+        function clearStorage() {
+            try { localStorage.clear(); } catch (e) {}
+            try { sessionStorage.clear(); } catch (e) {}
+            mark('ls', true);
+            return Promise.resolve();
+        }
+
+        function redirectHome() {
+            // 쿼리 파라미터로 cache-busting 한 번 더. 서버 응답이 if-none-match 헛돌지 않게.
+            window.location.replace(HOME + '?_t=' + Date.now());
+        }
+
+        // 전체 초기화 실행
+        Promise.resolve()
+            .then(unregisterSW)
+            .then(clearCaches)
+            .then(clearStorage)
+            .then(function () {
+                // 카운트다운 후 자동 이동
+                var n = 3;
+                var cd = document.getElementById('countdown');
+                var goBtn = document.getElementById('goBtn');
+                if (goBtn) {
+                    goBtn.style.display = 'block';
+                    goBtn.addEventListener('click', redirectHome);
+                }
+                var timer = setInterval(function () {
+                    n -= 1;
+                    if (cd) cd.textContent = String(Math.max(n, 0));
+                    if (n <= 0) {
+                        clearInterval(timer);
+                        redirectHome();
+                    }
+                }, 1000);
+            })
+            .catch(function () {
+                // 그래도 홈으로는 보내줌
+                setTimeout(redirectHome, 1500);
+            });
+    })();
+    </script>
+</body>
+</html>

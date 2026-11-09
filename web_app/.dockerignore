@@ -1,0 +1,69 @@
+__pycache__/
+*.pyc
+*.pyo
+app_before.py
+crawler_before.py
+.vscode/
+.git/
+venv/
+env/
+
+# [v6.7.128] Chrome 프로필 + 쿠키는 docker-compose volume (`chrome_profiles_data`) 으로 영속화.
+# 호스트(홈 서버) 작업 트리에 stale 잔재가 있어도 이미지 빌드 시 컨테이너로 들어가지 않도록 차단.
+# 빌드 후 첫 부팅 시 컨테이너 안에서 fresh 생성 → 이후 volume 으로 영속.
+.chrome_profiles/
+contents_cookies.json
+
+# [v6.7.461] **시크릿을 이미지에 굽지 않는다.**
+#   `.env` 는 gitignore 라 레포에는 없지만 **서버 worktree 에는 실재**한다
+#   (`IMT_ADMIN_SECRET_KEY`·`IMT_MANAGER_SECRET_KEY`·`FLASK_SECRET_KEY`).
+#   .dockerignore 에 없으면 `COPY . /app/` 이 그 파일을 **이미지 레이어에 그대로 굽는다** -
+#   compose 가 어차피 environment 로 주입하므로(docker-compose.yml:9-18,155) 이미지 안의 사본은
+#   기능상 불필요한 **순수 노출 증가**다. 게다가 레이어에 굳으면 키를 로테이트해도 그 이미지를
+#   가진 사람에게는 옛 키가 계속 남는다(파일을 지워도 하위 레이어에 존재).
+#   `imt-diag exec webapp cat /app/.env` 로 게이트 키에서도 읽혔을 경로다(imt-diag.sh 헤더 보안 노트).
+.env
+.env.*
+
+# [v6.7.477] 운영과 무관한 자산은 이미지에 굽지 않는다 (레포에는 그대로 둔다 - 참조 가치가 있다).
+#   `COPY . /app/` 이라 제외하지 않으면 전부 레이어에 들어간다: 실측 776K + 파이썬 수천 행
+#   (_scrap 428K · mockups 268K · design-previews 80K). 빌드 컨텍스트 전송·레이어 크기와
+#   `imt-diag exec` 로 열람 가능한 표면이 그만큼 줄어든다.
+_scrap/
+static/mockups/
+static/design-previews/
+ai_lib/test_*.py
+crawlers/*_legacy.py
+
+# [v6.7.601] POE 아이템매니아 크롤러 자산 제외 - **로컬 exe 도구이지 웹앱 코드가 아니다.**
+#   실측(2026-08-22): 웹앱 코어(app.py·web_lib·utils·ai_lib)가 아래 파일을 한 줄도 import 하지
+#   않는다. `crawlers/` 24,338줄 중 POE 계열이 15,755줄(65%)인데 `COPY . /app/` 이라 전량
+#   이미지 레이어에 굽히고 있었다. 08-03 v6.7.477 이 같은 유형(운영 무관 자산)을 정리했으나
+#   규칙이 열거식이라 그 뒤 자란 것(poe_ai_review·test_poe_review 각 3,1xx줄, 둘 다 08-03
+#   이후 신설)을 못 잡았다.
+#
+#   **글롭으로 쓰지 말 것 - `crawlers/*poe*` 는 운영을 깬다.**
+#   `crawlers/official_poe.py`(359줄)는 이름에 poe 가 들어가지만 **웹앱 현역**이다
+#   (`crawler.py:1872` + `content_extractor.py:397` 이 `from crawlers.official_poe import ...`
+#   지연 import). 같은 함정이 `naver_cafe.py`·`official_pubg.py`·`dc_http.py` 에도 있다 -
+#   전부 `from crawlers.X import Y` 형태라 `^import X` 로 grep 하면 "소비처 0" 으로 오판된다
+#   (WORK_PROTOCOL 6-A 규율 5: 부재 주장은 전수 확인을 요구한다. 이 커밋 작성 중 실제로 한 번
+#   오판했다가 패키지형 import 를 찾아 정정했다).
+#
+#   → 그래서 **파일명 명시**로만 제외한다. 아래 목록에 없는 crawlers 파일은 전부 이미지에 남는다.
+crawlers/itemmania_POE1_2_crawler.py
+crawlers/poe_ai_review.py
+crawlers/poe_outlier.py
+crawlers/poe_selector_preflight.py
+crawlers/poe_selector_recover.py
+crawlers/config_itemmania_poe.json
+crawlers/build_exe_POE1_2.bat
+crawlers/run_itemmania.bat
+crawlers/ITEMMANIA_POE1_2_GUIDE.md
+crawlers/ITEMMANIA_POE1_2_PARSING.md
+crawlers/ITEMMANIA_POE1_2_EXCEPTIONS.md
+
+# [v6.7.601] 테스트 코드는 이미지에 굽지 않는다 (`ai_lib/test_*.py` 와 같은 규칙 - 구멍이었다).
+#   crawlers/test_poe_review.py 3,167 + test_poe_selfheal_live.py 500 +
+#   test_poe_sheet_rollover.py 369 = 4,036줄. 컨테이너에서 실행되지 않는다.
+crawlers/test_*.py

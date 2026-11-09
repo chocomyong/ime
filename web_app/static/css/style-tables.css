@@ -1,0 +1,332 @@
+/* [v6.7.392] style.css 분할 style-tables.css — 전체/댓글/게임/커뮤니티 탭 col-* 테이블 규격 (순서 보존 분할: 로드 순서 변경 금지, index.html link 순서 = 원본 cascade) */
+/* [v6.6.246] 전체 탭 컬럼 스타일 — 의미 class(col-*) 기반 */
+/* [v6.6.271] 120px → 140px — 댓글 탭 col-game(v6.6.269)과 너비 통일.
+   "아키에이지워" 등 6자 한글 게임명이 전체 탭에서도 여유롭게 표시됨. */
+#totalArticlesContainer table .col-game {
+    width: 140px !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center !important;
+}
+#totalArticlesContainer table .col-source {
+    width: 65px !important;
+    white-space: nowrap;
+    text-align: center !important;
+    overflow: visible;
+}
+#totalArticlesContainer table .col-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/* [v6.6.272] 시간 헤더(th) 색상 쏠림 해소 — 기존 규칙은 th/td 모두 #fff 를 강제해
+   전체 탭만 시간 헤더가 흰색, 댓글/게임별/커뮤니티 3탭은 primary-color 라 불일치.
+   td(body) 의 흰색은 유지하고 th 는 다른 탭과 동일하게 primary-color 로 복귀. */
+#totalArticlesContainer table .col-time {
+    width: 65px !important;
+    white-space: nowrap !important;
+    text-align: right !important;
+}
+#totalArticlesContainer table td.col-time {
+    color: #fff !important;
+}
+
+/* 댓글 내용 열 (2번째 열) 특정 처리 */
+.excel-table td:nth-child(2) {
+    max-width: 450px;
+}
+
+.excel-table tr:hover {
+    box-shadow: inset 0 0 0 999px rgba(49, 130, 246, 0.05) !important;
+}
+
+.excel-table tr:last-child td {
+    border-bottom: none;
+}
+
+.excel-table .cell-link {
+    color: var(--secondary-color);
+    text-decoration: none;
+}
+
+.excel-table .cell-link:hover {
+    text-decoration: underline;
+}
+
+.excel-table .cell-time {
+    color: var(--text-muted);
+    font-family: monospace;
+}
+
+/* 다이아 시세 테이블 중앙 정렬 */
+.diamond-trade-table td {
+    text-align: center !important;
+}
+
+/* 계정 거래 테이블 - 열 너비 강제 고정 */
+.account-trade-table {
+    table-layout: fixed !important;
+    width: 100% !important;
+}
+.account-trade-table th,
+.account-trade-table td {
+    text-align: center !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.account-trade-table th:nth-child(3),
+.account-trade-table td:nth-child(3) {
+    text-align: left !important;
+}
+
+/* Full Width Table (for articles in Games/Community/Total tabs) */
+.full-width-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    /* 湲???고듃 ?곹뼢 (+1~2pt) */
+    color: #e0e0e0;
+}
+
+.full-width-table th {
+    background: rgba(0, 0, 0, 0.4);
+    color: var(--primary-color);
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 0.85rem; /* [수정] 0.9rem -> 0.85rem */
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.full-width-table td {
+    padding: 8px 12px;
+    font-size: 0.82rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    /* ??媛濡쒖꽑 吏??*/
+    vertical-align: middle;
+}
+
+.full-width-table tr.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.full-width-table tr.clickable-row:hover {
+    box-shadow: inset 0 0 0 999px rgba(49, 130, 246, 0.15) !important;
+}
+
+.card-grid,
+.community-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: auto;
+    align-items: start;
+    gap: 10px;
+    padding: 5px;
+    flex: 1;
+    height: auto;
+    min-height: 0;
+}
+
+/* 커뮤니티 탭: 전체 높이 채우고 내부 그리드 아이템이 스크롤 동작 */
+#community-tab .community-grid {
+    height: 100%;
+    overflow: hidden;
+    grid-auto-rows: 1fr;
+    align-items: stretch;
+}
+
+/* Mobile responsive for grids */
+@media (max-width: 1100px) {
+
+    .card-grid,
+    .community-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Individual Game Section in Game Tab */
+.game-section-table-wrapper {
+    display: flex;
+    flex-direction: column;
+    background: var(--card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* 커뮤니티 탭 - wrapper가 그리드 높이를 꽉 채우도록 */
+#community-tab .game-section-table-wrapper {
+    height: 100%;
+    min-height: 0;
+}
+
+#games-tab .game-articles-container {
+    /* 헤더 제외 5행 기준: 5행 × 38px + 여유 = 280px */
+    max-height: 280px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/* Individual Community Section in Community Tab */
+/* 전체 탭과 동일하게 flex:1 로 pane 높이를 채우고 내부 스크롤 */
+#community-tab .game-articles-container {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+
+
+.game-section-header {
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.game-name {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--primary-color);
+}
+
+.game-counts {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* [�߰�] �ؽ�Ʈ ���� �� �ʺ� ����ȭ (30% ���) */
+.full-width-table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.full-width-table .col-title {
+    max-width: 330px;
+    font-size: 0.92rem !important; /* [추가] 0.82rem -> 0.92rem (+1pt 확대) */
+    font-weight: 600;
+}
+
+.excel-table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 400px;
+}
+
+.excel-table td:nth-child(2) {
+    max-width: 450px;
+}
+
+/* [�߰�] ��� �������� ���� (Full-edge Resize) */
+.pane-window {
+    position: relative;
+    resize: none !important;
+}
+
+.pane-resizer {
+    position: absolute;
+    background: transparent;
+    z-index: 1000;
+}
+
+.pane-resizer.r {
+    top: 0;
+    right: 0;
+    width: 10px;
+    height: 100%;
+    cursor: ew-resize;
+}
+
+.pane-resizer.l {
+    top: 0;
+    left: 0;
+    width: 10px;
+    height: 100%;
+    cursor: ew-resize;
+}
+
+.pane-resizer.t {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    cursor: ns-resize;
+}
+
+.pane-resizer.b {
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    cursor: ns-resize;
+}
+
+.pane-resizer.tl {
+    top: 0;
+    left: 0;
+    width: 15px;
+    height: 15px;
+    cursor: nwse-resize;
+    z-index: 1001;
+}
+
+.pane-resizer.tr {
+    top: 0;
+    right: 0;
+    width: 15px;
+    height: 15px;
+    cursor: nesw-resize;
+    z-index: 1001;
+}
+
+.pane-resizer.bl {
+    bottom: 0;
+    left: 0;
+    width: 15px;
+    height: 15px;
+    cursor: nesw-resize;
+    z-index: 1001;
+}
+
+.pane-resizer.br {
+    bottom: 0;
+    right: 0;
+    width: 15px;
+    height: 15px;
+    cursor: nwse-resize;
+    z-index: 1001;
+}
+
+.pane-resizer:hover {
+    background: rgba(49, 130, 246, 0.1);
+}
+
+
+/* [추가] 탭 레이아웃 고도화 - 폴딩/너비/여백 */
+.game-section-table-wrapper.is-folded {
+    height: auto !important;
+    align-self: flex-start;
+}
+
+.hide-btn {
+    margin-left: 12px;
+    white-space: nowrap;
+}
+
+/* 테이블 제목 및 데이터 정렬 최적화 (불필요한 너비 제한 제거) */
+.excel-table td {
+    max-width: none !important;
+}
+

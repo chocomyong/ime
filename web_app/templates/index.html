@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- [v6.6.320] 현재 로드된 HTML 의 BUILD_VERSION — socket.js 가 서버 BUILD_VERSION 과 비교해 mismatch 시 자동 reload (비전공자용 무음 배포 반영). -->
+    <meta name="imt-build-version" content="{{ build_version }}">
+    <title>IME - 통합 모니터링 환경</title>
+    <!-- [v6.6.316] 랜딩 fetch 프리로드 — landing.js 가 로드되기 전에 /api/games 요청을 선발사해 "게임 목록 로딩 중..." 체감 지연 감소 -->
+    <script>
+        // 서버 세션의 권한으로 첫 화면을 구성한다. 이후 세션 검사는 기존 경로에서 갱신한다.
+        window._role = {{ user_role | default('anon') | tojson }};
+        window._isAdmin = window._role === 'admin';
+        window.__landingGamesPromise = (function () {
+            try {
+                return fetch('/api/games', { credentials: 'same-origin' })
+                    .then(function (r) { return r.ok ? r.json() : []; })
+                    .catch(function () { return []; });
+            } catch (e) { return Promise.resolve([]); }
+        })();
+    </script>
+    <!-- [v6.6.316] Socket.IO CDN 미리 연결 힌트 — DNS+TCP+TLS 핸드셰이크 선행 -->
+    <link rel="preconnect" href="https://cdn.socket.io" crossorigin>
+    <!-- [v6.6.322] 외부 폰트/아이콘 CDN preconnect — 실제 CSS/폰트 파일 요청 전에 DNS+TCP+TLS 완료시켜 LCP 에서 블로킹 시간 단축 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <!-- [v6.6.322] favicon 404 해소 — 기존 /static/icons/icon.svg 를 명시 참조. 별도 .ico 파일 없이 SVG 로 충분. -->
+    <link rel="icon" type="image/svg+xml" href="/static/icons/icon.svg">
+    <!-- [v6.6.322] Critical CSS — LCP 요소(h1#landingTitle) 페인팅에 필요한 최소 CSS 를 inline.
+         landing.css 파일이 네트워크 왕복으로 도착하는 것을 기다리지 않고 즉시 스타일 적용.
+         나머지(섹션·카드·테마 등) 는 뒤에 로드되는 landing.css 가 덮어쓴다.
+         [v6.6.323] font-family 에서 'Inter' 제거 — Chrome 이 텍스트 LCP 요소의 "최종 폰트 적용 시점"
+         을 LCP 로 잡는 경우가 있어, Inter CDN 도착 대기가 LCP 를 18초까지 밀어올릴 수 있음.
+         시스템 폰트로 먼저 페인팅 → LCP 즉시 확정. landing.css 가 도착하면 Inter 로 전환되지만
+         그 시점엔 LCP 는 이미 기록된 후라 측정값 영향 없음. -->
+    <style>
+        html, body { background: #0f1115; margin: 0; color: #e5e7eb; }
+        .landing-overlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: #0f1115; color: #e5e7eb;
+            overflow: auto; display: flex;
+            align-items: flex-start; justify-content: center;
+            padding: 48px 24px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Malgun Gothic', sans-serif;
+        }
+        .landing-overlay[hidden] { display: none !important; }
+        body.landing-active { overflow: hidden; }
+        .landing-inner { width: 100%; max-width: 980px; display: flex; flex-direction: column; gap: 28px; }
+        .landing-header { text-align: center; }
+        .landing-brand { font-size: 14px; font-weight: 800; letter-spacing: 0.3em; color: #3182f6; margin-bottom: 12px; }
+        .landing-title { font-size: 28px; font-weight: 700; margin: 0 0 10px 0; color: #e5e7eb; }
+        .landing-subtitle { font-size: 14px; color: #9ca3af; margin: 0; line-height: 1.6; }
+        .landing-subtitle b { color: #e5e7eb; font-weight: 700; }
+    </style>
+    <!-- [v6.6.319] 랜딩 신규 방문자 여부를 head 시점에 판정해 플래그로 기록.
+         실제 hidden 해제는 overlay DOM 직후 inline script 에서 수행 (아래 body 참조). -->
+    <script>
+        (function () {
+            try {
+                var flag = localStorage.getItem('imt_landing_completed');
+                if (flag === 'true') { window.__imtNewVisitor = false; return; }
+                var legacyKeys = [
+                    'imt_display_settings', 'imt_dashboard_config', 'imt_last_core_config',
+                    'imt_theme', 'acknowledgedArticlesTotal', 'acknowledgedArticlesGames',
+                    'gameOrder', 'foldedGames'
+                ];
+                for (var i = 0; i < legacyKeys.length; i++) {
+                    if (localStorage.getItem(legacyKeys[i])) {
+                        // legacy 사용자 — 랜딩 건너뜀. 플래그 미리 마킹해 landing.js 판정도 동일.
+                        localStorage.setItem('imt_landing_completed', 'true');
+                        window.__imtNewVisitor = false;
+                        return;
+                    }
+                }
+                // 진짜 첫 방문자
+                window.__imtNewVisitor = true;
+            } catch (e) { window.__imtNewVisitor = false; }
+        })();
+    </script>
+    {# [v6.7.392] style.css 4,134줄 → 8분할 (순서 보존 — link 순서 = 원본 소스 순서 = cascade 불변. 재정렬 금지) #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-core.css') }}?v={{ build_version }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-components.css') }}?v={{ build_version }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-tables.css') }}?v={{ build_version }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-results.css') }}?v={{ build_version }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-modals.css') }}?v={{ build_version }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-responsive.css') }}?v={{ build_version }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-misc.css') }}?v={{ build_version }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-feed.css') }}?v={{ build_version }}">
+    {% if is_admin or is_manager %}{# [v6.7.309] 비관리자 은닉 · [v6.7.711] 대시보드 manager 개방 #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/situation.css') }}?v={{ build_version }}">
+    {% endif %}
+    {% if (is_admin or is_manager) and 'ccu-grafana' not in hidden_apps %}{# [v6.7.725] 은닉 #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ccu-grafana.css') }}?v={{ build_version }}">
+    {% endif %}
+    {% if is_admin or is_manager %}{# [v6.7.500] AI 요약 manager 개방 (v6.7.313 회수의 역방향) — CSS/pane/JS/진입점 한 세트 #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ai-summary.css') }}?v={{ build_version }}">
+    {% endif %}
+    {# [v6.7.741] 알림(워처) 탭 naver-watcher.css · 디스코드 탭 discord.css 삭제 - 워처 종료(사용자 2026-10-24). #}
+    {% if is_admin %}{# [v6.7.439] 이상감지 CSS - admin 전용(기능 전 표면 admin 한정, 사용자 2026-07-26 지시) #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/anomaly.css') }}?v={{ build_version }}">
+    {% endif %}
+    {% if is_admin or is_manager %}{# [v6.7.700] 판정 탭 CSS. [v6.7.725] manager 개방 - CSS/pane/JS/진입점 한 세트(PATTERN-56) #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/verdict.css') }}?v={{ build_version }}">
+    {% endif %}
+    <!-- [테마] Steel Monitor (phosphor) — 항상 활성 (기본 디자인 레이어) -->
+    <link id="theme-phosphor-link" rel="stylesheet" href="{{ url_for('static', filename='css/theme-phosphor.css') }}?v={{ build_version }}">
+    <!-- [v6.6.262] 테마 변형 5종 (Dark / Monitor / Blue / Amber / Emerald) — body[data-theme] 로 전환 -->
+    <link id="theme-variants-link" rel="stylesheet" href="{{ url_for('static', filename='css/theme-variants.css') }}?v={{ build_version }}">
+    <!-- [v6.6.275] Phase 2 — 인라인 스타일 외부화 유틸 클래스 (style.css 이후 로드) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}?v={{ build_version }}">
+    <!-- [v6.6.294] IME 랜딩 페이지 스타일 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}?v={{ build_version }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ime-design.css') }}?v={{ build_version }}">
+    <!-- [v6.6.322] Google Fonts + Font Awesome 블로킹 비동기화 — preload 로 받아 onload 시점에 stylesheet 로 승격.
+         폰트 로드 대기가 LCP 를 잡아먹는 것을 방지. display=swap 으로 폰트 도착 전엔 시스템 폰트로 페인팅. -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" as="style" onload="this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"></noscript>
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" as="style" onload="this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"></noscript>
+    <!-- PWA -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}?v={{ build_version }}">
+    <meta name="theme-color" content="#44464e"><!-- [v6.7.379] 순검정→회색: 다크모드 설치형 앱 타이틀바가 새까매 창 이동 시 구분 어려움(사용자). 실행 중 타이틀바/모바일 크롬 색은 이 meta 가 결정. -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="IME">
+    <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon-180.png">
+</head>
+        <body>
+    <!-- 모바일 사이드바 오버레이 배경 -->
+    <div id="sidebar-overlay" onclick="closeMobileSidebar()"></div>
+
+    <!-- [v6.6.294] IME 랜딩 오버레이 — 첫 방문자 온보딩 + IME 로고 클릭으로 재진입 -->
+{% include 'partials/landing_overlay.html' %}
+    <!-- 모바일 헤더 오버플로우 패널 -->
+{% include 'partials/mobile_overflow.html' %}
+    <div class="app-layout">
+{% include 'partials/sidebar.html' %}
+        <div class="main-wrapper">
+            <!-- [v6.6.502] 상단 바 (App Topbar) — 포토샵 스타일 얇은 도구 영역.
+                 [v6.6.503] Phase 2 — 사이드바 "도구"·"시스템" 섹션 6개 도구 이전 완료.
+                 그룹 1 (글로벌 액션): 필터링 / 새로고침
+                 그룹 2 (시스템, admin-only): 로그 ([v6.7.741] 업데이트 삭제)
+                 그룹 3 (앱 도구): 테마 / 라이트다크 / 앱설치 (PWA)
+                 모바일에선 헤더 햄버거가 별도 라인이라 PC 우선 — 좁아지면 일부만 숨김 (Phase 3). -->
+{% include 'partials/topbar.html' %}
+            <!-- Trending Keywords Widget Removed -->
+            <header>
+                    <button id="mobile-hamburger" onclick="toggleMobileSidebar()" title="메뉴 열기" aria-label="메뉴 열기"><i class="fas fa-bars" aria-hidden="true"></i></button>
+                    <!--<h1>통합 모니터링 툴</h1>-->
+                    <div class="header-info">
+                        {# [v6.7.741] 상태 대시보드(헤더 크롤러 상태 박스, 사이드바 토글로 열던 것) 삭제(사용자 2026-10-24).
+                           같은 정보는 운영 탭(크롤러 종합현황)과 각 탭 안 상태 배지에 남아 있다. #}
+                        <div class="controls">
+                            {# [v6.6.444] 헤더 admin-controls(상태 대시보드 토글/시작/중지/일괄 추출/일괄 적용/설정) 6개 버튼은 사이드바 "운영 도구" 섹션으로 이전. [v6.7.307] HTML 주석 → Jinja 주석 (비관리자 렌더 출력에서 admin 힌트 소거) #}
+                            <!-- [v6.6.451] 필터링/새로고침/테마/앱 설치 4개 버튼도 사이드바 "도구" 섹션으로 이전. 헤더에는 모바일 더보기 버튼만 남음. -->
+                            <button id="mobile-overflow-btn" class="secondary u-hidden" onclick="toggleMobileOverflow()" title="더보기" aria-label="추가 메뉴 열기" aria-haspopup="menu"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+                </header>
+        
+
+
+                <main class="main-content">
+                    <div id="dashboard-grid" class="dashboard-grid">
+                        <!-- Selected panes will be rendered here dynamically -->
+                    </div>
+                </main>
+
+                <!-- Pane Repository (Hidden container for tabs before they are added to grid) -->
+                <div id="pane-repository" style="display: none;">
+                        
+{% include 'partials/tabs/games.html' %}
+
+{% include 'partials/tabs/community.html' %}
+
+{% include 'partials/tabs/total.html' %}
+
+                                {% if is_admin %}
+{% include 'partials/tabs/ai_analysis.html' %}
+                                {% endif %}{# ai-analysis-tab 서버 은닉 #}
+
+                                <!-- [v6.7.69] F-4 통합 검색/필터 — 관리자 전용. JS = static/js/tabs/search-tab.js. -->
+                                {% if is_admin %}
+{% include 'partials/tabs/search.html' %}
+                                {% endif %}{# search-tab 서버 은닉 #}
+
+                                {% if is_admin %}
+{% include 'partials/tabs/log_viewer.html' %}
+                                {% endif %}{# log-viewer-tab 서버 은닉 #}
+
+                                {# [v6.7.741] 업데이트 탭(update_history.html) 삭제 - 가독성(사용자 2026-10-24) #}
+
+                                <!-- [v6.6.424] 댓글 탭 — 피드 카드 디자인 통일. 기존 table 구조 폐지. -->
+{% include 'partials/tabs/comments.html' %}
+
+                                {% if is_admin and 'account-trade' not in hidden_apps %}
+{% include 'partials/tabs/account_trade.html' %}
+                                {% endif %}{# account-trade-tab 서버 은닉 #}
+                
+                                {% if is_admin and 'diamond-trade' not in hidden_apps %}
+{% include 'partials/tabs/diamond_trade.html' %}
+                                {% endif %}{# diamond-trade-tab 서버 은닉 #}
+                        {% if is_admin and 'trends' not in hidden_apps %}
+{% include 'partials/tabs/trends.html' %}
+                        {% endif %}{# trends-tab 서버 은닉 #}
+
+        {# [v6.7.191 FEAT-01] CCU 탭 마크업 폐기 — 사용자 결정(CCU 탭 미사용). 백엔드 ccu_games 데이터 채널(crawler.py / pages.py / config_api.py)은 야간동향 등 다른 영역 활용 가능성으로 보존. #}
+                        {% if is_admin %}
+{% include 'partials/tabs/admin.html' %}
+                        {% endif %}{# admin-tab 서버 은닉 #}
+
+                        <!-- ═══════════════════════════════════════════════════════════
+                             Phase B (v6.6.393) — 상황판 탭 (Situation Board)
+                             admin·manager([v6.7.711] manager 개방). [v6.7.628/629] 그래프 2종만 남음 - /api/situation 은 v6.7.629 에 삭제, 데이터는 graph-tab.js·pass-rate-graph.js 가 각자 fetch.
+                             ═══════════════════════════════════════════════════════════ -->
+                        {% if is_admin or is_manager %}
+{% include 'partials/tabs/situation.html' %}
+                        {% endif %}{# situation-tab 서버 은닉 — v6.7.308 admin 전용 -> v6.7.711 manager 개방 #}
+                        <!-- ═══════════════════ /situation-tab ═══════════════════ -->
+
+                        {% if is_admin %}
+{% include 'partials/tabs/ops.html' %}
+                        {% endif %}{# ops-tab 서버 은닉 #}
+                        {% if is_admin %}
+{% include 'partials/tabs/sql_console.html' %}
+                        {% endif %}{# sql-console-tab 서버 은닉 #}
+                            <!-- [v6.6.424] 통합 모니터링 환경 — 피드(단일 스트림). 게임/커뮤니티 분류는 사이드바 설정의 visibility/limits 로 사용자가 직접. -->
+{% include 'partials/tabs/feed.html' %}
+
+                            <!-- [v6.6.494] dashboard-tab 마크업 제거 — v6.6.466 부터 '대시보드' 메뉴는 #situation-tab 단독 탭으로 통합. 잔존 마크업 일괄 정리. -->
+
+                            <!-- [v6.7.215] 그라파나 CCU 미러 — 관리자 전용. JS = static/js/tabs/ccu-grafana-tab.js. 카드는 JS 가 동적 생성. -->
+                            {% if (is_admin or is_manager) and 'ccu-grafana' not in hidden_apps %}
+{% include 'partials/tabs/ccu_grafana.html' %}
+                            {% endif %}{# ccu-grafana-tab 서버 은닉 #}
+
+                            {# [v6.7.741] 알림(워처) 탭 pane 삭제 - 워처 종료(사용자 2026-10-24) #}
+
+                            <!-- [AI 요약] 코어 멀티액티브 페인 — admin + manager ([v6.7.500] manager 재개방). JS = static/js/tabs/ai-summary-tab.js. 평면 리스트(표↔카드 CSS 분기). -->
+                            {% if is_admin or is_manager %}{# [v6.7.500] AI 요약 manager 개방 — 이 pane include 누락이 "Tab not found" 직접 원인(v6.7.430 회귀 교훈) #}
+{% include 'partials/tabs/ai_summary.html' %}
+                            {% endif %}{# ai-summary-tab 서버 은닉 #}
+
+                            {# [v6.7.741] 디스코드 탭 pane 삭제 - 워처 종료(사용자 2026-10-24) #}
+                            {% if is_admin %}{# [v6.7.439] 이상감지 pane - 진입점/JS/CSS 와 4종 한 세트 (v6.7.430 회귀 교훈) #}
+{% include 'partials/tabs/anomaly.html' %}
+                            {% endif %}
+                            {% if is_admin or is_manager %}{# [v6.7.700] 판정 pane - 진입점/JS/CSS 와 4종 한 세트 (PATTERN-56). [v6.7.725] manager 개방 #}
+{% include 'partials/tabs/verdict.html' %}
+                            {% endif %}
+        </div> <!-- end of pane-repository -->
+
+        <!-- Privacy notice removed -->
+        
+        <!-- [추가] 서버 데이터 전달용 (JS 문법 오류 방지) -->
+        <div id="server-data" style="display:none;" data-night-report-games="{{ night_report_games | tojson | forceescape }}"></div>
+
+        {# [v6.7.628] 상황판 드로어 제거 - 대시보드 카드 목록과 함께 은퇴 (partials/sit_drawer.html 삭제). #}
+
+    </div> <!-- main-wrapper -->
+
+    <!-- 모바일 하단 탭바 (<768px) - 사이드바 대체 네비게이션 -->
+{% include 'partials/bottom_tabbar.html' %}
+</div> <!-- app-layout -->
+
+        <!-- [설정] 설정 모달 -->
+{% include 'partials/settings_modal.html' %}
+    
+    <!-- Core (공통 유틸, 하이라이트, API 클라이언트) -->
+    <script src="{{ url_for('static', filename='js/game-color.js') }}?v={{ build_version }}"></script>
+    <script src="{{ url_for('static', filename='js/core/highlight.js') }}?v={{ build_version }}"></script>
+    <script src="{{ url_for('static', filename='js/core/api-client.js') }}?v={{ build_version }}"></script>
+    <script src="{{ url_for('static', filename='js/components/status-badge.js') }}?v={{ build_version }}"></script>
+    <!-- [Phase 3 4차] ui.js (552 LOC) → ui/ 3 sub-file 로 분할 (v6.6.380) -->
+    <script src="{{ url_for('static', filename='js/ui/common.js') }}?v={{ build_version }}"></script>
+    <script src="{{ url_for('static', filename='js/ui/settings-modal.js') }}?v={{ build_version }}"></script>
+    <script src="{{ url_for('static', filename='js/ui/controls.js') }}?v={{ build_version }}"></script>
+    <!-- Tabs (탭별 모듈) -->
+    <!-- [v6.6.399] 커뮤니티 카테고리 탭 공통 유틸 (디바운스, 스크롤 보존, empty-state) — 다른 탭 JS 보다 먼저 로드 -->
+    <script src="{{ url_for('static', filename='js/tabs/_tab_helpers.js') }}?v={{ build_version }}"></script>
+    <script src="{{ url_for('static', filename='js/tabs/total-tab.js') }}?v={{ build_version }}"></script>
+    {% if is_admin %}{# [v6.7.309] ai-tab(AI분석) admin 전용 — 비관리자 코드 은닉 #}
+    <script src="{{ url_for('static', filename='js/tabs/ai-tab.js') }}?v={{ build_version }}"></script>
+    {% endif %}
+    <script src="{{ url_for('static', filename='js/tabs/comments-tab.js') }}?v={{ build_version }}"></script>
+    <script src="{{ url_for('static', filename='js/tabs/games-tab.js') }}?v={{ build_version }}"></script>
+    <script src="{{ url_for('static', filename='js/tabs/community-tab.js') }}?v={{ build_version }}"></script>
+    {% if is_admin %}{# [v6.7.309] 검색/다이아/계정/야간동향/로그 admin 전용 — 비관리자 코드 은닉 #}
+    <script src="{{ url_for('static', filename='js/tabs/search-tab.js') }}?v={{ build_version }}"></script>
+    {# [v6.7.725] 시세 3종 은닉(app.py HIDDEN_APP_IDS) #}
+    {% if 'diamond-trade' not in hidden_apps %}<script src="{{ url_for('static', filename='js/tabs/diamond-tab.js') }}?v={{ build_version }}"></script>{% endif %}
+    {% if 'account-trade' not in hidden_apps %}<script src="{{ url_for('static', filename='js/tabs/account-tab.js') }}?v={{ build_version }}"></script>{% endif %}
+    {% if 'trends' not in hidden_apps %}<script src="{{ url_for('static', filename='js/tabs/trend-tab.js') }}?v={{ build_version }}"></script>{% endif %}
+    <script src="{{ url_for('static', filename='js/tabs/log-tab.js') }}?v={{ build_version }}"></script>
+    {% endif %}
+    {# [Phase 3 1차] admin-tab.js (711 LOC) → admin/ 6 sub-file 로 분할 (v6.6.377). [v6.7.307] HTML 주석 → Jinja 주석 (비관리자 렌더 출력에서 admin 힌트 소거) #}
+    <script src="{{ url_for('static', filename='js/tabs/admin/ui-control.js') }}?v={{ build_version }}"></script>
+    {# [v6.7.305] admin 전용 JS 7종 — 비관리자 소스 은닉(서버 조건부 렌더). 익명은 script 태그 자체 미노출 + Layer 1 서버 403 백스톱. ui-control.js 는 게이팅 로직이라 위에서 무조건 로드. #}
+    {% if is_admin %}
+    <script src="{{ url_for('static', filename='js/tabs/admin/notifications.js') }}?v={{ build_version }}"></script>
+    <script src="{{ url_for('static', filename='js/tabs/admin/visit-logs.js') }}?v={{ build_version }}"></script>
+    <script src="{{ url_for('static', filename='js/tabs/admin/db-console.js') }}?v={{ build_version }}"></script>
+    {# [v6.7.741] updates-history.js 삭제(업데이트 탭 제거). 같은 파일에 살던 시세 탭 날짜 조회 loadHistoryData 만 history-data.js 로 이사 #}
+    <script src="{{ url_for('static', filename='js/tabs/admin/history-data.js') }}?v={{ build_version }}"></script>
+    <script src="{{ url_for('static', filename='js/tabs/admin/system.js') }}?v={{ build_version }}"></script>
+    <script src="{{ url_for('static', filename='js/tabs/admin/dashboard.js') }}?v={{ build_version }}"></script>
+    <!-- [v6.7.70] F-7 시스템 건강도 — 6 메트릭 mini-chart. -->
+    <script src="{{ url_for('static', filename='js/tabs/admin/health.js') }}?v={{ build_version }}"></script>
+    {% endif %}
+    {% if is_admin or is_manager %}{# [v6.7.308/309] 대시보드 코드 은닉 · [v6.7.711] manager 개방 #}
+    <script src="{{ url_for('static', filename='js/tabs/situation-tab.js') }}?v={{ build_version }}"></script>
+    {% endif %}
+    <!-- [v6.6.422] 통합 모니터링 환경 — 피드(공개) -->
+    <script src="{{ url_for('static', filename='js/tabs/feed-tab.js') }}?v={{ build_version }}"></script>
+    {% if is_admin or is_manager %}{# [v6.7.711] 대시보드 그래프 2종 - manager 개방 #}
+    <script src="{{ url_for('static', filename='js/tabs/graph-tab.js') }}?v={{ build_version }}"></script>
+    <script src="{{ url_for('static', filename='js/tabs/pass-rate-graph.js') }}?v={{ build_version }}"></script>
+    {% endif %}
+    {% if (is_admin or is_manager) and 'ccu-grafana' not in hidden_apps %}{# [v6.7.725] 은닉. [v6.7.309] 그라파나 CCU — manager 개방 (유일) #}
+    <script src="{{ url_for('static', filename='js/tabs/ccu-grafana-tab.js') }}?v={{ build_version }}"></script>
+    {% endif %}
+    {% if is_admin or is_manager %}{# [v6.7.500] AI 요약 JS manager 개방 — 누락 시 매니저에 렌더 함수 자체 부재(v6.7.430 회귀 교훈) #}
+    <script src="{{ url_for('static', filename='js/tabs/ai-summary-tab.js') }}?v={{ build_version }}"></script>
+    {% endif %}
+    {% if is_admin or is_manager %}{# [v6.7.741] 알림(워처) · 디스코드 탭 JS 삭제. 이 블록엔 이상감지(admin) · 판정(manager 개방)만 남았다 #}
+    {% if is_admin %}{# [v6.7.439] 이상감지 JS - admin 전용 #}
+    <script src="{{ url_for('static', filename='js/tabs/anomaly-tab.js') }}?v={{ build_version }}"></script>
+    {% endif %}
+    {# [v6.7.700] 판정 탭 JS. [v6.7.725] manager 개방(바깥 is_admin or is_manager 블록) #}
+    <script src="{{ url_for('static', filename='js/tabs/verdict-tab.js') }}?v={{ build_version }}"></script>
+    {% endif %}
+    <!-- Socket, Tab Manager, Main (기존) -->
+    <!-- [v6.6.316] Socket.IO 클라이언트 CDN — head 에서 body 끝으로 이동해 초기 렌더 블로킹 제거 (preconnect 힌트로 핸드셰이크는 head 에서 선행) -->
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='js/socket.js') }}?v={{ build_version }}"></script>
+    <!-- [Phase 3 2차] tab-manager.js (546 LOC) → tab-manager/ 3 sub-file 로 분할 (v6.6.378) -->
+    <!-- [v6.7.638] 은닉 탭 목록을 서버에서 주입 - 정본은 app.py HIDDEN_APP_IDS 하나이고
+         템플릿과 JS 가 같은 값을 본다. state.js 보다 반드시 앞에 있어야 한다(로드 시점에 읽는다). -->
+    <script>window.IMT_HIDDEN_APPS = {{ hidden_apps | tojson }};</script>
+    <script src="{{ url_for('static', filename='js/tab-manager/state.js') }}?v={{ build_version }}"></script>
+    <script src="{{ url_for('static', filename='js/tab-manager/actions.js') }}?v={{ build_version }}"></script>
+    <script src="{{ url_for('static', filename='js/tab-manager/render.js') }}?v={{ build_version }}"></script>
+    <!-- [Phase 3 3차] main.js (509 LOC) → main/ 5 sub-file 로 분할 (v6.6.379) -->
+    <script src="{{ url_for('static', filename='js/main/fetch-patch.js') }}?v={{ build_version }}"></script>
+    <script src="{{ url_for('static', filename='js/main/theme.js') }}?v={{ build_version }}"></script>
+    <script src="{{ url_for('static', filename='js/main/app-state.js') }}?v={{ build_version }}"></script>
+    <script src="{{ url_for('static', filename='js/main/pwa.js') }}?v={{ build_version }}"></script>
+    <script src="{{ url_for('static', filename='js/main/boot.js') }}?v={{ build_version }}"></script>
+    <!-- [v6.7.349] 전역 키보드 단축키 (1/2/3 pane, R 새로고침, / 검색, ? 도움말) - admin 키는 내부 게이트 -->
+    <script src="{{ url_for('static', filename='js/main/shortcuts.js') }}?v={{ build_version }}"></script>
+    {% if is_admin or is_manager %}{# [v6.7.383] 상태등(topbar-status - [v6.7.741] 워처 몫 삭제, 그라파나 CCU 만) + 알림 보관소(notif-inbox) manager 개방. AI 배너 게이트는 socket.js 에서 admin 유지. #}
+    <script src="{{ url_for('static', filename='js/main/topbar-status.js') }}?v={{ build_version }}"></script>
+    <script src="{{ url_for('static', filename='js/main/notif-inbox.js') }}?v={{ build_version }}"></script>
+    {% endif %}
+    <!-- [v6.6.294] IME 랜딩 페이지 — main.js 이후 로드 (applyTheme, activeApps, updateDashboard 전역 참조) -->
+    <script src="{{ url_for('static', filename='js/landing.js') }}?v={{ build_version }}"></script>
+
+    <!-- [v6.6.266] 테마 피커 백드롭 — 클릭 시 메뉴 닫힘 (투명) -->
+{% include 'partials/theme_picker.html' %}
+</body>
+</html>

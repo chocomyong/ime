@@ -1,0 +1,52 @@
+        <div id="settingsModal" class="modal" role="dialog" aria-modal="true" aria-label="설정 및 필터링" onclick="if(event.target===this) closeSettingsModal()">
+            <div class="modal-content settings-modal-content">
+                <div class="modal-header">
+                    <h2>설정 관리</h2>
+                    <span class="close-modal" onclick="closeSettingsModal()">&times;</span>
+                </div>
+                <!-- 상단 탭: 키워드 / 메인 크롤러 / 서브 크롤러 / 화면 설정 -->
+                <div class="settings-top-tabs" id="settingsTopTabs"></div>
+                <!-- Config 탭 패널 -->
+                <div id="settingsConfigPanel" style="display:flex; flex-direction:column; flex:1; overflow:hidden;">
+                    <div class="settings-search-bar">
+                        <input type="text" id="settingsSearchInput" placeholder="검색어를 입력하세요..." oninput="filterSettingsTable(this.value)">
+                    </div>
+                    <div class="config-content" id="configContent"></div>
+                </div>
+                <!-- 필터링 패널 (글 / 댓글 서브탭) -->
+                <div id="settingsLocalPanel" style="display:none;">
+                    <!-- [v6.6.237] 서브탭: 글 / 댓글 -->
+                    <div class="local-sub-tabs" id="localSubTabs" style="display:flex; gap:6px; padding:8px 12px; border-bottom:1px solid rgba(255,255,255,0.08);">
+                        <button class="settings-tab-btn active" data-local-sub="posts" onclick="_switchLocalSubTab('posts')">글</button>
+                        {% if 'comments' not in hidden_apps %}
+                        <button class="settings-tab-btn" data-local-sub="comments" onclick="_switchLocalSubTab('comments')">댓글</button>
+                        {% endif %}
+                        {# [v6.7.741] 디스코드 서브탭(채널별 표시 수) 삭제 - 디스코드 탭과 함께 #}
+                    </div>
+                    <!-- 글 서브탭: 게임별 visibility + limit + 일괄 적용 -->
+                    <div id="localPostsPanel">
+                        <div class="local-settings-batch-bar">
+                            <span class="local-settings-batch-label">모든 항목 일괄 적용</span>
+                            <input type="number" id="batchLimitInput" min="0" max="10000" step="50" value="50" oninput="onBatchLimitChange(this.value)" title="0 = 무제한">
+                        </div>
+                        <div class="local-settings-scroll" id="localPostsCards"></div>
+                    </div>
+                    <!-- 댓글 서브탭: 게임별 visibility + limit + 일괄 적용 (v6.6.352) -->
+                    <div id="localCommentsPanel" style="display:none;">
+                        <div class="local-settings-batch-bar">
+                            <span class="local-settings-batch-label">모든 항목 일괄 적용</span>
+                            <input type="number" id="batchCommentLimitInput" min="0" max="10000" step="50" value="50" oninput="onBatchCommentLimitChange(this.value)" title="0 = 무제한">
+                        </div>
+                        <div class="local-settings-scroll" id="localCommentsCards"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="secondary" id="btnAddRow" onclick="addConfigRow()">+ 행 추가</button>
+                    <!-- [v6.6.255] 헤더에서 이관 — 자주 안 쓰는 초기화 기능 -->
+                    <button class="secondary" id="btnClearStorage" onclick="clearLocalStorage()" style="display:none;" title="개인 설정을 초기화하고 랜딩 페이지에서 다시 시작합니다."><i class="fas fa-sync-alt"></i> 새로고침</button>
+                    <div style="flex:1;"></div>
+                    <button class="secondary" id="btnApplyLocal" onclick="applyLocalSettings()" style="display:none;">즉시 적용</button>
+                    <button id="btnSaveSettings" onclick="saveSettings()">저장 (Google Sheets)</button>
+                </div>
+            </div>
+        </div>

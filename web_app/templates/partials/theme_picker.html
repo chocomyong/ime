@@ -1,0 +1,36 @@
+    <div id="theme-picker-backdrop" class="theme-picker-backdrop" onclick="closeThemeMenu()"></div>
+    <!-- [v6.6.262] 테마 피커 드롭다운 패널 — #theme-toggle-btn 클릭 시 표시 -->
+    <div id="theme-picker-menu" class="theme-picker-menu" role="menu" aria-hidden="true">
+        <button class="theme-option" data-theme="dark" onclick="applyTheme('dark')" role="menuitem">
+            <span class="theme-swatch" style="background:#94A3B8; color:#94A3B8;"></span>
+            <span class="theme-label">Steel Monitor Dark</span>
+            <span class="theme-check"><i class="fas fa-check"></i></span>
+        </button>
+        <button class="theme-option" data-theme="monitor" onclick="applyTheme('monitor')" role="menuitem">
+            <span class="theme-swatch" style="background:#64748B; color:#64748B;"></span>
+            <span class="theme-label">Steel Monitor</span>
+            <span class="theme-check"><i class="fas fa-check"></i></span>
+        </button>
+        <button class="theme-option" data-theme="blue" onclick="applyTheme('blue')" role="menuitem">
+            <span class="theme-swatch" style="background:#3B82F6; color:#3B82F6;"></span>
+            <span class="theme-label">Cobalt Blue</span>
+            <span class="theme-check"><i class="fas fa-check"></i></span>
+        </button>
+        <button class="theme-option" data-theme="amber" onclick="applyTheme('amber')" role="menuitem">
+            <span class="theme-swatch" style="background:#FBBF24; color:#FBBF24;"></span>
+            <span class="theme-label">Amber Terminal</span>
+            <span class="theme-check"><i class="fas fa-check"></i></span>
+        </button>
+        <button class="theme-option" data-theme="emerald" onclick="applyTheme('emerald')" role="menuitem">
+            <span class="theme-swatch" style="background:#10B981; color:#10B981;"></span>
+            <span class="theme-label">Emerald Focus</span>
+            <span class="theme-check"><i class="fas fa-check"></i></span>
+        </button>
+        <!-- [v6.7.391] 화면 항상 켜기 (Screen Wake Lock) — 벽/보조 모니터 상시표시용. data-theme 없음(테마 active 루프 제외). -->
+        <div class="theme-menu-sep" role="separator"></div>
+        <button type="button" id="wake-lock-toggle" class="theme-option" role="menuitemcheckbox" aria-checked="false" onclick="toggleWakeLock(event)">
+            <span class="theme-swatch theme-swatch--icon"><i class="fas fa-lightbulb"></i></span>
+            <span class="theme-label">화면 항상 켜기</span>
+            <span class="theme-check"><i class="fas fa-check"></i></span>
+        </button>
+    </div>

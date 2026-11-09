@@ -1,0 +1,669 @@
+/* ==========================================================================
+   [Components] — Phase 2 인라인 스타일 외부화.
+   templates/index.html 에 70+ 개 흩어져 있던 인라인 style 속성을 유틸 클래스로 이관.
+   v6.6.x 리팩토링 Phase 2/5. 플랜: .claude/plans/sunny-hatching-gizmo.md
+   ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   1. 로그 뷰어 출력 영역 (기존 index.html:233 20줄 인라인)
+   -------------------------------------------------------------------------- */
+.u-log-output {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: monospace;
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    color: var(--text-color);
+    padding: var(--space-2-5);
+    flex: 1;
+    min-height: 60vh;
+    overflow: auto;
+    background: #1e1e1e;
+    border-radius: var(--radius-sm);
+    border: 1px solid #333;
+}
+
+
+/* --------------------------------------------------------------------------
+   2. 모달/설정 전체 너비 입력 (동향 시트 링크 등 — 기존 width:100% + padding:10px 14px 반복)
+   -------------------------------------------------------------------------- */
+.u-input-full {
+    width: 100%;
+    padding: var(--space-2-5) 14px;
+    background: var(--bg-secondary, #1e1e2e);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+}
+.u-input-full:focus {
+    outline: none;
+    border-color: var(--color-modal-focus);
+}
+
+
+/* --------------------------------------------------------------------------
+   3. 관리자 섹션 사이드바 카드 (운영/SQL/관리자 3종)
+      — 기존 index.html:98-108 에 각각 인라인 color + border-left 지정.
+      색상은 Phase 1 에서 추가한 시맨틱 토큰으로 통일.
+   -------------------------------------------------------------------------- */
+.u-admin-card {
+    border-left: 3px solid var(--u-admin-accent, var(--color-info));
+}
+.u-admin-card .nav-label {
+    color: var(--u-admin-accent, var(--color-info));
+    font-weight: bold;
+}
+.u-admin-card--info    { --u-admin-accent: var(--color-info); }           /* 운영 (하늘색) */
+.u-admin-card--cyan    { --u-admin-accent: var(--color-info-deep); }      /* SQL (청록) */
+.u-admin-card--purple  { --u-admin-accent: var(--color-accent-purple); }  /* 관리자 (보라) */
+
+
+/* --------------------------------------------------------------------------
+   4. 위험/초기화 버튼 (기존 `style="background-color: #cf6679; color: white;"` 6회 반복)
+   -------------------------------------------------------------------------- */
+.u-btn-danger {
+    background-color: var(--color-error);
+    color: #fff;
+}
+.u-btn-danger:hover {
+    background-color: var(--color-error);
+    filter: brightness(1.1);
+}
+/* 얇은 테두리 variant (접속로그 삭제 등) */
+.u-btn-danger--slim {
+    padding: 4px 12px;
+    border: none;
+}
+
+
+/* --------------------------------------------------------------------------
+   5. 관리자 섹션 헤더 제목 (운영 대시보드 "실시간 접속 현황" 등)
+      — 기존 <h2 style="color: #4fc3f7; ..."> 등
+   -------------------------------------------------------------------------- */
+.u-heading-info     { color: var(--color-info); }          /* 하늘색 - 운영·크롤러 상태 */
+.u-heading-cyan     { color: var(--color-info-deep); }     /* 청록 - SQL 콘솔 */
+.u-heading-purple   { color: var(--color-accent-purple); } /* 보라 - 접속 로그 */
+
+
+/* --------------------------------------------------------------------------
+   6. 상태 메시지 empty-state (다이아/계정거래 결과 상태창)
+      — 기존 `style="display: none; font-size: 0.85em; margin-top: 5px; padding: 5px 10px; background: rgba(255,255,255,0.03);"`
+   -------------------------------------------------------------------------- */
+.u-status-msg {
+    font-size: 0.85em;
+    margin-top: 5px;
+    padding: 5px var(--space-2-5);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* --------------------------------------------------------------------------
+   6-2. [v6.6.411] empty-state — AI 분석 탭 등 빈 상태 안내
+      JS 가 display: flex 로 가시화. 아이콘 + 제목 + 설명 3단 구성.
+   -------------------------------------------------------------------------- */
+.empty-state {
+    /* display 는 JS 가 'flex' 로 토글 — 기본 inline 상속 방지 위해 명시 */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 56px 24px;
+    margin: 16px 4px;
+    background: #1a1a1e;
+    border: 1px dashed #333;
+    border-radius: 12px;
+    min-height: 280px;
+    flex: 1;
+}
+.empty-state-icon {
+    font-size: 38px;
+    color: #555;
+    margin-bottom: 14px;
+    opacity: 0.6;
+}
+.empty-state-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #d4d4d8;
+    margin: 0 0 8px 0;
+    letter-spacing: -0.01em;
+}
+.empty-state-desc {
+    font-size: 13px;
+    color: #a1a1aa;
+    line-height: 1.6;
+    margin: 0;
+    max-width: 360px;
+}
+
+
+/* --------------------------------------------------------------------------
+   7. 관리자 접속 현황 배지 (하늘색 bg + 하늘색 테두리)
+      — 기존 `style="margin-left:8px; background: rgba(79,195,247,0.2); color: #4fc3f7; border: 1px solid #4fc3f7;"`
+   -------------------------------------------------------------------------- */
+.u-badge-info {
+    margin-left: var(--space-2);
+    background: rgba(79, 195, 247, 0.2);
+    color: var(--color-info);
+    border: 1px solid var(--color-info);
+}
+
+
+/* --------------------------------------------------------------------------
+   8. 탭 헤더 (다이아 시세 내부 구역 표시)
+      — 기존 `style="justify-content: flex-start; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 0;"`
+   -------------------------------------------------------------------------- */
+.u-tabs-header--inner {
+    justify-content: flex-start;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 0;
+}
+
+
+/* --------------------------------------------------------------------------
+   9. 카드 헤더 + 버튼 영역 간격
+      — 기존 `<div class="card-header-with-button" style="margin-bottom: 15px;">` 반복
+   -------------------------------------------------------------------------- */
+.u-card-header-gap {
+    margin-bottom: 15px;
+}
+
+
+/* --------------------------------------------------------------------------
+   10. 카드 제목 마진 리셋
+       — 기존 `<h2 style="margin-bottom:0;">` 반복
+   -------------------------------------------------------------------------- */
+.u-heading-flush {
+    margin-bottom: 0;
+}
+
+
+/* --------------------------------------------------------------------------
+   11. 헤더 + baseline flex
+       — 기존 `style="display: flex; align-items: baseline; gap: 8px;"` 반복
+   -------------------------------------------------------------------------- */
+.u-flex-baseline {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+}
+
+
+/* --------------------------------------------------------------------------
+   12. 가로 flex + gap 10px (버튼 그룹 등)
+   -------------------------------------------------------------------------- */
+.u-flex-row-gap {
+    display: flex;
+    gap: var(--space-2-5);
+    align-items: center;
+}
+
+
+/* --------------------------------------------------------------------------
+   13. 숨김 유틸 (기존 `style="display: none;"` 일부 — 초기 상태만 의미)
+   -------------------------------------------------------------------------- */
+.u-hidden {
+    display: none;
+}
+
+
+/* --------------------------------------------------------------------------
+   14. (삭제) 상태 대시보드 서브 크롤러 pill (v6.6.278) - [v6.7.741] 상태 대시보드와 함께 지웠다.
+   -------------------------------------------------------------------------- */
+
+
+/* --------------------------------------------------------------------------
+   15. PWA 업데이트 배너 (v6.6.279)
+       Service Worker 가 새 버전 감지 시 main.js 가 동적 생성해 body 에 추가.
+       상단 고정, 사용자가 "지금 업데이트" 클릭하면 새 SW 활성화 + 자동 reload.
+   -------------------------------------------------------------------------- */
+.pwa-update-banner {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: var(--z-toast);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-4);
+    margin-top: var(--space-2);
+    background: rgba(49, 130, 246, 0.95);
+    color: #fff;
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-md);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: pwa-banner-slide-in 0.3s ease-out;
+}
+
+@keyframes pwa-banner-slide-in {
+    from { transform: translate(-50%, -100%); opacity: 0; }
+    to   { transform: translate(-50%, 0); opacity: 1; }
+}
+
+.pwa-update-banner button {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: var(--text-xs);
+    transition: background var(--transition-fast);
+}
+.pwa-update-banner button:hover { background: rgba(255, 255, 255, 0.3); }
+.pwa-update-banner #pwa-update-dismiss {
+    padding: 2px 8px;
+    background: transparent;
+    border: none;
+    font-size: var(--text-lg);
+    line-height: 1;
+}
+.pwa-update-banner #pwa-update-dismiss:hover { background: rgba(255, 255, 255, 0.15); }
+
+/* [v6.6.304] 서버 점검/재빌드 중 상단 배너 — disconnect 동안 유지, reconnect 시 자동 제거 */
+.server-offline-banner {
+    position: fixed;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: var(--radius-pill, 24px);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    max-width: calc(100vw - 32px);
+    animation: pwa-banner-slide-in 0.25s ease-out;
+}
+.server-offline-banner i { font-size: 15px; opacity: 0.9; }
+.server-offline-banner span { line-height: 1.4; }
+@media (max-width: 640px), (pointer: coarse) {
+    /* [v6.7.372] 모바일에선 숨김(사용자 요청) — 백그라운드 전환·화면 꺼짐으로 소켓이 자주 끊겨
+       "서버 연결이 잠시 끊겼어요" 배너가 빈번히 떠 노이즈가 된다. 재연결·데이터 갱신은 자동이라
+       실기능 영향 0. PC(pointer:fine)는 유지 — 상시연결이라 끊김이 곧 실장애 신호라 의미 있음. */
+    .server-offline-banner { display: none !important; }
+}
+
+
+/* --------------------------------------------------------------------------
+   15-B. 인앱 알림 배너 (v6.7.335) — OS 알림 대체. 우측 하단 스택.
+     admin 이 실제로 IME 화면을 보고 있을 때만 렌더되는 페이지 내부 배너(공유 PC 유출 차단).
+     imt-toast 시각 언어 계승(불투명 다크 배경 + border-left 액센트) + 라이트 모드 대응.
+   -------------------------------------------------------------------------- */
+.inapp-banner-host {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 10050;               /* server-offline-banner(10000) 위 */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;        /* [v6.7.338] 폭이 다른 배너(기본 360/wide 560) 혼재 시 우측 정렬 유지 */
+    gap: 10px;
+    max-width: min(560px, calc(100vw - 32px));   /* [v6.7.338] wide 배너 수용 — 기본 배너 폭은 .inapp-banner 가 제한 */
+    pointer-events: none;         /* 빈 영역 클릭 통과 — 배너 카드만 pointer-events 복원 */
+}
+.inapp-banner {
+    pointer-events: auto;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    max-width: min(360px, calc(100vw - 32px));   /* [v6.7.338] 기본(콤팩트) 배너 폭 — 구 host 폭 이관 */
+    border-radius: 12px;
+    background: #2a2a30;           /* imt-toast 와 동일 불투명 계열 */
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 3px solid var(--primary-color, #38bdf8);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.42);
+    cursor: pointer;
+    animation: inapp-banner-in 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.inapp-banner--alert { border-left-color: #ef4444; }
+.inapp-banner__icon { font-size: 16px; margin-top: 1px; opacity: 0.92; color: var(--primary-color, #38bdf8); }
+.inapp-banner--alert .inapp-banner__icon { color: #ef4444; }
+/* [v6.7.340] 텍스트 아이콘 배지 — FA 아이콘 대신 'AI' 등 짧은 라벨. 색은 위 __icon 규칙(variant 포함) 상속. */
+.inapp-banner__icon--text {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 1;
+    padding: 3px 5px;
+    border: 1px solid currentColor;
+    border-radius: 5px;
+    flex: 0 0 auto;
+}
+.inapp-banner__body { flex: 1 1 auto; min-width: 0; }
+.inapp-banner__title { font-size: 13px; font-weight: 600; line-height: 1.3; }
+.inapp-banner__text { font-size: 12px; line-height: 1.4; opacity: 0.85; margin-top: 2px; word-break: break-word; white-space: pre-line; }
+/* [v6.7.338] wide 변형 — AI 요약 항목별 배너(요약 전문 + 구분/게시판/글제목). 내부 알림이라 글자수 제한 없음. */
+.inapp-banner--wide { max-width: none; width: 100%; padding: 14px 16px; }
+.inapp-banner--wide .inapp-banner__title { font-size: 14px; line-height: 1.4; }
+.inapp-banner--wide .inapp-banner__text { font-size: 12.5px; margin-top: 4px; }
+.inapp-banner__close {
+    flex: 0 0 auto;
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0.5;
+    padding: 0 2px;
+}
+.inapp-banner__close:hover { opacity: 0.9; }
+.inapp-banner--leaving { animation: inapp-banner-out 0.24s ease-in forwards; }
+@keyframes inapp-banner-in {
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes inapp-banner-out {
+    from { opacity: 1; transform: translateY(0); }
+    to   { opacity: 0; transform: translateY(8px); }
+}
+/* 라이트 모드 — 흰 카드 + 슬레이트 텍스트(라이트 가독성 정책) */
+body[data-theme="light"] .inapp-banner {
+    background: #ffffff;
+    color: #1E293B;
+    border-color: rgba(15, 23, 42, 0.10);
+    box-shadow: 0 8px 28px rgba(15, 23, 42, 0.18);
+}
+@media (max-width: 640px), (pointer: coarse) {
+    .inapp-banner-host { left: 8px; right: 8px; bottom: 8px; max-width: none; }
+}
+
+
+/* --------------------------------------------------------------------------
+   16. 텍스트 보조 유틸 — 회색조 보조 정보 (v6.6.284)
+   -------------------------------------------------------------------------- */
+.u-text-muted {
+    color: var(--text-muted);
+    font-size: 0.85em;
+    font-weight: 400;
+}
+
+
+/* --------------------------------------------------------------------------
+   17. status-badge 의미적 색상 (v6.6.286)
+       기존 theme-phosphor.css 의 .status-badge.{running|waiting|error} 가
+       테마의 슬레이트/회색 계열로만 구분되어 "실행 중" 과 "대기" 식별성 낮음.
+       여기서 의미(semantic) 색상 체계로 재정의 — 어느 테마에서도 일관:
+         running/complete → 녹색(emerald)·파랑(blue)
+         waiting           → 회색 (은은하게)
+         error             → 빨강
+       components.css 가 theme-phosphor 이후 로드되지만 `!important` 로
+       후속 테마 override 까지 방어.
+   -------------------------------------------------------------------------- */
+.status-badge.running {
+    background: rgba(16, 185, 129, 0.15) !important;
+    color: #34D399 !important;
+    border: 1px solid rgba(16, 185, 129, 0.45) !important;
+}
+.status-badge.waiting {
+    background: rgba(148, 163, 184, 0.06) !important;
+    color: rgba(203, 213, 225, 0.55) !important;
+    border: 1px solid rgba(148, 163, 184, 0.18) !important;
+}
+.status-badge.error {
+    background: rgba(239, 68, 68, 0.15) !important;
+    color: #F87171 !important;
+    border: 1px solid rgba(239, 68, 68, 0.45) !important;
+}
+.status-badge.complete {
+    background: rgba(59, 130, 246, 0.15) !important;
+    color: #60A5FA !important;
+    border: 1px solid rgba(59, 130, 246, 0.45) !important;
+}
+.status-badge.loaded {
+    background: rgba(168, 85, 247, 0.13) !important;
+    color: #C084FC !important;
+    border: 1px solid rgba(168, 85, 247, 0.4) !important;
+}
+
+/* ====================================================================
+   [v6.6.527] 알림 트레이스 — admin 탭 "알림 이력" 섹션
+   ==================================================================== */
+.notif-trace {
+    max-height: 420px;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.02);
+}
+.notif-trace-empty {
+    padding: 24px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.82rem;
+}
+.ntb-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+}
+.ntb-table thead th {
+    position: sticky;
+    top: 0;
+    background: #18181b;
+    color: #a1a1aa;
+    font-weight: 600;
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    letter-spacing: 0.04em;
+    z-index: 1;
+}
+.ntb-table thead th.ntb-time { width: 78px; }
+.ntb-table thead th.ntb-kind { width: 80px; }
+.ntb-table thead th.ntb-game { width: 110px; }
+.ntb-table thead th.ntb-result { width: 110px; text-align: right; }
+.ntb-table tbody td {
+    padding: 6px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    vertical-align: top;
+    color: #d4d4d8;
+}
+.ntb-table tbody tr:hover { background: rgba(255, 255, 255, 0.03); }
+.ntb-table .ntb-time { color: #71717a; white-space: nowrap; }
+.ntb-table .ntb-game { color: #a1a1aa; }
+.ntb-table .ntb-title { color: #e5e5e5; word-break: break-word; }
+.ntb-table .ntb-result { text-align: right; white-space: nowrap; }
+.ntb-table .ntb-kind { font-weight: 600; font-size: 0.72rem; letter-spacing: 0.02em; }
+.ntb-table .ntb-kind-SUPER    { color: #fca5a5; }
+.ntb-table .ntb-kind-OFFICIAL { color: #fcd34d; }
+.ntb-link { color: #93c5fd; text-decoration: none; }
+.ntb-link:hover { text-decoration: underline; }
+.ntb-row-send { background: rgba(74, 222, 128, 0.025); }
+.ntb-pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+.ntb-pill-q    { background: rgba(74, 222, 128, 0.15); color: #86efac; }   /* queued */
+.ntb-pill-d    { background: rgba(107, 114, 128, 0.18); color: #a1a1aa; }  /* dedupe */
+.ntb-pill-i    { background: rgba(96, 165, 250, 0.15); color: #93c5fd; }   /* initial_skip */
+.ntb-pill-s-ok  { background: rgba(74, 222, 128, 0.18); color: #86efac; }
+.ntb-pill-s-err { background: rgba(248, 113, 113, 0.20); color: #fca5a5; }
+.ntb-pill-blocked { background: rgba(107, 114, 128, 0.22); color: #9ca3af; }
+
+/* ====================================================================
+   [v6.7.2] 풀스크린 업데이트 오버레이 — 배포 중 깨진 화면 차단
+   ==================================================================== */
+.update-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;  /* 모든 UI 위에 — drawer(901), pwa-banner 위 */
+    background: rgba(11, 11, 15, 0.78);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: updateOverlayFade 0.25s ease;
+}
+@keyframes updateOverlayFade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+.update-overlay-card {
+    background: #18181b;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 14px;
+    padding: 36px 40px 28px;
+    max-width: min(420px, 88vw);
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+.update-overlay-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid rgba(217, 119, 6, 0.18);
+    border-top-color: #d97706;  /* Claude orange — 알림 토글과 톤 통일 */
+    border-radius: 50%;
+    margin: 0 auto 18px;
+    animation: updateOverlaySpin 0.9s linear infinite;
+}
+@keyframes updateOverlaySpin {
+    to { transform: rotate(360deg); }
+}
+.update-overlay-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fafafa;
+    letter-spacing: 0.02em;
+    margin-bottom: 10px;
+}
+.update-overlay-msg {
+    font-size: 13px;
+    line-height: 1.55;
+    color: #d4d4d8;
+    margin-bottom: 16px;
+    white-space: pre-line;
+}
+.update-overlay-hint {
+    font-size: 11.5px;
+    color: #71717a;
+    letter-spacing: 0.02em;
+}
+
+/* 라이트 테마 */
+body[data-theme="light"] .update-overlay {
+    background: rgba(248, 250, 252, 0.85);
+}
+body[data-theme="light"] .update-overlay-card {
+    background: #ffffff;
+    border-color: rgba(15, 23, 42, 0.10);
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
+}
+body[data-theme="light"] .update-overlay-title { color: #0f172a; }
+body[data-theme="light"] .update-overlay-msg   { color: #334155; }
+body[data-theme="light"] .update-overlay-hint  { color: #64748b; }
+
+/* [v6.7.3] 오버레이 카운터 + 단계별 메시지 + 수동 새로고침 버튼 */
+.update-overlay-elapsed {
+    font-size: 11px;
+    color: #71717a;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em;
+    margin-bottom: 10px;
+}
+.update-overlay-actions {
+    margin-top: 14px;
+    display: none;  /* 기본 hidden — _tickOverlayElapsed 가 180s+ 시 flex 로 변경 */
+    justify-content: center;
+}
+.update-overlay-btn {
+    background: #d97706;
+    color: #fff;
+    border: 0;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    letter-spacing: 0.02em;
+}
+.update-overlay-btn:hover { background: #b45309; }
+.update-overlay-btn:active { background: #92400e; }
+
+/* 라이트 테마 */
+body[data-theme="light"] .update-overlay-elapsed { color: #64748b; }
+
+/* ============================================================
+   [v6.7.349] 키보드 단축키 도움말 오버레이 (main/shortcuts.js, ? 키)
+   ============================================================ */
+#shortcuts-help-overlay {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10000;
+    min-width: 240px;
+    padding: 18px 22px;
+    background: rgba(24, 25, 30, 0.97);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    color: #d7dbe0;
+    font-size: 13px;
+    cursor: pointer;
+}
+#shortcuts-help-overlay .sc-help-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 12px;
+}
+#shortcuts-help-overlay .sc-help-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 3px 0;
+}
+#shortcuts-help-overlay kbd {
+    display: inline-block;
+    min-width: 26px;
+    text-align: center;
+    padding: 2px 6px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-bottom-width: 2px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.08);
+    font-family: inherit;
+    font-size: 12px;
+    color: #fff;
+}
+#shortcuts-help-overlay .sc-help-hint {
+    margin-top: 12px;
+    font-size: 11px;
+    opacity: 0.55;
+}
+body[data-theme="light"] #shortcuts-help-overlay {
+    background: rgba(255, 255, 255, 0.98);
+    border-color: rgba(15, 23, 42, 0.14);
+    box-shadow: 0 12px 40px rgba(15, 23, 42, 0.22);
+    color: #475569;
+}
+body[data-theme="light"] #shortcuts-help-overlay .sc-help-title { color: #0f172a; }
+body[data-theme="light"] #shortcuts-help-overlay kbd {
+    border-color: rgba(15, 23, 42, 0.22);
+    background: rgba(15, 23, 42, 0.05);
+    color: #0f172a;
+}

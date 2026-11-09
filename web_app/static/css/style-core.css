@@ -1,0 +1,844 @@
+/* [v6.7.392] style.css 분할 style-core.css — reset·테마 토큰·기본 레이아웃·사이드바·pane (순서 보존 분할: 로드 순서 변경 금지, index.html link 순서 = 원본 cascade) */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ==========================================================================
+   [Theme Config] - ?대옒 ?됱긽 肄붾뱶 ?쒖쨪濡? ?꾩껜 遺꾩꽍?댁쓣 蹂€寃쏀븬?? ?덉쑝.
+   - Purple: #3182f6 / Toss Blue: #3182f6 / Kakao Yellow: #fdd835
+   ========================================================================== */
+:root {
+    --primary-color: #3182f6;
+    --primary-rgb: 49, 130, 246;
+    --active-text-color: #fff;
+
+
+    --secondary-color: #03dac6;
+    --background-color: #0b0b0f;
+    --surface-color: rgba(25, 25, 35, 0.7);
+    --glass-border: rgba(var(--primary-rgb), 0.2);
+    --text-color: #e0e0e0;
+    --accent-glow: rgba(var(--primary-rgb), 0.3);
+    --card-bg: rgba(255, 255, 255, 0.03);
+
+    /* [v6.6.247] 디자인 토큰 — Phase 1-2
+       기존 px/rem 값들이 난립(4/6/8/10/12/16/20px 등)하여 공간 감각 불일치.
+       향후 신규 스타일은 아래 토큰 사용 권장. 기존 값 점진 치환 예정. */
+
+    /* 간격 (Spacing) — 4px 기본 배수 */
+    --space-0: 0;
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --space-7: 48px;
+
+    /* 타이포그래피 (Font Size) — rem 단위 */
+    --text-xs:   0.72rem;   /* 메타정보(시간·카운트) */
+    --text-sm:   0.82rem;   /* 보조 라벨·뱃지 */
+    --text-base: 0.95rem;   /* 본문 기본 */
+    --text-lg:   1.05rem;   /* 제목·카드 제목 */
+    --text-xl:   1.2rem;    /* 섹션 타이틀 */
+
+    /* 라운드 (Border Radius) */
+    --radius-sm: 4px;       /* 뱃지·인라인 요소 */
+    --radius-md: 8px;       /* 버튼·입력 */
+    --radius-lg: 12px;      /* 카드·모달 */
+    --radius-pill: 9999px;  /* pill 형 태그 */
+
+    /* 트랜지션 — 일관된 호버/포커스 전환 속도 */
+    --transition-fast: 0.12s ease;
+    --transition-base: 0.2s ease;
+
+    /* Z-index 계층 */
+    --z-sticky: 10;
+    --z-dropdown: 100;
+    --z-toast: 1000;
+    --z-modal: 9999;
+
+    /* [v6.6.253] 텍스트 대비 토큰 — #888 은 WCAG AA(4.5:1) 미달. 보조 텍스트는 --text-muted 사용.
+       [Phase 4] --text-dim(#8a8a8a) 은 WCAG AA 대비 3.6:1 로 여전히 미달 — 제거. 비활성 표시가
+       필요하면 --text-muted + opacity 0.6 으로 대체. */
+    --text-muted: #a8a8a8;       /* 기존 #888 교체 — 다크 배경 대비 4.5:1 확보 */
+
+    /* [Phase 1] 시맨틱 색상 토큰 — 기존 하드코딩 값들을 토큰으로 승격.
+       에러/경고/정보 상태 전용. 테마 변경 시에도 일관된 상태 표시 보장. */
+    --color-error: #cf6679;            /* 에러·삭제·위험 (기존 23회 하드코딩 대체) */
+    --color-error-rgb: 207, 102, 121;
+    --color-warning: #fdd835;          /* 경고·주의 (Kakao 옐로우 계열) */
+    --color-warning-bright: #ffeb3b;   /* 경고 강조 */
+    --color-success: #66bb6a;          /* 성공·정상 */
+    --color-info: #4fc3f7;             /* 정보·관리자 운영 섹션 */
+    --color-info-deep: #26c6da;        /* 정보 강조 (SQL 콘솔 등) */
+    --color-accent-purple: #bb86fc;    /* Material Purple (관리자 섹션) */
+    --color-brand-daum: #F7E600;       /* Daum 카페 브랜드 (커뮤니티 식별) */
+    --color-modal-focus: #5865f2;      /* Discord Blurple (모달·설정 포커스) */
+
+    /* [Phase 1] 간격 확장 — 가장 빈번하게 쓰이는 중간 값 추가 */
+    --space-2-5: 10px;                 /* 8~12 사이 중간값 (카드 padding, 입력 padding) */
+
+    /* [Phase 1] 타이포 확장 — 더 작거나 큰 제목 레벨 */
+    --text-2xs: 0.65rem;               /* 매우 작은 메타 (타임스탬프) */
+    --text-2xl: 1.4rem;                /* 대제목 */
+
+    /* [Phase 1] 섀도우 토큰 — 기존 box-shadow 패턴 3단계 */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 10px 40px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 15px 40px rgba(var(--primary-rgb), 0.15);
+
+    /* [Phase 1] 보더 강도 토큰 — 기존 rgba(255,255,255,0.05~0.1) 2단계 */
+    --border-subtle: 1px solid rgba(255, 255, 255, 0.05);
+    --border-strong: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--background-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #333;
+    border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--primary-color);
+}
+
+/* [v6.7.121] pane 안 scrollbar 확대 — 사용자 보고 (2026-05-22): resize handle (우측 하단 corner, .pane-window resize:both 박제) 때문에 scrollbar 클릭 불편.
+   글로벌 scrollbar (6px, line 98~) 유지 + pane 안 scrollbar 만 14px 확대 + thumb 명확 visual + min-height 40 (작은 thumb 못 잡힘 차단).
+   resize:both 박제 그대로 유지 (사용자 명시 "기능 유지") — corner 16×16 영역은 resize handle 그대로, scrollbar 는 그 위 영역에서 14px 폭 명확 클릭. */
+/* [v6.7.416] pane scrollbar 14→8px (사용자 "여백 크다"의 정체 = 우측 굵은 스크롤바). v6.7.121 이 리사이즈 코너
+   클릭 때문에 6→14 로 키웠으나, v6.7.413~415 에서 피드/AI/댓글은 12px gutter 로 스크롤바-리사이저 분리됨 →
+   14px 불필요. 디스코드는 gutter 없이 리스트가 pane 을 꽉 채워야 해 얇은 스크롤바가 특히 유효. */
+.pane-window *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+.pane-window *::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.15);
+}
+.pane-window *::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.30);
+    border-radius: 4px;
+    border: 1px solid transparent;   /* [v6.7.416] 8px 스크롤바에 맞춰 3→1 (가시 thumb ~6px 유지) */
+    background-clip: padding-box;
+    min-height: 32px;
+}
+.pane-window *::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+    background-clip: padding-box;
+}
+/* [v6.7.413→414] 스크롤 ↔ 리사이즈 그랩 분리 (사용자) — 리사이저(.pane-resizer.r, 우측 edge 10px, z-index 1000)가
+   스크롤바(우측 edge)를 덮어 스크롤/크기조정이 충돌하던 것 해소. tab-content 를 우측 12px inset →
+   스크롤바는 안쪽(그랩 확보) / 리사이즈존은 바깥 edge 로 분리. .tab-content 는 flex-stretch(width:100% 아님)+
+   전역 box-sizing:border-box 라 overflow 없음. 헤더(.pane-header)는 형제라 무영향(border-bottom 온전).
+   [v6.7.414] 디스코드는 제외(:not) — 짧은 모집글이라 리스트가 pane 을 꽉 채워야(여백 최소, 사용자). gutter=여백 역효과.
+   [v6.7.741] 디스코드 탭 삭제로 :not(#discord-tab) 제외를 뺐다. **그 :not 이 ID 특이성(1,2,0)을 주고 있었다** -
+   맨 `.pane-window .tab-content` 로 바꾸면 0,2,0 이 되어, 뒤에 로드되는 style-components.css 의 같은 특이성
+   `margin: 0 !important` 에 져서 gutter 가 사라진다(아래 v6.7.417 과 같은 함정). 클래스를 겹쳐(.tab-content.tab-content,
+   0,3,0) 이긴다 - 대상 요소는 종전 그대로(디스코드 pane 만 빠졌다). */
+/* [v6.7.417] !important 필수 — style-components.css:263 `.pane-window .tab-content { margin: 0 !important }` 가
+   덮어 v6.7.413~416 gutter 가 4라운드 동안 무력화돼 있었음(사용자 "동일"의 진짜 원인, 캐시 아님). */
+.pane-window .tab-content.tab-content { margin-right: 12px !important; }
+.pane-window *::-webkit-scrollbar-corner {
+    background: transparent;
+}
+/* Firefox — pane 안 scrollbar 만 auto (기본 폭) + thumb 색상 통일 */
+.pane-window {
+    scrollbar-width: auto;
+    scrollbar-color: rgba(255, 255, 255, 0.28) transparent;
+}
+
+/* Base Layout (Mobile First) */
+body {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background: #0b0b0f;
+    color: var(--text-color);
+    min-height: 100vh;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+}
+
+/* Sidebar Navigation */
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+    width: 100%; /* [수정] 100vw -> 100% (스크롤바 포함 문제 방지) */
+    overflow-x: hidden; /* [추가] 가로 스크롤 강제 방지 */
+    position: relative;
+}
+
+.sidebar {
+    width: 200px;
+    background: #111113;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    flex-direction: column;
+    transition: width 0.25s ease;
+    z-index: 1000;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+body.sidebar-collapsed .sidebar {
+    width: 56px;
+}
+
+/* Flexbox 최소 너비 이슈 방지 (내부 콘텐츠가 가로로 터지는 현상 막음) */
+.main-wrapper, .main-content {
+    min-width: 0;
+}
+
+.sidebar-header {
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.sidebar-logo {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #E2E8F0;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    transition: opacity 0.2s, width 0.2s;
+}
+
+body.sidebar-collapsed .sidebar-logo {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+}
+
+#sidebarToggleBtn {
+    background: transparent;
+    border: none;
+    color: #71717A;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s, color 0.15s;
+}
+
+#sidebarToggleBtn:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #A1A1AA;
+}
+
+.sidebar-menu {
+    padding: 8px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* [v6.6.250] 사이드바 섹션 그룹핑 — Phase 1-5 */
+.sidebar-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: var(--space-3);
+}
+.sidebar-section:first-child {
+    margin-top: var(--space-1);
+}
+.sidebar-section-title {
+    font-size: var(--text-xs);
+    color: rgba(255, 255, 255, 0.35);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: var(--space-1) var(--space-4) var(--space-1);
+    font-weight: 600;
+    user-select: none;
+}
+/* 사이드바 접힘 상태에선 섹션 타이틀 숨김 (아이콘만 표시되는 모드) */
+body.sidebar-collapsed .sidebar-section-title {
+    display: none;
+}
+/* 관리자 섹션 전체가 숨김 상태일 때 — 개별 nav-item 이 display:none 이면 타이틀만 남지 않도록 :has() 사용 (최신 브라우저) */
+.sidebar-section--admin:has(.nav-item:not([style*="display:none"])) + .sidebar-section--admin,
+.sidebar-section--admin .nav-item[style*="display:none"]:only-child + .sidebar-section-title {
+    /* fallback: 관리자가 아닐 때 admin 섹션 타이틀 자동 숨김은 JS 로도 처리 가능 */
+}
+/* 간단한 fallback: 기본적으로 admin 섹션 자체를 숨김, IP 확인 후 checkAdminStatus 에서 노출 */
+/* [v6.6.466] 원복 — admin 섹션(운영/SQL/관리자 등)은 다시 admin 전용. '대시보드' 메뉴는 모니터링 섹션이라 비admin 노출 그대로. */
+.sidebar-section--admin {
+    display: none;
+}
+body.is-admin .sidebar-section--admin {
+    display: flex;
+}
+
+/* Nav Item - 가로 리스트형 */
+.sidebar .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 14px;
+    height: 42px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    color: #71717A;
+    border-left: 3px solid transparent;
+    white-space: nowrap;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.sidebar .nav-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: #D4D4D8;
+}
+
+.sidebar .nav-item.active {
+    background: rgba(255, 255, 255, 0.06);
+    color: #F4F4F5;
+    border-left-color: var(--primary-color);
+}
+
+.sidebar .nav-icon {
+    width: 20px;
+    text-align: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* AI 텍스트 아이콘 전용 스타일 */
+.sidebar .nav-icon-text {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--primary-color);
+}
+
+.sidebar .nav-item.active .nav-icon {
+    color: var(--primary-color);
+}
+
+.sidebar .nav-item.active .nav-icon-text {
+    color: var(--primary-color);
+}
+
+.sidebar .nav-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: opacity 0.2s, width 0.2s;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+body.sidebar-collapsed .sidebar .nav-label {
+    opacity: 0;
+    width: 0;
+    pointer-events: none;
+    overflow: hidden;
+    margin: 0;
+}
+
+body.sidebar-collapsed .sidebar .nav-item {
+    justify-content: center;
+    padding: 0;
+    gap: 0;
+    border-left-width: 0;
+}
+
+body.sidebar-collapsed .sidebar .nav-item.active {
+    border-left-width: 0;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.main-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+    background: radial-gradient(circle at 50% 0%, #1e1e2f, #0b0b0f);
+}
+
+.container {
+    padding: 30px;
+    width: 100%;
+}
+
+
+/* Layout Adjustments (PC Sidebar Mode) */
+@media (min-width: 1200px) {
+    .app-layout {
+        display: flex;
+        flex-direction: row;
+        height: 100vh;
+        width: 100%; /* [수정] 100vw -> 100% */
+        overflow: hidden;
+    }
+
+    .main-wrapper {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow-y: auto;
+        background: radial-gradient(circle at 50% 0%, #1e1e2f, #0b0b0f);
+        position: relative;
+    }
+
+    /* Header styling — v6.6.455: 데스크탑 헤더는 빈 박스라 사실상 0 height. 헤더 자체는 자리만 0 으로.
+       ([v6.7.741] 헤더 안 상태 대시보드 박스 삭제 - 그 박스가 펼쳐질 때 쓰던 surface 규칙도 지웠다.) */
+    header {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        backdrop-filter: none !important;
+        border-bottom: none !important;
+        border-radius: 0 !important;
+        z-index: 10;
+    }
+
+    .main-content {
+        /* [v6.6.454] 데스크탑 padding 30→6 8 — 헤더가 0 높이로 슬림화된 후에도 main 패딩이 30px 잡고있어
+                       위쪽 빈 공간 체감 큼. 좌우는 8px 만 — 사이드바와 본문 사이 최소 여백. */
+        padding: 6px 8px !important;
+        flex: 1;
+        /* overflow-y: auto; -> 메인 래퍼가 담당하므로 중복 스크롤 방지 */
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        box-sizing: border-box;
+    }
+}
+
+.container {
+    max-width: 1800px;
+    margin: 0 auto;
+}
+
+/* Header & Status */
+/* [v6.6.450] padding/margin 슬림화. v6.6.452 — admin-controls + 일반 도구 4종 모두 사이드바 이전 후
+              헤더는 사실상 빈 박스. 데스크탑에서는 padding/margin/border/bg 모두 제거하여 본문이 그 자리 차지. */
+header {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin-bottom: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.header-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* 모바일 햄버거 노출 시 헤더가 약간의 영역 차지 — 햄버거 자체 크기로 결정 */
+@media (max-width: 760px) {
+    header { padding: 6px 8px; margin-bottom: 8px; }
+}
+
+/* [v6.7.741] 상태 대시보드(.status-box / .status-row / .status-item) 규칙 삭제 - 마크업째 지웠다(사용자 2026-10-24). */
+
+.controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* App Launcher (The Box Menu) */
+.app-launcher {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.app-box {
+    background: var(--surface-color);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 18px;
+    padding: 15px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.app-box:hover {
+    background: rgba(49, 130, 246, 0.1);
+    border-color: var(--primary-color);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.app-box.active {
+    background: rgba(var(--primary-rgb), 0.2);
+    border-color: var(--primary-color);
+    box-shadow: inset 0 0 15px rgba(var(--primary-rgb), 0.1), 0 10px 20px rgba(0, 0, 0, 0.4);
+    transform: translateY(-4px);
+}
+
+.app-box .icon {
+    font-size: 24px;
+    color: var(--primary-color);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.app-box.active .icon {
+    color: var(--primary-color) !important;
+    transform: scale(1.1);
+    text-shadow: 0 0 15px var(--accent-glow);
+}
+
+.app-box.active .label {
+    color: var(--active-text-color) !important;
+}
+
+.app-box:hover .icon {
+    transform: scale(1.2);
+}
+
+.app-box .label {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Dashboard Grid (Multi-App Monitoring) */
+/* [v6.6.425] 통합 모니터링 환경 — 카드 pane 480px 고정 + 좌측 정렬. 큰 모니터에서 카드가 너무 넓어지지 않게. */
+.dashboard-grid {
+    /* [v6.6.454] margin-top 16→4, padding 0 12 → 0 — main-content padding 으로 충분, 중복 좌우 여백 제거 */
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 4px;
+    padding: 0;
+    align-items: flex-start;
+    min-height: 50vh;
+}
+
+/* Individual Pane Wrapper in Grid */
+.pane-window {
+    background: var(--surface-color);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+    /* ?뚮젆???ш린 ?먮룞怨꾩궛???꾩쟾 鍮꾪솢?깊솕?섏뿬 ?쒕옒洹?媛믪쓣 ?덈??곸쑝濡?蹂댁옣 */
+    width: calc(50% - 12px);
+    /* ?ㅼ젣 臾쇰━???덈퉬 蹂???곸슜 */
+    height: 600px;
+    /* ?ㅼ젣 臾쇰━???믪씠 蹂???곸슜 */
+    min-height: 300px;
+    max-height: 95vh;
+    /* [v6.6.433] 댓글/피드 슬림 폭 허용 — 280 → 320px. v432 가 너무 좁다는 사용자 피드백. */
+    min-width: 320px;
+    max-width: 100%;
+    resize: both;
+    /* ?쒕옒洹몃줈 ?덈퉬/?믪씠 紐⑤몢 議곗젅 ?덉슜 */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    margin: 0 !important; /* [추가] 패널 간 높이 정렬 불일치 방지 */
+    transition: box-shadow 0.3s ease, border-color 0.3s ease, width 0.3s ease, transform 0.3s ease;
+}
+
+/* [추가] 사이드바 접었을 때 3열 모드로 자동 전환 (공간 효율 극대화) */
+@media (min-width: 1500px) {
+    body.sidebar-collapsed .pane-window:not([style*="width"]) {
+        width: calc(33.333% - 14px);
+    }
+}
+
+/* 수동 조절된 탭은 flex-basis 고정 */
+.pane-window[style*="width"] {
+    flex: 0 0 auto !important;
+}
+
+/* 유틸리티 모드 (1열 중앙 배치, 리사이즈 가능) */
+.pane-window.utility-mode {
+    max-width: 100%;
+    min-height: 300px;
+    flex: 0 0 auto !important;
+    margin: 0 auto !important;
+}
+
+.pane-window:hover {
+    box-shadow: 0 15px 40px rgba(49, 130, 246, 0.15);
+}
+
+/* Pane Header inside the window */
+.pane-header {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 6px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pane-header-main {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-grow: 1;
+}
+
+.pane-header h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* 헤더용 작은 배지 */
+.header-badge {
+    background: rgba(var(--primary-rgb), 0.15);
+    border: 1px solid rgba(var(--primary-rgb), 0.3);
+    color: var(--primary-color);
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 800;
+}
+
+/* 헤더 검색창 컨테이너 */
+.header-search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-grow: 0.3;
+    /* 너무 넓어지지 않게 */
+    max-width: 300px;
+}
+
+.header-search-container i {
+    position: absolute;
+    left: 12px;
+    font-size: 0.8rem;
+    color: #666;
+    pointer-events: none;
+}
+
+.header-search-container input {
+    width: 100%;
+    padding: 6px 15px 6px 32px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 20px !important;
+    color: #fff !important;
+    font-size: 0.85rem !important;
+    transition: all 0.2s;
+}
+
+.header-search-container input:focus {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: var(--primary-color) !important;
+    outline: none;
+    box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.2);
+}
+
+
+.pane-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pane-header .pane-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.pane-close-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    color: #666;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.pane-close-btn:hover {
+    background: var(--color-error) !important;
+    color: #fff !important;
+    transform: rotate(90deg);
+}
+
+/* Tab Content Adjustments for Grid */
+.pane-window .tab-content .card {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100%;
+    min-height: 0;
+}
+
+.tab-content .card {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.tab-content h2 {
+    display: none;
+    /* Hide original redundant headers */
+}
+
+@media (max-width: 1100px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        /* Single column on tablet/mobile */
+    }
+}
+
+/* [v6.6.279] 태블릿 구간(768~1100px): 사이드바 자동 축소 (아이콘 모드).
+   사용자가 수동 `sidebar-collapsed` 토글 없이도 좁은 뷰포트에서 콘텐츠 공간 확보.
+   768px 미만은 별도 모바일 스타일(하단 탭바)로 처리됨. */
+@media (min-width: 768px) and (max-width: 1100px) {
+    .sidebar {
+        width: 56px !important;
+    }
+    .sidebar .nav-label,
+    .sidebar-section-title,
+    .sidebar-logo-text {
+        display: none !important;
+    }
+    .sidebar .nav-item {
+        justify-content: center;
+        padding: 10px 0 !important;
+    }
+    .sidebar .nav-icon {
+        margin: 0 !important;
+    }
+    /* main-wrapper 좌측 공간 확보 */
+    .main-wrapper {
+        margin-left: 0;
+    }
+}
+
+/* New Data Highlighting - Premium Design */
+/* New Data Highlighting - Premium Design */
+@keyframes shimmer-highlight {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Article Card Style */
+.article-card {
+    background: var(--surface-color);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 18px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.article-card:hover {
+    box-shadow: inset 0 0 0 999px rgba(255, 255, 255, 0.05) !important;
+    border-color: var(--glass-border);
+    transform: scale(1.02);
+}
+
+/* [v6.7.26] .article-card.ai-pick 제거 — ai_processor 가 'AI 픽' 키워드 미사용 (dead branch) */
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.card-game-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-game-name {
+    font-weight: 500;
+    font-size: 0.85rem;
+    color: var(--primary-color);
+}
+
+.card-time {
+    font-size: 0.7rem; /* [수정] 0.75rem -> 0.7rem */
+    color: #fff; /* [수정] #666 -> #fff (시간 가독성 상향) */
+    font-weight: 400;
+}
+
+.card-title {
+    font-size: 1.05rem; /* [수정] 0.95rem -> 1.05rem (약 1pt 확대) */
+    font-weight: 400;
+    color: #eee;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: auto;
+}
+

@@ -1,0 +1,212 @@
+path	how	base_commit
+web_app/.dockerignore	copied as-is	dc01b305
+web_app/.gitattributes	copied as-is	dc01b305
+web_app/.gitignore	copied as-is	dc01b305
+web_app/Dockerfile	copied as-is	dc01b305
+web_app/ai_lib/__init__.py	copied as-is	dc01b305
+web_app/ai_lib/gemma4_summary_core.py	copied as-is	dc01b305
+web_app/ai_lib/genai_client.py	copied as-is	dc01b305
+web_app/ai_lib/prompts/README.md	copied as-is	dc01b305
+web_app/ai_lib/prompts/gemma4_system_instruction.txt	copied as-is	dc01b305
+web_app/app.py	copied as-is	dc01b305
+web_app/crawlers/__init__.py	copied as-is	dc01b305
+web_app/crawlers/content_extractor.py	copied as-is	dc01b305
+web_app/crawlers/contents_crawler.py	stub (out of scope, names only)	dc01b305
+web_app/crawlers/crawler.py	copied as-is	dc01b305
+web_app/crawlers/dc_http.py	copied as-is	dc01b305
+web_app/crawlers/naver_cafe.py	copied as-is	dc01b305
+web_app/crawlers/official_poe.py	copied as-is	dc01b305
+web_app/crawlers/official_pubg.py	stub (out of scope, names only)	dc01b305
+web_app/crawlers/test_naver_content_api.py	copied as-is	dc01b305
+web_app/requirements.txt	copied as-is	dc01b305
+web_app/run.sh	copied as-is	dc01b305
+web_app/scripts/import_graph.py	copied as-is	dc01b305
+web_app/static/css/ai-summary.css	copied as-is	dc01b305
+web_app/static/css/anomaly.css	stub (out of scope, names only)	dc01b305
+web_app/static/css/ccu-grafana.css	stub (out of scope, names only)	dc01b305
+web_app/static/css/components.css	copied as-is	dc01b305
+web_app/static/css/ime-design.css	copied as-is	dc01b305
+web_app/static/css/landing.css	copied as-is	dc01b305
+web_app/static/css/situation.css	stub (out of scope, names only)	dc01b305
+web_app/static/css/style-components.css	copied as-is	dc01b305
+web_app/static/css/style-core.css	copied as-is	dc01b305
+web_app/static/css/style-feed.css	copied as-is	dc01b305
+web_app/static/css/style-misc.css	copied as-is	dc01b305
+web_app/static/css/style-modals.css	copied as-is	dc01b305
+web_app/static/css/style-responsive.css	copied as-is	dc01b305
+web_app/static/css/style-results.css	copied as-is	dc01b305
+web_app/static/css/style-tables.css	copied as-is	dc01b305
+web_app/static/css/theme-phosphor.css	copied as-is	dc01b305
+web_app/static/css/theme-variants.css	copied as-is	dc01b305
+web_app/static/css/verdict.css	stub (out of scope, names only)	dc01b305
+web_app/static/icons/apple-touch-icon-180.png	copied as-is	dc01b305
+web_app/static/icons/icon-192.png	copied as-is	dc01b305
+web_app/static/icons/icon-512-maskable.png	copied as-is	dc01b305
+web_app/static/icons/icon-512.png	copied as-is	dc01b305
+web_app/static/icons/icon.svg	copied as-is	dc01b305
+web_app/static/js/api.js	copied as-is	dc01b305
+web_app/static/js/components/status-badge.js	copied as-is	dc01b305
+web_app/static/js/core/api-client.js	copied as-is	dc01b305
+web_app/static/js/core/highlight.js	copied as-is	dc01b305
+web_app/static/js/game-color.js	copied as-is	dc01b305
+web_app/static/js/landing.js	copied as-is	dc01b305
+web_app/static/js/main/app-state.js	copied as-is	dc01b305
+web_app/static/js/main/boot.js	copied as-is	dc01b305
+web_app/static/js/main/fetch-patch.js	copied as-is	dc01b305
+web_app/static/js/main/notif-inbox.js	copied as-is	dc01b305
+web_app/static/js/main/pwa.js	copied as-is	dc01b305
+web_app/static/js/main/shortcuts.js	copied as-is	dc01b305
+web_app/static/js/main/theme.js	copied as-is	dc01b305
+web_app/static/js/main/topbar-status.js	copied as-is	dc01b305
+web_app/static/js/socket.js	copied as-is	dc01b305
+web_app/static/js/sw.js	copied as-is	dc01b305
+web_app/static/js/tab-manager/actions.js	copied as-is	dc01b305
+web_app/static/js/tab-manager/render.js	copied as-is	dc01b305
+web_app/static/js/tab-manager/state.js	copied as-is	dc01b305
+web_app/static/js/tabs/_tab_helpers.js	copied as-is	dc01b305
+web_app/static/js/tabs/account-tab.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/tabs/admin/dashboard.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/tabs/admin/db-console.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/tabs/admin/health.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/tabs/admin/history-data.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/tabs/admin/notifications.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/tabs/admin/system.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/tabs/admin/ui-control.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/tabs/admin/visit-logs.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/tabs/ai-summary-tab.js	copied as-is	dc01b305
+web_app/static/js/tabs/ai-tab.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/tabs/anomaly-tab.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/tabs/ccu-grafana-tab.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/tabs/comments-tab.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/tabs/community-tab.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/tabs/diamond-tab.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/tabs/feed-tab.js	copied as-is	dc01b305
+web_app/static/js/tabs/games-tab.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/tabs/graph-tab.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/tabs/log-tab.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/tabs/pass-rate-graph.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/tabs/search-tab.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/tabs/situation-tab.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/tabs/total-tab.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/tabs/trend-tab.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/tabs/verdict-tab.js	stub (out of scope, names only)	dc01b305
+web_app/static/js/ui/common.js	copied as-is	dc01b305
+web_app/static/js/ui/controls.js	copied as-is	dc01b305
+web_app/static/js/ui/settings-modal.js	copied as-is	dc01b305
+web_app/static/manifest.json	copied as-is	dc01b305
+web_app/static/offline.html	copied as-is	dc01b305
+web_app/templates/cloudflare_522.html	stub (out of scope, names only)	dc01b305
+web_app/templates/index.html	copied as-is	dc01b305
+web_app/templates/partials/bottom_tabbar.html	copied as-is	dc01b305
+web_app/templates/partials/data_loading.html	copied as-is	dc01b305
+web_app/templates/partials/landing_overlay.html	copied as-is	dc01b305
+web_app/templates/partials/mobile_overflow.html	copied as-is	dc01b305
+web_app/templates/partials/settings_modal.html	copied as-is	dc01b305
+web_app/templates/partials/sidebar.html	copied as-is	dc01b305
+web_app/templates/partials/tabs/account_trade.html	stub (out of scope, names only)	dc01b305
+web_app/templates/partials/tabs/admin.html	stub (out of scope, names only)	dc01b305
+web_app/templates/partials/tabs/ai_analysis.html	stub (out of scope, names only)	dc01b305
+web_app/templates/partials/tabs/ai_summary.html	copied as-is	dc01b305
+web_app/templates/partials/tabs/anomaly.html	stub (out of scope, names only)	dc01b305
+web_app/templates/partials/tabs/ccu_grafana.html	stub (out of scope, names only)	dc01b305
+web_app/templates/partials/tabs/comments.html	stub (out of scope, names only)	dc01b305
+web_app/templates/partials/tabs/community.html	stub (out of scope, names only)	dc01b305
+web_app/templates/partials/tabs/diamond_trade.html	stub (out of scope, names only)	dc01b305
+web_app/templates/partials/tabs/feed.html	copied as-is	dc01b305
+web_app/templates/partials/tabs/games.html	stub (out of scope, names only)	dc01b305
+web_app/templates/partials/tabs/log_viewer.html	stub (out of scope, names only)	dc01b305
+web_app/templates/partials/tabs/ops.html	stub (out of scope, names only)	dc01b305
+web_app/templates/partials/tabs/search.html	stub (out of scope, names only)	dc01b305
+web_app/templates/partials/tabs/situation.html	stub (out of scope, names only)	dc01b305
+web_app/templates/partials/tabs/sql_console.html	stub (out of scope, names only)	dc01b305
+web_app/templates/partials/tabs/total.html	stub (out of scope, names only)	dc01b305
+web_app/templates/partials/tabs/trends.html	stub (out of scope, names only)	dc01b305
+web_app/templates/partials/tabs/verdict.html	stub (out of scope, names only)	dc01b305
+web_app/templates/partials/theme_picker.html	copied as-is	dc01b305
+web_app/templates/partials/topbar.html	copied as-is	dc01b305
+web_app/templates/reset.html	copied as-is	dc01b305
+web_app/test_ai_resilience.py	copied as-is	dc01b305
+web_app/test_ai_summary_defects.py	copied as-is	dc01b305
+web_app/test_ai_summary_request_contract.py	copied as-is	dc01b305
+web_app/test_ai_summary_smooth_ui.py	copied as-is	dc01b305
+web_app/test_bootstrap_jobs.py	copied as-is	dc01b305
+web_app/test_default_tabs_ui.py	copied as-is	dc01b305
+web_app/test_driver_death_recovery.py	copied as-is	dc01b305
+web_app/test_empty_sa_pool.py	copied as-is	dc01b305
+web_app/test_feed_default_verdict.py	copied as-is	dc01b305
+web_app/test_feed_smooth_ui.py	copied as-is	dc01b305
+web_app/test_feed_sort_search_ui.py	copied as-is	dc01b305
+web_app/test_feed_toggle_ui.py	copied as-is	dc01b305
+web_app/test_feed_verdict_query.py	copied as-is	dc01b305
+web_app/test_gemma4_cycle_contract.py	copied as-is	dc01b305
+web_app/test_globals_state_contract.py	copied as-is	dc01b305
+web_app/test_pages_index_contract.py	copied as-is	dc01b305
+web_app/test_post_judge.py	copied as-is	dc01b305
+web_app/test_sqlite_all.py	copied as-is	dc01b305
+web_app/test_start_crawler_contract.py	copied as-is	dc01b305
+web_app/test_summary_queue_depth.py	copied as-is	dc01b305
+web_app/test_title_change.py	copied as-is	dc01b305
+web_app/test_upgrade_insecure.py	copied as-is	dc01b305
+web_app/tests/ai_summary_request_snapshot.json	copied as-is	dc01b305
+web_app/tests/bootstrap_jobs_snapshot.json	copied as-is	dc01b305
+web_app/tests/gemma4_cycle_snapshot.json	copied as-is	dc01b305
+web_app/tests/globals_state_snapshot.json	copied as-is	dc01b305
+web_app/tests/pages_index_contract_snapshot.json	copied as-is	dc01b305
+web_app/tests/start_crawler_contract_snapshot.json	copied as-is	dc01b305
+web_app/tests/test_escape_html_v731.js	copied as-is	dc01b305
+web_app/utils/__init__.py	copied as-is	dc01b305
+web_app/utils/common.py	copied as-is	dc01b305
+web_app/utils/google_sheets_handler.py	copied as-is	dc01b305
+web_app/utils/notification_manager.py	copied as-is	dc01b305
+web_app/utils/notification_trace.py	copied as-is	dc01b305
+web_app/utils/private_config.py	stub (out of scope, names only)	dc01b305
+web_app/utils/service_accounts.py	copied as-is	dc01b305
+web_app/utils/sqlite_handler.py	copied as-is	dc01b305
+web_app/web_lib/__init__.py	copied as-is	dc01b305
+web_app/web_lib/ai_gemma4_worker.py	copied as-is	dc01b305
+web_app/web_lib/bg/__init__.py	copied as-is	dc01b305
+web_app/web_lib/bg/anomaly.py	stub (out of scope, names only)	dc01b305
+web_app/web_lib/bg/broadcast.py	copied as-is	dc01b305
+web_app/web_lib/bg/contents.py	copied as-is	dc01b305
+web_app/web_lib/bg/crawler_singleton.py	copied as-is	dc01b305
+web_app/web_lib/bg/export.py	copied as-is	dc01b305
+web_app/web_lib/bg/health_sampler.py	stub (out of scope, names only)	dc01b305
+web_app/web_lib/bg/heartbeat.py	stub (out of scope, names only)	dc01b305
+web_app/web_lib/bg/notif_store.py	copied as-is	dc01b305
+web_app/web_lib/bg/post_judge.py	copied as-is	dc01b305
+web_app/web_lib/bg/retention.py	stub (out of scope, names only)	dc01b305
+web_app/web_lib/bg/scheduler.py	copied as-is	dc01b305
+web_app/web_lib/bg/sub_runners.py	stub (out of scope, names only)	dc01b305
+web_app/web_lib/bg/trend_digest.py	stub (out of scope, names only)	dc01b305
+web_app/web_lib/bg/visitor_log.py	stub (out of scope, names only)	dc01b305
+web_app/web_lib/bg/volume_backup.py	stub (out of scope, names only)	dc01b305
+web_app/web_lib/bg/web_push.py	stub (out of scope, names only)	dc01b305
+web_app/web_lib/bg_tasks.py	copied as-is	dc01b305
+web_app/web_lib/globals.py	copied as-is	dc01b305
+web_app/web_lib/hidden_apps.py	stub (out of scope, names only)	dc01b305
+web_app/web_lib/routes/__init__.py	copied as-is	dc01b305
+web_app/web_lib/routes/_helpers.py	copied as-is	dc01b305
+web_app/web_lib/routes/admin.py	stub (out of scope, names only)	dc01b305
+web_app/web_lib/routes/analysis.py	copied as-is	dc01b305
+web_app/web_lib/routes/anomaly.py	stub (out of scope, names only)	dc01b305
+web_app/web_lib/routes/articles.py	copied as-is	dc01b305
+web_app/web_lib/routes/config_api.py	stub (out of scope, names only)	dc01b305
+web_app/web_lib/routes/crawler_control.py	stub (out of scope, names only)	dc01b305
+web_app/web_lib/routes/extension.py	stub (out of scope, names only)	dc01b305
+web_app/web_lib/routes/grafana.py	stub (out of scope, names only)	dc01b305
+web_app/web_lib/routes/health.py	copied as-is	dc01b305
+web_app/web_lib/routes/pages.py	copied as-is	dc01b305
+web_app/web_lib/routes/push_api.py	stub (out of scope, names only)	dc01b305
+web_app/web_lib/routes/search.py	stub (out of scope, names only)	dc01b305
+web_app/web_lib/routes/sub_crawlers.py	stub (out of scope, names only)	dc01b305
+web_app/web_lib/routes/trends.py	stub (out of scope, names only)	dc01b305
+web_app/web_lib/routes/verdict.py	stub (out of scope, names only)	dc01b305
+web_app/web_lib/web_routes.py	copied as-is	dc01b305
+web_app/web_lib/web_sockets.py	copied as-is	dc01b305
+web_app/tests/bootstrap_jobs_snapshot.json	regenerated by the build (contract snapshot over stubs)	dc01b305
+web_app/tests/pages_index_contract_snapshot.json	regenerated by the build (contract snapshot over stubs)	dc01b305
+README.md	written for this snapshot	-
+docs/architecture.md	written for this snapshot	-
+docs/incidents.md	written for this snapshot	-
+docs/pipeline-history.md	written for this snapshot	-
+SOURCE.tsv	written for this snapshot	-

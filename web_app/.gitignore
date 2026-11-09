@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Refactor tooling - 타임스탬프 스냅샷은 무시, latest 만 커밋
+tests/snapshot_2*.json
+
+# [v6.6.278] 디자인 리팩토링 로컬 프리뷰 전용 (정적 서버 시각 검증용, 커밋 대상 아님)
+_preview_render.py
+index_preview.html
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Project Specific
+.env
+logs/
+*.log
+crawled_data.sqlite
+.chrome_profiles/
+contents_cookies.json
+crash_dump.txt
+crash_log.txt
+.claude/settings.local.json
+.claude/*.lnk
+crawlers/*.xlsx

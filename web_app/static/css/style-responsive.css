@@ -1,0 +1,442 @@
+/* [v6.7.392] style.css 분할 style-responsive.css — 3단 브레이크포인트 + pointer:fine/coarse 블록 (순서 보존 분할: 로드 순서 변경 금지, index.html link 순서 = 원본 cascade) */
+/* ============================================================
+   RESPONSIVE UI - 3단 브레이크포인트 시스템
+   ≥1200px : 데스크탑 (사이드바 + 2열 패널)
+   768~1199px: 태블릿 (아이콘 사이드바 + 1열 패널)
+   <768px  : 모바일 (하단 탭바 + 1열 패널)
+   ============================================================ */
+
+/* 모바일 햄버거 버튼 (현재 미사용 - 하단 탭바로 대체) */
+#mobile-hamburger {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid rgba(49, 130, 246, 0.35);
+    color: var(--primary-color);
+    border-radius: 10px;
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s;
+}
+#mobile-hamburger:hover { background: rgba(49, 130, 246, 0.12); }
+
+/* 사이드바 오버레이 배경 */
+#sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1999;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+/* 오버플로우 패널 (태블릿·모바일 헤더 버튼 ⋯ 더보기) */
+#controls-overflow-panel {
+    display: none;
+    position: fixed;
+    top: 62px;
+    right: 10px;
+    background: rgba(12, 12, 22, 0.98);
+    border: 1px solid rgba(49, 130, 246, 0.2);
+    border-radius: 14px;
+    padding: 10px;
+    z-index: 1800;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 210px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+#controls-overflow-panel button {
+    width: 100%;
+    text-align: left;
+    padding: 10px 14px;
+    border-radius: 9px;
+    font-size: 0.85rem;
+}
+
+/* 하단 탭바 (<768px) */
+.bottom-tabbar {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: rgba(11, 11, 15, 0.97);
+    border-top: 1px solid rgba(49, 130, 246, 0.15);
+    z-index: 900;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    align-items: stretch;
+}
+.bottom-tabbar::-webkit-scrollbar { display: none; }
+/* [v6.7.191 IA-02] 하단 탭바 가로 스크롤 시 우측 fade 시그널 — admin 진입 시 13탭 가로스크롤되는데 스크롤바 숨김 + 어포던스 0 → 탭 소실로 오인 방지.
+   .scrollable 클래스는 boot.js 의 MutationObserver 가 scrollWidth > clientWidth 일 때만 부여. 일반 5탭 사용자에겐 미발화 → fade 미가시. */
+.bottom-tabbar.scrollable {
+    -webkit-mask-image: linear-gradient(to right, black calc(100% - 32px), transparent 100%);
+            mask-image: linear-gradient(to right, black calc(100% - 32px), transparent 100%);
+}
+
+.btab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1 0 auto;
+    min-width: 54px;
+    padding: 5px 4px;
+    cursor: pointer;
+    gap: 3px;
+    color: #666;
+    transition: color 0.2s, background 0.2s;
+    font-size: 0.6rem;
+    font-weight: 600;
+    white-space: nowrap;
+    border: none;
+    background: transparent;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    position: relative; /* nav-badge absolute 위치 기준점 */
+}
+.btab-item i { font-size: 1.05rem; transition: color 0.2s, text-shadow 0.2s; }
+.btab-item:hover { color: var(--primary-color); background: rgba(49, 130, 246, 0.08); }
+.btab-item.active { color: var(--primary-color); }
+.btab-item.active i { text-shadow: 0 0 10px var(--accent-glow); }
+.btab-item .btab-ai-label { font-size: 0.85rem; font-weight: 900; line-height: 1; color: inherit; }
+
+/* ============================================================
+   데스크탑: pointer:fine(PC/마우스) 기기 전체
+   pointer:fine = 마우스/트랙패드 → 창 너비와 무관하게 항상 데스크탑 레이아웃
+   ============================================================ */
+@media (pointer: fine) {
+    #mobile-hamburger { display: none !important; }
+    #sidebar-overlay { display: none !important; }
+    #controls-overflow-panel { display: none !important; }
+    #mobile-overflow-btn { display: none !important; }
+    .controls > button { display: inline-flex !important; }
+    .bottom-tabbar { display: none !important; }
+}
+
+/* ============================================================
+   모바일: pointer:coarse(터치 기기) 전체 — 너비 무관
+   pointer:coarse = 마우스 없는 터치 기기(폰/태블릿)만 적용
+   PC에서 창을 좁혀도 이 블록은 트리거되지 않음
+   ============================================================ */
+@media (pointer: coarse) {
+    /* [v6.6.255] 터치 기기 한정 — 접근성 최소 타깃 40px (WCAG 44px 권장 대비 절충치).
+       데스크탑(pointer:fine) 정보 밀도는 영향 없음. */
+    button,
+    .btab-item,
+    .nav-item,
+    [role="button"] {
+        min-height: 40px;
+    }
+    /* 행 클릭 영역도 확대 — 테이블 tr 은 JS 로 클릭 바인딩 */
+    .excel-table tr.clickable-row,
+    #comments-tab .excel-table tr,
+    .full-width-table tr.clickable-row {
+        min-height: 40px;
+    }
+
+    /* 사이드바 숨김 → 하단 탭바로 대체 */
+    .sidebar { display: none !important; }
+    .bottom-tabbar { display: flex !important; }
+
+    /* 레이아웃 */
+    .app-layout { flex-direction: column; }
+    .main-wrapper { padding-bottom: 66px; }
+
+    /* 헤더 */
+    header {
+        padding: 8px 10px !important;
+        border-radius: 0 !important;
+        margin-bottom: 0 !important;
+    }
+    .header-info {
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: nowrap;
+    }
+    /* [v6.7.741] 모바일 상태 대시보드(.status-box) 토글 규칙 삭제 - 마크업째 지웠다. */
+    .controls {
+        flex-wrap: nowrap;
+        padding-top: 0;
+        border-top: none;
+        gap: 5px;
+        flex: 1;
+        justify-content: flex-end;
+        overflow: visible;
+    }
+    .controls > button:not(.mobile-primary):not(#mobile-overflow-btn) { display: none !important; }
+    #mobile-overflow-btn { display: inline-flex !important; }
+    body.controls-overflow-open #controls-overflow-panel { display: flex; }
+    #controls-overflow-panel { top: 55px; right: 8px; }
+
+    /* 패널 — 헤더(~55px) + 하단 탭바(66px) + 여유(4px) 제외한 전체 화면 높이 활용 */
+    .pane-window {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        height: calc(100vh - 125px) !important;
+        min-height: 300px !important;
+        resize: none;
+        transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    .pane-window.utility-mode { height: calc(80vh - 66px) !important; }
+
+    /* 그리드 */
+    .dashboard-grid { padding: 0 6px; gap: 10px; margin-top: 6px; }
+    .main-content { padding: 6px !important; }
+
+    /* ── 모바일 전반 크기 축소 ── */
+    .tab-content h2 { font-size: 1rem; font-weight: 700; }
+    .pane-window .tab-content { padding: 10px !important; }
+    button { padding: 5px 10px; font-size: 0.78rem; }
+    .small-button { padding: 4px 8px; font-size: 0.72rem; }
+    .tabs-header .tab-btn { padding: 5px 10px; font-size: 0.78rem; }
+    .header-note { font-size: 0.7rem; }
+    .card-header-with-button h2 { font-size: 0.95rem; }
+
+    /* ── 계정거래/다이아시세 패널: auto height 유지 ── */
+    #pane-account-trade,
+    #pane-diamond-trade {
+        height: auto !important;
+        min-height: 200px;
+    }
+
+
+    /* ── 게임 패널: JS의 height:auto가 !important에 밀리지 않도록 복원 ── */
+    #pane-games {
+        height: auto !important;
+        max-height: none !important;
+        min-height: 200px !important;
+    }
+    /* ── 게임탭 그리드: align-content stretch 해제 → 각 섹션 자연 높이 유지 ── */
+    #games-tab .card-grid {
+        align-content: start !important;
+        height: auto !important;
+    }
+    /* [v6.6.420] 모바일에서 게임 카드 순서 변경 ↑↓ 버튼 노출 — drag&drop 이 터치에서 동작 안 함 */
+    .game-sort-mobile { display: inline-flex !important; align-items: center; }
+    .game-sort-btn { min-height: 32px; min-width: 32px; }
+
+    /* ── 게임탭 섹션: 모바일은 카드 자체가 자연 높이로 펼쳐지게 — 이중 스크롤 폐지 ── */
+    /* [v6.6.420] max-height/overflow 해제. 카드 내부 스크롤 + 메인 페이지 스크롤 충돌 제거.
+       표시 항목 수는 게임별 limits 설정으로 제어 (Settings 탭). */
+    #games-tab .game-articles-container { max-height: none !important; overflow-y: visible !important; }
+
+    /* ── 커뮤니티탭: 그리드 1fr 배분 해제 → 섹션별 독립 높이 ── */
+    #community-tab .community-grid {
+        height: auto !important;
+        grid-auto-rows: auto !important;
+        overflow-y: visible !important;
+    }
+    #community-tab .game-section-table-wrapper { height: auto !important; min-height: 0; }
+    #community-tab .game-articles-container { flex: none !important; max-height: 290px; overflow-y: auto; }
+
+    /* ── 커뮤니티 게임 링크: 가로 스크롤 (줄바꿈 없음, 버튼 축소 방지) ── */
+    .community-game-links {
+        flex-wrap: nowrap !important;
+        overflow-x: auto;
+        overflow-y: visible;
+        -webkit-overflow-scrolling: touch;
+        align-items: center;
+        min-height: 40px;
+        padding: 4px 10px;
+    }
+    .community-game-links > * {
+        flex-shrink: 0;
+        min-width: max-content;
+        padding: 5px 10px;
+        line-height: 1.4;
+    }
+
+    /* ── 테이블 모바일 축소 ── */
+    .excel-table, .full-width-table { font-size: 0.8rem; }
+    .excel-table th, .excel-table td { padding: 6px 4px !important; font-size: 0.75rem; }
+    .diamond-trade-table th, .diamond-trade-table td { font-size: 0.72rem !important; padding: 6px 4px !important; }
+
+    /* ── 계정거래: 가로 스크롤 — overflow !important 충돌 해소 ── */
+    #account-trade-table-container {
+        overflow-x: auto !important;
+        overflow-y: auto !important;   /* 전역 overflow-y:visible!important 덮어쓰기 */
+        -webkit-overflow-scrolling: touch !important;
+    }
+    .account-trade-table {
+        table-layout: fixed !important;
+        width: 820px !important;
+        font-size: 0.85rem !important;
+    }
+    .account-trade-table th, .account-trade-table td {
+        font-size: 0.82rem !important;
+        padding: 8px 10px !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    /* 모바일 열 너비 재분배: 글 제목 22% → 13% (-40%), 나머지 소폭 증가 */
+    .account-trade-table th:nth-child(1), .account-trade-table td:nth-child(1) { width: 15% !important; }
+    .account-trade-table th:nth-child(2), .account-trade-table td:nth-child(2) { width: 12% !important; }
+    .account-trade-table th:nth-child(3), .account-trade-table td:nth-child(3) { width: 12% !important; }
+    .account-trade-table th:nth-child(4), .account-trade-table td:nth-child(4) { width: 11% !important; }
+    .account-trade-table th:nth-child(5), .account-trade-table td:nth-child(5) { width: 12% !important; }
+    .account-trade-table th:nth-child(6), .account-trade-table td:nth-child(6) { width: 14% !important; }
+    .account-trade-table th:nth-child(7), .account-trade-table td:nth-child(7) { width: 13% !important; }
+    .account-trade-table th:nth-child(8), .account-trade-table td:nth-child(8) { width: 11% !important; }
+
+    /* 카드 컴팩트화 */
+    .article-card { padding: 10px; gap: 6px; border-radius: 10px; }
+    .card-title { font-size: 0.9rem; }
+    .game-section-table-wrapper { border-radius: 8px; }
+
+    /* === 모바일 2행 카드 레이아웃 (전체/게임/커뮤니티/댓글 탭) === */
+    /* 배지 min-width 초기화 — PC용 min-width:60px 모바일에서 해제 */
+    #totalArticlesBody td:nth-child(2) span.badge { min-width: 0 !important; }
+    #totalArticlesContainer table thead,
+    #gamesSections table thead,
+    #communitySections table thead,
+    #comments-tab .excel-table thead { display: none !important; }
+
+    #totalArticlesContainer table colgroup,
+    #gamesSections table colgroup,
+    #communitySections table colgroup { display: none !important; }
+
+    #totalArticlesContainer table,
+    #gamesSections table,
+    #communitySections table,
+    #comments-tab .excel-table { display: block !important; width: 100% !important; min-width: 0 !important; table-layout: auto !important; }
+
+    #totalArticlesContainer table tbody,
+    #gamesSections table tbody,
+    #communitySections table tbody,
+    #comments-tab .excel-table tbody { display: block !important; width: 100% !important; }
+
+    #totalArticlesContainer tr.clickable-row,
+    #gamesSections tr.clickable-row,
+    #communitySections tr.clickable-row,
+    #comments-tab .excel-table tr {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        padding: 8px 10px !important;
+        border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+        gap: 3px 6px !important;
+        align-items: center !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    #totalArticlesContainer tr.clickable-row td,
+    #gamesSections tr.clickable-row td,
+    #communitySections tr.clickable-row td,
+    #comments-tab .excel-table tr td {
+        display: block !important;
+        padding: 0 !important;
+        border: none !important;
+        width: auto !important;
+        max-width: none !important;
+        overflow: visible !important;
+        white-space: normal !important;
+        text-align: left !important;
+    }
+
+    /* 전체 탭: td1 게임명 / td2 구분 / td3 글제목 / td4 시간 */
+    /* [v6.6.246] 전체 탭 모바일 — 의미 class 기반 (Row1: 글제목, Row2: 구분·게임명·시간) */
+    #totalArticlesContainer tr.clickable-row td.col-title  { order: 1 !important; flex: 0 0 100% !important; font-size: 0.9rem !important; line-height: 1.4 !important; }
+    #totalArticlesContainer tr.clickable-row td.col-source { order: 2 !important; flex: 0 0 auto !important; font-size: 0.78rem !important; width: auto !important; text-align: left !important; margin-top: 4px !important; }
+    #totalArticlesContainer tr.clickable-row td.col-game   { order: 3 !important; flex: 1 !important; font-size: 0.78rem !important; width: auto !important; text-align: left !important; margin-top: 4px !important; }
+    #totalArticlesContainer tr.clickable-row td.col-time   { order: 4 !important; flex: 0 0 auto !important; margin-left: auto !important; width: auto !important; min-width: 0 !important; font-size: 0.75rem !important; color: var(--text-muted) !important; margin-top: 4px !important; }
+
+    /* 게임 탭: td1 구분 / td2 글제목 / td3 시간 */
+    /* [v6.6.246] 게임 탭 모바일 — 의미 class 기반 */
+    #gamesSections tr.clickable-row td.col-title  { order: 1 !important; flex: 0 0 100% !important; font-size: 0.9rem !important; line-height: 1.4 !important; }
+    #gamesSections tr.clickable-row td.col-source { order: 2 !important; flex: 0 0 auto !important; font-size: 0.78rem !important; width: auto !important; text-align: left !important; margin-top: 4px !important; }
+    #gamesSections tr.clickable-row td.col-time   { order: 3 !important; flex: 0 0 auto !important; margin-left: auto !important; width: auto !important; min-width: 0 !important; font-size: 0.75rem !important; color: var(--text-muted) !important; margin-top: 4px !important; }
+
+    /* 커뮤니티 탭: td1 게임명 / td2 글제목 / td3 시간 */
+    /* [v6.6.246] 커뮤니티 탭 모바일 — 의미 class 기반 */
+    #communitySections tr.clickable-row td.col-title { order: 1 !important; flex: 0 0 100% !important; font-size: 0.9rem !important; line-height: 1.4 !important; }
+    #communitySections tr.clickable-row td.col-game  { order: 2 !important; flex: 1 !important; font-size: 0.78rem !important; width: auto !important; text-align: left !important; margin-top: 4px !important; }
+    #communitySections tr.clickable-row td.col-time  { order: 3 !important; flex: 0 0 auto !important; margin-left: auto !important; width: auto !important; min-width: 0 !important; font-size: 0.75rem !important; color: var(--text-muted) !important; margin-top: 4px !important; }
+
+    /* [v6.6.245] 댓글 탭 모바일 레이아웃 — 의미 class 기반. Row1: 댓글 내용, Row2: 게임명 · 글제목 · 시간 */
+    #comments-tab .excel-table tr td.col-content {   /* 댓글 내용 — Row 1 전체 너비 */
+        order: 1 !important;
+        flex: 0 0 100% !important;
+        font-size: 0.9rem !important;
+        line-height: 1.4 !important;
+        text-align: left !important;
+        /* [v6.6.420] 4줄 클램프 — 긴 댓글이 카드 높이를 무한 확장하던 문제 차단. */
+        white-space: normal !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 4 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+    }
+    #comments-tab .excel-table tr td.col-game {       /* 게임명 — Row 2 좌측 */
+        order: 2 !important;
+        flex: 0 0 auto !important;
+        font-size: 0.78rem !important;
+        /* [v6.6.260] font-weight 500 제거 — 전체 탭 모바일 col-game 과 동일 weight(기본) 유지 */
+        white-space: nowrap !important;
+        text-align: left !important;
+        width: auto !important;
+        padding-right: 6px !important;
+    }
+    #comments-tab .excel-table tr td.col-title {      /* 글 제목 — Row 2 중간 (남은 공간 차지) */
+        order: 3 !important;
+        flex: 1 1 auto !important;
+        font-size: 0.78rem !important;
+        color: var(--text-muted) !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        text-align: left !important;
+        min-width: 0 !important;
+    }
+    #comments-tab .excel-table tr td.col-time {       /* 시간 — Row 2 우측 밀착 */
+        order: 4 !important;
+        flex: 0 0 auto !important;
+        margin-left: auto !important;
+        width: auto !important;
+        min-width: 0 !important;
+        font-size: 0.75rem !important;
+        color: #fff !important;
+        text-align: right !important;
+        display: inline-block !important;
+    }
+
+    /* [v6.6.399] #10 시간 컬럼 절단 방지 — 좁은 화면에서 06:12 가 06:1 로 잘리는 것 방지 */
+    .col-time, td.col-time, th.col-time {
+        min-width: 56px !important;
+        white-space: nowrap !important;
+        text-overflow: clip !important;
+    }
+
+    /* [v6.6.399] #11 iOS 가상 키보드 가림 방지 — 검색 input focus 시 하단 탭바와 겹침 회피 */
+    .header-search-container input,
+    #games-search-input,
+    #community-search-input,
+    #comments-search-input,
+    #total-search-input,
+    [id$="-search-input-header"] {
+        scroll-margin-bottom: max(120px, env(safe-area-inset-bottom));
+        scroll-margin-top: max(80px, env(safe-area-inset-top));
+    }
+    .bottom-tabbar {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+}
+

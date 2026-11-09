@@ -1,0 +1,293 @@
+/* [v6.6.294] IME 랜딩 페이지 전용 스타일
+ * [v6.7.183 UX-01] 실제 정의 토큰(--background-color, --surface-color, --glass-border, --text-color,
+ *   --text-muted, --primary-color)을 사용해 테마 전환 시 색상이 따라간다.
+ *   (이전엔 미정의 토큰 --bg/--panel/--border/--text 참조로 fallback 고정 → 테마 추종 불능이던 것을 교정.)
+ */
+
+.landing-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--background-color,#0f1115);
+    color: var(--text-color,#e5e7eb);
+    overflow: auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 48px 24px;
+}
+.landing-overlay[hidden] { display: none !important; }
+
+body.landing-active {
+    overflow: hidden;
+}
+
+.landing-inner {
+    width: 100%;
+    max-width: 980px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.landing-close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--glass-border,#2a2e36);
+    background: var(--surface-color,#151821);
+    color: var(--text-color,#e5e7eb);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: background 0.15s, border-color 0.15s;
+}
+.landing-close:hover {
+    background: var(--glass-border,#2a2e36);
+    border-color: var(--primary-color, #3182f6);
+}
+
+/* ── 헤더 ───────────────────────────────────────────────── */
+.landing-header { text-align: center; }
+.landing-brand {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.3em;
+    color: var(--primary-color, #3182f6);
+    margin-bottom: 12px;
+}
+.landing-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+    color: var(--text-color,#e5e7eb);
+}
+.landing-subtitle {
+    font-size: 14px;
+    color: var(--text-muted, #9ca3af);
+    margin: 0;
+    line-height: 1.6;
+}
+.landing-subtitle b {
+    color: var(--text-color,#e5e7eb);
+    font-weight: 700;
+}
+
+/* ── 섹션 공통 ───────────────────────────────────────────── */
+.landing-section {
+    background: var(--surface-color,#151821);
+    border: 1px solid var(--glass-border,#2a2e36);
+    border-radius: 12px;
+    padding: 20px 22px;
+}
+.landing-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+.landing-section-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-color,#e5e7eb);
+}
+.landing-section-actions { display: flex; gap: 6px; }
+.landing-chip {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
+    /* 전역 button hover 의 배경 채움을 차단하기 위해 !important 사용 */
+    background: transparent !important;
+    border: 1px solid var(--glass-border,#2a2e36);
+    color: var(--text-muted, #9ca3af);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+    line-height: 1.4;
+}
+.landing-chip:hover,
+.landing-chip:focus-visible {
+    border-color: var(--primary-color, #3182f6);
+    color: var(--primary-color, #3182f6);
+    /* 배경은 투명 유지, transform/shadow 없음 → 텍스트 가림 방지 */
+    outline: none;
+}
+.landing-chip:active {
+    transform: translateY(1px);
+}
+
+/* ── 게임 카드 그리드 ────────────────────────────────────── */
+.landing-game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+}
+.landing-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--text-muted, #9ca3af);
+    padding: 24px 0;
+    font-size: 13px;
+}
+.landing-game-card {
+    --landing-accent: var(--primary-color, #3182f6);
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1px solid var(--glass-border,#2a2e36);
+    border-radius: 10px;
+    background: var(--background-color,#0f1115);
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+}
+.landing-game-card:hover {
+    border-color: var(--landing-accent);
+    transform: translateY(-1px);
+}
+.landing-game-card.selected {
+    border-color: var(--landing-accent);
+    box-shadow: inset 0 0 0 1px var(--landing-accent);
+}
+.landing-game-checkbox {
+    accent-color: var(--landing-accent);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin: 0;
+}
+.landing-game-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.landing-game-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-color,#e5e7eb);
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ── 테마 스와치 ────────────────────────────────────────── */
+.landing-theme-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.landing-theme {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background-color: var(--background-color,#0f1115);
+    border: 1px solid var(--glass-border,#2a2e36);
+    color: var(--text-color,#e5e7eb);
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: border-color 0.15s, color 0.15s, background-color 0.15s;
+}
+.landing-theme:hover {
+    border-color: var(--primary-color, #3182f6);
+    /* 전역 button hover 의 배경 채움 차단 — active 가 아닌 칩은 배경 유지 */
+    background-color: var(--background-color,#0f1115);
+    color: var(--text-color,#e5e7eb);
+}
+.landing-theme:focus-visible {
+    outline: 2px solid var(--primary-color, #3182f6);
+    outline-offset: 2px;
+}
+.landing-theme.active {
+    border-color: var(--primary-color, #3182f6);
+    background-color: var(--primary-color, #3182f6);
+    color: #fff;
+}
+.landing-theme.active:hover {
+    background-color: var(--primary-color, #3182f6);
+    color: #fff;
+    filter: brightness(1.08);
+}
+.landing-theme-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* ── 풋터 ──────────────────────────────────────────────── */
+.landing-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 8px;
+}
+.landing-selected-count {
+    font-size: 13px;
+    color: var(--text-muted, #9ca3af);
+}
+.landing-primary {
+    font-size: 15px;
+    font-weight: 700;
+    padding: 12px 24px;
+    background: var(--primary-color, #3182f6);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: filter 0.15s, transform 0.15s;
+}
+.landing-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.landing-primary:active { transform: translateY(0); }
+
+/* ── 사이드바 IME 로고 hover (재진입 힌트) ─────────────── */
+.sidebar-logo[role="button"] {
+    cursor: pointer;
+    transition: opacity 0.15s, color 0.15s;
+}
+.sidebar-logo[role="button"]:hover {
+    opacity: 0.75;
+    color: var(--primary-color, #3182f6);
+}
+.sidebar-logo[role="button"]:focus-visible {
+    outline: 2px solid var(--primary-color, #3182f6);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* ── 반응형 ────────────────────────────────────────────── */
+@media (max-width: 640px), (pointer: coarse) {
+    .landing-overlay { padding: 24px 14px; }
+    .landing-title { font-size: 22px; }
+    .landing-subtitle { font-size: 13px; }
+    .landing-section { padding: 16px; }
+    .landing-game-grid { grid-template-columns: 1fr; }
+    .landing-theme-row { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }
+    .landing-theme { flex-shrink: 0; }
+    .landing-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    .landing-primary { justify-content: center; }
+}

@@ -1,0 +1,97 @@
+    <nav class="bottom-tabbar" id="bottomTabbar">
+        <!-- [v6.6.422] 통합 모니터링 — 피드(첫 자리) + 대시보드(관리자) -->
+        <div class="btab-item" id="btab-feed" onclick="toggleAppPane('feed')">
+            <i class="fas fa-stream"></i><span>피드</span>
+        </div>
+        {% if is_admin or is_manager %}{# [v6.7.711] 대시보드 manager 개방 #}
+        <div class="btab-item" id="btab-situation" onclick="toggleAppPane('situation')"><!-- [v6.6.466] 모바일 대시보드 → id도 btab-situation 으로 통일 (active 표시 매칭) -->
+            <i class="fas fa-chart-line"></i><span>대시보드</span>
+        </div>
+        {% endif %}
+        {% if 'comments' not in hidden_apps %}
+        <div class="btab-item" id="btab-comments" onclick="toggleAppPane('comments')">
+            <i class="fas fa-comments"></i><span>댓글</span>
+        </div>
+        {% endif %}
+        <!-- [v6.6.424] 전체/게임/커뮤니티 단독 탭은 피드로 통합 — 하단탭바에서 숨김. DOM/함수 호환 유지. -->
+        <div class="btab-item" id="btab-total" onclick="toggleAppPane('total')" style="display:none;">
+            <i class="fas fa-list-ul"></i><span>전체</span>
+        </div>
+        <div class="btab-item" id="btab-games" onclick="toggleAppPane('games')" style="display:none;">
+            <i class="fas fa-gamepad"></i><span>게임</span>
+        </div>
+        <div class="btab-item" id="btab-community" onclick="toggleAppPane('community')" style="display:none;">
+            <i class="fas fa-users"></i><span>커뮤니티</span>
+        </div>
+        {# [v6.7.307] 비관리자 소스 은닉 — 하단탭 admin 항목 서버 조건부 렌더. [v6.7.500] ai-summary 는 manager 개방(아래 개별 게이트) — 나머지는 admin 전용. #}
+        {% if is_admin %}
+        <!-- [v6.6.421] AI 분석 — 관리자 전용. checkAdminStatus() 가 is_admin 시 display:flex 로 토글. -->
+        <div class="btab-item" id="btab-ai-analysis" onclick="toggleAppPane('ai-analysis')" style="display:none;">
+            <span class="btab-ai-label">AI</span><span>AI분석</span>
+        </div>
+        {% endif %}
+        {% if is_admin or is_manager %}{# [v6.7.500] AI 요약 하단탭 manager 개방 #}
+        <!-- [AI 요약] admin + manager ([v6.7.500] manager 재개방). checkAdminStatus() 가 role 판정 후 display:flex 로 토글(admin=_grantAdminUI / manager=MANAGER_EXTRA_IDS). -->
+        <div class="btab-item" id="btab-ai-summary" onclick="toggleAppPane('ai-summary')" style="display:none;">
+            <span class="btab-ai-label">AI</span><span>요약</span>
+        </div>
+        {% endif %}
+        {% if is_admin %}{# [v6.7.439] 이상감지 하단탭 - admin 전용 #}
+        <div class="btab-item" id="btab-anomaly" onclick="toggleAppPane('anomaly')" style="display:none;">
+            <i class="fas fa-wave-square"></i><span>이상감지</span>
+        </div>
+        {% endif %}
+        {% if is_admin or is_manager %}{# [v6.7.725] 판정 manager 개방 #}
+        <div class="btab-item" id="btab-verdict" onclick="toggleAppPane('verdict')" style="display:none;">
+            <i class="fas fa-scale-balanced"></i><span>Verdict</span>
+        </div>
+        {% endif %}
+        {# [v6.7.741] 디스코드 · 알림(워처) · 업데이트 하단탭 삭제(사용자 2026-10-24). #}
+        {% if (is_admin or is_manager) and 'ccu-grafana' not in hidden_apps %}{# [v6.7.725] 은닉 #}
+        <!-- [v6.7.361] 그라파나 CCU — admin+manager (사이드바 app-box-ccu-grafana 와 동일 가드). 하단탭 마크업 누락으로
+             모바일에서 열 방법이 없었음 (JS ADMIN_ONLY_IDS/MANAGER_EXTRA_IDS 는 btab-ccu-grafana 를 참조 중이나 요소 부재로 no-op).
+             특히 manager 는 유일 추가 탭이 이것뿐이라 모바일에서 피드+댓글만 보였던 결함. checkAdminStatus() 가 display:flex 토글. -->
+        <div class="btab-item" id="btab-ccu-grafana" onclick="toggleAppPane('ccu-grafana')" style="display:none;">
+            <i class="fas fa-chart-area"></i><span>그라파나</span>
+        </div>
+        {% endif %}
+        {% if is_admin %}
+        <!-- [v6.6.327] 하단 탭 바의 시세/야간동향 3개도 관리자 전용으로. checkAdminStatus() 가 is_admin 시 display:flex 로 토글. -->
+        {# [v6.7.725] 시세 3종 은닉(app.py HIDDEN_APP_IDS) #}
+        {% if 'account-trade' not in hidden_apps %}
+        <div class="btab-item" id="btab-account-trade" onclick="toggleAppPane('account-trade')" style="display:none;">
+            <i class="fas fa-user-tag"></i><span>계정거래</span>
+        </div>
+        {% endif %}
+        {% if 'diamond-trade' not in hidden_apps %}
+        <div class="btab-item" id="btab-diamond-trade" onclick="toggleAppPane('diamond-trade')" style="display:none;">
+            <i class="fas fa-gem"></i><span>다이아</span>
+        </div>
+        {% endif %}
+        {% if 'trends' not in hidden_apps %}
+        <div class="btab-item" id="btab-trends" onclick="toggleAppPane('trends')" style="display:none;">
+            <i class="fas fa-moon"></i><span>야간동향</span>
+        </div>
+        {% endif %}
+        <div class="btab-item" id="btab-log-viewer" onclick="toggleAppPane('log-viewer')" style="display:none;">
+            <i class="fas fa-terminal"></i><span>로그</span>
+        </div>
+        {% endif %}
+        <!-- [v6.6.466] 모바일 '상황판' btab 폐기 + 메인 btab 의 id 가 'btab-situation' 으로 통일됨 (active 표시 매칭). -->
+        <!-- placeholder 도 제거 (id 중복 회피) -->
+        {% if is_admin %}
+        <div class="btab-item" id="btab-ops" onclick="toggleAppPane('ops')" style="display:none;">
+            <i class="fas fa-tachometer-alt"></i><span>운영</span>
+        </div>
+        <div class="btab-item" id="btab-sql-console" onclick="toggleAppPane('sql-console')" style="display:none;">
+            <i class="fas fa-database"></i><span>SQL</span>
+        </div>
+        <div class="btab-item" id="btab-admin" onclick="toggleAppPane('admin')" style="display:none;">
+            <i class="fas fa-user-shield"></i><span>관리자</span>
+        </div>
+        <!-- [v6.7.69] F-4 통합 검색/필터 — 관리자 전용. -->
+        <div class="btab-item" id="btab-search" onclick="toggleAppPane('search')" style="display:none;">
+            <i class="fas fa-search"></i><span>검색</span>
+        </div>
+        {% endif %}
+    </nav>
