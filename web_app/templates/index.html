@@ -87,19 +87,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style-responsive.css') }}?v={{ build_version }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style-misc.css') }}?v={{ build_version }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style-feed.css') }}?v={{ build_version }}">
-    {% if is_admin or is_manager %}{# [v6.7.309] 비관리자 은닉 · [v6.7.711] 대시보드 manager 개방 #}
+    {# [v6.7.751] 일반 공개(사용자 2026-11-14) - 대시보드 #}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/situation.css') }}?v={{ build_version }}">
-    {% endif %}
     {% if (is_admin or is_manager) and 'ccu-grafana' not in hidden_apps %}{# [v6.7.725] 은닉 #}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/ccu-grafana.css') }}?v={{ build_version }}">
     {% endif %}
-    {% if is_admin or is_manager %}{# [v6.7.500] AI 요약 manager 개방 (v6.7.313 회수의 역방향) — CSS/pane/JS/진입점 한 세트 #}
+    {# [v6.7.751] 일반 공개(사용자 2026-11-14) - AI 요약. CSS/pane/JS/진입점 한 세트 #}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/ai-summary.css') }}?v={{ build_version }}">
-    {% endif %}
     {# [v6.7.741] 알림(워처) 탭 naver-watcher.css · 디스코드 탭 discord.css 삭제 - 워처 종료(사용자 2026-10-24). #}
-    {% if is_admin %}{# [v6.7.439] 이상감지 CSS - admin 전용(기능 전 표면 admin 한정, 사용자 2026-07-26 지시) #}
+    {# [v6.7.751] 일반 공개(사용자 2026-11-14) - 이상감지 #}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/anomaly.css') }}?v={{ build_version }}">
-    {% endif %}
     {% if is_admin or is_manager %}{# [v6.7.700] 판정 탭 CSS. [v6.7.725] manager 개방 - CSS/pane/JS/진입점 한 세트(PATTERN-56) #}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/verdict.css') }}?v={{ build_version }}">
     {% endif %}
@@ -215,9 +212,7 @@
                              Phase B (v6.6.393) — 상황판 탭 (Situation Board)
                              admin·manager([v6.7.711] manager 개방). [v6.7.628/629] 그래프 2종만 남음 - /api/situation 은 v6.7.629 에 삭제, 데이터는 graph-tab.js·pass-rate-graph.js 가 각자 fetch.
                              ═══════════════════════════════════════════════════════════ -->
-                        {% if is_admin or is_manager %}
-{% include 'partials/tabs/situation.html' %}
-                        {% endif %}{# situation-tab 서버 은닉 — v6.7.308 admin 전용 -> v6.7.711 manager 개방 #}
+{% include 'partials/tabs/situation.html' %}{# [v6.7.751] 일반 공개(사용자 2026-11-14) #}
                         <!-- ═══════════════════ /situation-tab ═══════════════════ -->
 
                         {% if is_admin %}
@@ -239,14 +234,11 @@
                             {# [v6.7.741] 알림(워처) 탭 pane 삭제 - 워처 종료(사용자 2026-10-24) #}
 
                             <!-- [AI 요약] 코어 멀티액티브 페인 — admin + manager ([v6.7.500] manager 재개방). JS = static/js/tabs/ai-summary-tab.js. 평면 리스트(표↔카드 CSS 분기). -->
-                            {% if is_admin or is_manager %}{# [v6.7.500] AI 요약 manager 개방 — 이 pane include 누락이 "Tab not found" 직접 원인(v6.7.430 회귀 교훈) #}
+                            {# [v6.7.751] 일반 공개(사용자 2026-11-14) - AI 요약 pane. 옛 주석: [v6.7.500] AI 요약 manager 개방 - 이 pane include 누락이 "Tab not found" 직접 원인(v6.7.430 회귀 교훈) #}
 {% include 'partials/tabs/ai_summary.html' %}
-                            {% endif %}{# ai-summary-tab 서버 은닉 #}
 
                             {# [v6.7.741] 디스코드 탭 pane 삭제 - 워처 종료(사용자 2026-10-24) #}
-                            {% if is_admin %}{# [v6.7.439] 이상감지 pane - 진입점/JS/CSS 와 4종 한 세트 (v6.7.430 회귀 교훈) #}
-{% include 'partials/tabs/anomaly.html' %}
-                            {% endif %}
+{% include 'partials/tabs/anomaly.html' %}{# [v6.7.751] 일반 공개(사용자 2026-11-14) - 진입점/JS/CSS 와 4종 한 세트 #}
                             {% if is_admin or is_manager %}{# [v6.7.700] 판정 pane - 진입점/JS/CSS 와 4종 한 세트 (PATTERN-56). [v6.7.725] manager 개방 #}
 {% include 'partials/tabs/verdict.html' %}
                             {% endif %}
@@ -309,25 +301,20 @@
     <!-- [v6.7.70] F-7 시스템 건강도 — 6 메트릭 mini-chart. -->
     <script src="{{ url_for('static', filename='js/tabs/admin/health.js') }}?v={{ build_version }}"></script>
     {% endif %}
-    {% if is_admin or is_manager %}{# [v6.7.308/309] 대시보드 코드 은닉 · [v6.7.711] manager 개방 #}
+    {# [v6.7.751] 일반 공개(사용자 2026-11-14) - 대시보드 #}
     <script src="{{ url_for('static', filename='js/tabs/situation-tab.js') }}?v={{ build_version }}"></script>
-    {% endif %}
     <!-- [v6.6.422] 통합 모니터링 환경 — 피드(공개) -->
     <script src="{{ url_for('static', filename='js/tabs/feed-tab.js') }}?v={{ build_version }}"></script>
-    {% if is_admin or is_manager %}{# [v6.7.711] 대시보드 그래프 2종 - manager 개방 #}
     <script src="{{ url_for('static', filename='js/tabs/graph-tab.js') }}?v={{ build_version }}"></script>
     <script src="{{ url_for('static', filename='js/tabs/pass-rate-graph.js') }}?v={{ build_version }}"></script>
-    {% endif %}
     {% if (is_admin or is_manager) and 'ccu-grafana' not in hidden_apps %}{# [v6.7.725] 은닉. [v6.7.309] 그라파나 CCU — manager 개방 (유일) #}
     <script src="{{ url_for('static', filename='js/tabs/ccu-grafana-tab.js') }}?v={{ build_version }}"></script>
     {% endif %}
-    {% if is_admin or is_manager %}{# [v6.7.500] AI 요약 JS manager 개방 — 누락 시 매니저에 렌더 함수 자체 부재(v6.7.430 회귀 교훈) #}
+    {# [v6.7.751] 일반 공개(사용자 2026-11-14) - AI 요약 #}
     <script src="{{ url_for('static', filename='js/tabs/ai-summary-tab.js') }}?v={{ build_version }}"></script>
-    {% endif %}
-    {% if is_admin or is_manager %}{# [v6.7.741] 알림(워처) · 디스코드 탭 JS 삭제. 이 블록엔 이상감지(admin) · 판정(manager 개방)만 남았다 #}
-    {% if is_admin %}{# [v6.7.439] 이상감지 JS - admin 전용 #}
+    {# [v6.7.751] 일반 공개(사용자 2026-11-14) - 이상감지 #}
     <script src="{{ url_for('static', filename='js/tabs/anomaly-tab.js') }}?v={{ build_version }}"></script>
-    {% endif %}
+    {% if is_admin or is_manager %}{# [v6.7.741] 알림(워처) · 디스코드 탭 JS 삭제. 이 블록엔 판정(manager 개방)만 남았다 #}
     {# [v6.7.700] 판정 탭 JS. [v6.7.725] manager 개방(바깥 is_admin or is_manager 블록) #}
     <script src="{{ url_for('static', filename='js/tabs/verdict-tab.js') }}?v={{ build_version }}"></script>
     {% endif %}

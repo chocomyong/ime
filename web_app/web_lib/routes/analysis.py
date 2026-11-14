@@ -161,9 +161,7 @@ def get_ai_summary():
     #   [v6.7.731 주석 정정] 위 서술은 스테일 - v6.7.500 에 탭 UI 도 manager 재개방됐다(app.py _ADMIN_MANAGER_JS
     #   + ui-control.js MANAGER_EXTRA_APP_IDS). 이 탭이 쓰는 API 는 이것 하나뿐이라 매니저가 403 밟는 경로 없음.
     #   [v6.7.313] 원래 admin 전용이었음(회수 이력). 자매 /api/ai-analysis 는 admin 유지(별개 디버그 탭).
-    guard = _require_role('manager')
-    if guard is not None:
-        return guard
+    # [v6.7.751] 일반 공개(사용자 2026-11-14) - 지원서 평가용으로 AI 요약 · 대시보드 · 이상감지 탭을 익명에게 연다. 쓰기 API 는 그대로 admin.
     now = time.time()
     cached = _ai_summary_cache.get('data')
     if cached is not None and (now - _ai_summary_cache['ts']) < _ai_summary_cache['ttl']:
@@ -205,9 +203,7 @@ def get_ai_summary_backlog():
     등급이라 매니저 동선에 구멍이 안 생긴다(응답 형태는 **리스트가 아니라 객체**라 배너/보관소/hydrate
     가 쓰는 `/api/ai-summary` 형태와 섞이지 않는다).
     """
-    guard = _require_role('manager')
-    if guard is not None:
-        return guard
+    # [v6.7.751] 일반 공개(사용자 2026-11-14) - 지원서 평가용으로 AI 요약 · 대시보드 · 이상감지 탭을 익명에게 연다. 쓰기 API 는 그대로 admin.
     from sqlite_handler import db_handler as _db
     latest = _db.get_health_latest(['queue_summary_backlog', 'queue_summary_lag_s'])
 

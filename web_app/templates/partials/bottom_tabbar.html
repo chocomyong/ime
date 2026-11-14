@@ -3,11 +3,10 @@
         <div class="btab-item" id="btab-feed" onclick="toggleAppPane('feed')">
             <i class="fas fa-stream"></i><span>피드</span>
         </div>
-        {% if is_admin or is_manager %}{# [v6.7.711] 대시보드 manager 개방 #}
+        {# [v6.7.751] 일반 공개(사용자 2026-11-14) - 대시보드 #}
         <div class="btab-item" id="btab-situation" onclick="toggleAppPane('situation')"><!-- [v6.6.466] 모바일 대시보드 → id도 btab-situation 으로 통일 (active 표시 매칭) -->
             <i class="fas fa-chart-line"></i><span>대시보드</span>
         </div>
-        {% endif %}
         {% if 'comments' not in hidden_apps %}
         <div class="btab-item" id="btab-comments" onclick="toggleAppPane('comments')">
             <i class="fas fa-comments"></i><span>댓글</span>
@@ -30,17 +29,15 @@
             <span class="btab-ai-label">AI</span><span>AI분석</span>
         </div>
         {% endif %}
-        {% if is_admin or is_manager %}{# [v6.7.500] AI 요약 하단탭 manager 개방 #}
+        {# [v6.7.751] 일반 공개(사용자 2026-11-14) - AI 요약 #}
         <!-- [AI 요약] admin + manager ([v6.7.500] manager 재개방). checkAdminStatus() 가 role 판정 후 display:flex 로 토글(admin=_grantAdminUI / manager=MANAGER_EXTRA_IDS). -->
-        <div class="btab-item" id="btab-ai-summary" onclick="toggleAppPane('ai-summary')" style="display:none;">
+        <div class="btab-item" id="btab-ai-summary" onclick="toggleAppPane('ai-summary')">
             <span class="btab-ai-label">AI</span><span>요약</span>
         </div>
-        {% endif %}
-        {% if is_admin %}{# [v6.7.439] 이상감지 하단탭 - admin 전용 #}
-        <div class="btab-item" id="btab-anomaly" onclick="toggleAppPane('anomaly')" style="display:none;">
+        {# [v6.7.751] 일반 공개(사용자 2026-11-14) - 이상감지 #}
+        <div class="btab-item" id="btab-anomaly" onclick="toggleAppPane('anomaly')">
             <i class="fas fa-wave-square"></i><span>이상감지</span>
         </div>
-        {% endif %}
         {% if is_admin or is_manager %}{# [v6.7.725] 판정 manager 개방 #}
         <div class="btab-item" id="btab-verdict" onclick="toggleAppPane('verdict')" style="display:none;">
             <i class="fas fa-scale-balanced"></i><span>Verdict</span>

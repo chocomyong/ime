@@ -24,14 +24,13 @@
                     </div>
                     {% endif %}
                     {# [v6.7.308] 대시보드(situation) admin 전용 전환 — 사용자 결정 2026-07-09. [v6.7.711] manager 개방 — 사용자 결정 2026-10-01. #}
-                    {% if is_admin or is_manager %}
+                    {# [v6.7.751] 일반 공개(사용자 2026-11-14) - 대시보드 #}
                     <!-- [v6.6.466] '대시보드' 메뉴 → 단독 상황판 풀뷰(`#situation-tab`) 활성화로 통합. dashboard pane 폐기.
                          [v6.6.466 fix] id 도 'app-box-situation' 으로 통일 — render.js 가 active class 토글 시 동일 id 매칭. -->
                     <div class="nav-item" id="app-box-situation" onclick="toggleAppPane('situation')">
                         <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
                         <span class="nav-label">대시보드</span>
                     </div>
-                    {% endif %}
                     {% if (is_admin or is_manager) and 'ccu-grafana' not in hidden_apps %}{# [v6.7.725] 은닉 = app.py HIDDEN_APP_IDS #}
                     <!-- [v6.7.250/254] 그라파나 CCU 미러 — 모니터링 섹션. 비관리자 소스 은닉(admin/manager 만 서버 렌더). JS = static/js/tabs/ccu-grafana-tab.js. -->
                     <div class="nav-item u-admin-card u-admin-card--cyan" id="app-box-ccu-grafana" onclick="toggleAppPane('ccu-grafana')" style="display:none;">
@@ -40,13 +39,12 @@
                     </div>
                     {% endif %}
                     {# [v6.7.741] "알림"(워처) · "디스코드" 진입점 삭제 - 워처 종료(사용자 2026-10-24). #}
-                    {% if is_admin %}
+                    {# [v6.7.751] 일반 공개(사용자 2026-11-14) - 이상감지 #}
                     <!-- [v6.7.439] 이상감지 - 평시 대비 급증 관제. admin 전용. JS = static/js/tabs/anomaly-tab.js. -->
-                    <div class="nav-item u-admin-card u-admin-card--purple" id="app-box-anomaly" onclick="toggleAppPane('anomaly')" style="display:none;">
+                    <div class="nav-item u-admin-card u-admin-card--purple" id="app-box-anomaly" onclick="toggleAppPane('anomaly')">
                         <span class="nav-icon"><i class="fas fa-wave-square"></i></span>
                         <span class="nav-label">이상감지</span>
                     </div>
-                    {% endif %}
                     {% if is_admin or is_manager %}{# [v6.7.725] 판정 manager 개방 #}
                     <!-- [v6.7.700] 판정 - 1차 분류기 그림자 운영(모델 점수 vs gemma 판정). JS = static/js/tabs/verdict-tab.js. -->
                     <div class="nav-item u-admin-card u-admin-card--purple" id="app-box-verdict" onclick="toggleAppPane('verdict')" style="display:none;">
@@ -54,14 +52,13 @@
                         <span class="nav-label">Verdict</span>
                     </div>
                     {% endif %}
-                    {% if is_admin or is_manager %}{# [v6.7.500] AI 요약 manager 개방 #}
+                    {# [v6.7.751] 일반 공개(사용자 2026-11-14) - AI 요약 #}
                     <!-- [AI 요약] 코어 멀티액티브 페인 — admin + manager ([v6.7.500] manager 재개방). JS = static/js/tabs/ai-summary-tab.js.
                          모니터링 섹션 소속이라 `.sidebar-section--admin` blanket 숨김(style-core.css)에 안 걸린다 — ccu-grafana 와 동일 자리. -->
-                    <div class="nav-item u-admin-card u-admin-card--purple" id="app-box-ai-summary" onclick="toggleAppPane('ai-summary')" style="display:none;">
+                    <div class="nav-item u-admin-card u-admin-card--purple" id="app-box-ai-summary" onclick="toggleAppPane('ai-summary')">
                         <span class="nav-icon nav-icon-text">AI</span>
                         <span class="nav-label">요약</span>
                     </div>
-                    {% endif %}
                 </div>
 
                 <!-- [v6.6.451] 도구 섹션 — 헤더에서 이전한 일반 사용자 도구 4종(필터링/새로고침/테마/앱 설치). admin gate 없음. -->

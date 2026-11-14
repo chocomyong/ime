@@ -234,7 +234,7 @@ def _block_scanner_bots():
 _ADMIN_ONLY_JS = frozenset({
     'ai-tab.js', 'search-tab.js', 'diamond-tab.js', 'account-tab.js', 'trend-tab.js',
     'log-tab.js',
-    'anomaly-tab.js',     # [v6.7.439] 이상감지 - 기능 전 표면 admin 한정
+    # [v6.7.751] anomaly-tab.js 는 일반 공개로 이 목록에서 뺐다(사용자 2026-11-14).
 })
 # [v6.7.383] 알림 탭(naver-watcher)·워처 상태등/배너(topbar-status)·알림 보관소(notif-inbox) 를 manager 개방으로 이동.
 # [v6.7.428] discord-tab.js — manager 개방(naver-watcher v6.7.383 선례 동형)으로 _ADMIN_ONLY_JS 에서 이동.
@@ -244,8 +244,7 @@ _ADMIN_ONLY_JS = frozenset({
 #   그라파나 CCU 상태등만 남아 그대로 둔다.
 _ADMIN_MANAGER_JS = frozenset({
     'ccu-grafana-tab.js', 'topbar-status.js', 'notif-inbox.js',
-    'ai-summary-tab.js',  # [v6.7.500] AI 요약 — manager 개방
-    'situation-tab.js', 'graph-tab.js', 'pass-rate-graph.js',  # [v6.7.711] 대시보드 — manager 개방(사용자 2026-10-01)
+    # [v6.7.751] ai-summary-tab.js · situation-tab.js · graph-tab.js · pass-rate-graph.js 는 일반 공개로 뺐다(사용자 2026-11-14).
     'verdict-tab.js',  # [v6.7.725] 판정 - manager 개방(사용자 2026-10-11). 사람 판정 쓰기만 admin(routes/verdict.py)
 })
 
